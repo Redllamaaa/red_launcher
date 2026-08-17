@@ -6,6 +6,7 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getVersion } from "@tauri-apps/api/app";
 
+import { LoggerUtil } from "./uicore.js";
 // Requirements
 const { URL } = require("url");
 const { MojangRestAPI, getServerStatus } = require("helios-core/mojang");

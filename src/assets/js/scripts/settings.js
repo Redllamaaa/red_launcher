@@ -3,6 +3,8 @@ import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getVersion } from "@tauri-apps/api/app";
 
+import { LoggerUtil } from "./uicore.js";
+
 // Requirements
 import { VIEWS } from "./uibinder.js";
 const os = require("os");

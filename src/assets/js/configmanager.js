@@ -4,7 +4,7 @@ import os from "os";
 import path from "path";
 import { appDataDir } from "@tauri-apps/api/path";
 
-const logger = LoggerUtil.getLogger("ConfigManager");
+import { LoggerUtil } from "./uicore.js";
 
 const sysRoot =
   import.meta.env.APPDATA ||

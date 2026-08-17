@@ -10,7 +10,7 @@
  */
 // Requirements
 import ConfigManager from "./configmanager";
-import { LoggerUtil } from "helios-core";
+import { LoggerUtil } from "./uicore.js";
 import { RestResponseStatus } from "helios-core/common";
 import { MojangRestAPI, MojangErrorCode } from "helios-core/mojang";
 import { MicrosoftAuth, MicrosoftErrorCode } from "helios-core/microsoft";
