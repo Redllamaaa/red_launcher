@@ -94,10 +94,11 @@ exports.addDropinMods = function (files, modsdir) {
  * @returns {Promise.<boolean>} True if the mod was deleted, otherwise false.
  */
 exports.deleteDropinMod = async function (modsDir, fullName) {
-  const res = await ipcRenderer.invoke(
-    SHELL_OPCODE.TRASH_ITEM,
-    path.join(modsDir, fullName),
-  );
+  // TODO: Replace Electron IPC once the Rust command/event exists.
+  //const res = await ipcRenderer.invoke(
+  //  SHELL_OPCODE.TRASH_ITEM,
+  //  path.join(modsDir, fullName),
+  //);
 
   if (!res.result) {
     shell.beep();
