@@ -488,11 +488,11 @@ document.addEventListener(
   false,
 );
 
-// Actions that must be performed after the distribution index is downloaded.
-/**
- // TODO: This is a temporary function until we replace Electron IPC with Tauri IPC.
-ipcRenderer.on("distributionIndexDone", async (event, res) => {
-  if (res) {
+// TODO: Directly fetch and initialize the distribution, since Electron's IPC-based
+// "distributionIndexDone" event has no equivalent yet — this replaces it
+// until DistroAPI is properly ported and can emit its own readiness signal.
+(async () => {
+  try {
     const data = await DistroAPI.getDistribution();
     syncModConfigurations(data);
     ensureJavaSettings(data);
@@ -504,7 +504,8 @@ ipcRenderer.on("distributionIndexDone", async (event, res) => {
     } else {
       rscShouldLoad = true;
     }
-  } else {
+  } catch (err) {
+    console.error(err);
     fatalStartupError = true;
     if (
       document.readyState === "interactive" ||
@@ -515,8 +516,7 @@ ipcRenderer.on("distributionIndexDone", async (event, res) => {
       rscShouldLoad = true;
     }
   }
-});
-*/
+})();
 
 // Util for development
 async function devModeToggle() {
