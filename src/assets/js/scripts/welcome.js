@@ -1,6 +1,8 @@
 /**
  * Script for welcome.ejs
  */
+import { VIEWS } from "./uibinder.js";
+
 document.getElementById("welcomeButton").addEventListener("click", (e) => {
   loginOptionsCancelEnabled(false); // False by default, be explicit.
   loginOptionsViewOnLoginSuccess = VIEWS.landing;

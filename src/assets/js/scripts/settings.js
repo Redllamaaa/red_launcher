@@ -4,6 +4,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getVersion } from "@tauri-apps/api/app";
 
 // Requirements
+import { VIEWS } from "./uibinder.js";
 const os = require("os");
 const semver = require("semver");
 

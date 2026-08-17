@@ -12,6 +12,7 @@ import { open } from "@tauri-apps/plugin-shell";
 import $ from "jquery";
 import isDev from "../isdev.js";
 import Lang from "../langloader.js";
+import { VIEWS } from "./uibinder.js";
 
 // Placeholder until we wire up real Rust-backed logging.
 const LoggerUtil = {

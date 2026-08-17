@@ -535,3 +535,5 @@ async function devModeToggle() {
   updateSelectedServer(data.servers[0]);
   syncModConfigurations(data);
 }
+
+export { VIEWS };
