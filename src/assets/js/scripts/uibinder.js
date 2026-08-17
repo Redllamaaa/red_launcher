@@ -82,14 +82,12 @@ async function showMainUI(data) {
   if (!isDev) {
     loggerAutoUpdater.info("Initializing..");
 
-    // TODO: Tauri updater Plugin
-    /**   
-    ipcRenderer.send(
-      "autoUpdateAction",
-      "initAutoUpdater",
-      ConfigManager.getAllowPrerelease(),
-    );
-    */
+    // TODO: Replace with Tauri IPC once the Rust command/event exists.
+    // ipcRenderer.send(
+    //   "autoUpdateAction",
+    //   "initAutoUpdater",
+    //   ConfigManager.getAllowPrerelease(),
+    // );
   }
 
   await prepareSettings(true);

@@ -24,11 +24,12 @@ function loginOptionsCancelEnabled(val) {
 
 loginOptionMicrosoft.onclick = (e) => {
   switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
-    ipcRenderer.send(
-      MSFT_OPCODE.OPEN_LOGIN,
-      loginOptionsViewOnLoginSuccess,
-      loginOptionsViewOnLoginCancel,
-    );
+    // TODO: Replace with Tauri IPC once the Rust command/event exists.
+    // ipcRenderer.send(
+    //   MSFT_OPCODE.OPEN_LOGIN,
+    //   loginOptionsViewOnLoginSuccess,
+    //   loginOptionsViewOnLoginCancel,
+    // );
   });
 };
 

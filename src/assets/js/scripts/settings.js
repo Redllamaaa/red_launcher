@@ -399,7 +399,8 @@ document.getElementById("settingsAddMojangAccount").onclick = (e) => {
 // Bind the add microsoft account button.
 document.getElementById("settingsAddMicrosoftAccount").onclick = (e) => {
   switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
-    ipcRenderer.send(MSFT_OPCODE.OPEN_LOGIN, VIEWS.settings, VIEWS.settings);
+    // TODO: Replace with Tauri IPC once the Rust command/event exists.
+    // ipcRenderer.send(MSFT_OPCODE.OPEN_LOGIN, VIEWS.settings, VIEWS.settings);
   });
 };
 
@@ -581,7 +582,8 @@ function processLogOut(val, isLastAccount) {
   if (targetAcc.type === "microsoft") {
     msAccDomElementCache = parent;
     switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
-      ipcRenderer.send(MSFT_OPCODE.OPEN_LOGOUT, uuid, isLastAccount);
+      // TODO: Replace with Tauri IPC once the Rust handler exists.
+      // ipcRenderer.send(MSFT_OPCODE.OPEN_LOGOUT, uuid, isLastAccount);
     });
   } else {
     AuthManager.removeMojangAccount(uuid).then(() => {
@@ -1759,7 +1761,8 @@ function populateSettingsUpdateInformation(data) {
       false,
       () => {
         if (!isDev) {
-          ipcRenderer.send("autoUpdateAction", "checkForUpdate");
+          // TODO: Replace with Tauri IPC once the Rust command/event exists.
+          // ipcRenderer.send("autoUpdateAction", "checkForUpdate");
           settingsUpdateButtonStatus(
             Lang.queryJS("settings.updates.checkingForUpdatesButton"),
             true,

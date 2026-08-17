@@ -75,7 +75,8 @@ if (!isDev) {
           false,
           () => {
             if (!isDev) {
-              ipcRenderer.send("autoUpdateAction", "installUpdateNow");
+              // TODO: Replace with Tauri IPC once the Rust command/event exists.
+              // ipcRenderer.send("autoUpdateAction", "installUpdateNow");
             }
           },
         );
@@ -89,9 +90,10 @@ if (!isDev) {
         break;
       case "ready":
         updateCheckListener = setInterval(() => {
-          ipcRenderer.send("autoUpdateAction", "checkForUpdate");
+          // TODO: Replace with Tauri IPC once the Rust command/event exists.
+          // ipcRenderer.send("autoUpdateAction", "checkForUpdate");
         }, 1800000);
-        ipcRenderer.send("autoUpdateAction", "checkForUpdate");
+        // ipcRenderer.send("autoUpdateAction", "checkForUpdate");
         break;
       case "realerror":
         if (info != null && info.code != null) {
@@ -121,7 +123,8 @@ if (!isDev) {
  * @param {boolean} val The new allow prerelease value.
  */
 function changeAllowPrerelease(val) {
-  ipcRenderer.send("autoUpdateAction", "allowPrereleaseChange", val);
+  // TODO: Replace with Tauri IPC once the Rust command/event exists.
+  // ipcRenderer.send("autoUpdateAction", "allowPrereleaseChange", val);
 }
 
 function showUpdateUI(info) {

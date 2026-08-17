@@ -40,7 +40,9 @@ function onDistroLoad(data) {
       ConfigManager.save();
     }
   }
-  ipcRenderer.send("distributionIndexDone", data != null);
+
+  // TODO: Replace Electron IPC once the Rust command/event exists.
+  // ipcRenderer.send("distributionIndexDone", data != null);
 }
 
 // Ensure Distribution is downloaded and cached.
