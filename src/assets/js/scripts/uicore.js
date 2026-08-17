@@ -230,3 +230,5 @@ document.addEventListener("keydown", function (e) {
     window.toggleDevTools();
   }
 });
+
+export { LoggerUtil, loggerUICore, loggerAutoUpdater };
