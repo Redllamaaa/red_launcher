@@ -9,7 +9,7 @@
     "fs:default",
     {
       "identifier": "fs:scope",
-      "allow": ["$APPDATA/**"]
+      "allow": ["$APPDATA", "$APPDATA/**"]
     }
   ]
 }
