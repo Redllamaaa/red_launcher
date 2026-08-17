@@ -142,7 +142,7 @@ function showFatalStartupError() {
       );
       setOverlayHandler(() => {
         const window = remote.getCurrentWindow();
-        window.close();
+        getCurrentWindow().close();
       });
       toggleOverlay(true);
     });
