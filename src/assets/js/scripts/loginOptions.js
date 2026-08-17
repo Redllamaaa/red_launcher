@@ -1,3 +1,6 @@
+import { ready } from "./bootstrap.js";
+await ready();
+
 import { VIEWS } from "./views.js";
 
 const loginOptionsCancelContainer = document.getElementById(

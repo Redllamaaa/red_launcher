@@ -1,6 +1,9 @@
 /**
  * Script for welcome.ejs
  */
+import { ready } from "./bootstrap.js";
+await ready();
+
 import { VIEWS } from "./views.js";
 
 document.getElementById("welcomeButton").addEventListener("click", (e) => {

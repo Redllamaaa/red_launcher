@@ -3,6 +3,9 @@
  * Loaded after core UI functions are initialized in uicore.js.
  */
 // Tauri
+import { ready } from "./bootstrap.js";
+await ready();
+
 import { getCurrentWindow } from "@tauri-apps/api/window";
 
 // Requirements

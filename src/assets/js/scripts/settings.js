@@ -1,4 +1,6 @@
-// Taurio
+import { ready } from "./bootstrap.js";
+await ready();
+
 import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getVersion } from "@tauri-apps/api/app";

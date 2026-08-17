@@ -1,6 +1,9 @@
 /**
  * Script for login.ejs
  */
+import { ready } from "./bootstrap.js";
+await ready();
+
 import { VIEWS } from "./views.js";
 
 // Validation Regexes.

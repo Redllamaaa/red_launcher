@@ -16,8 +16,8 @@ import { VIEWS } from "./views.js";
 import Lang from "../langloader.js";
 import * as ConfigManager from "../configmanager.js";
 
-await Lang.setupLanguage();
-await ConfigManager.load();
+import { ready } from "./bootstrap.js";
+await ready();
 
 import { LoggerUtil } from "./loggerutil.js";
 

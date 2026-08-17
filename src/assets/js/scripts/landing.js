@@ -1,10 +1,13 @@
 /**
  * Script for landing.ejs
  */
+import { ready } from "./bootstrap.js";
+await ready();
 
 // Tauri
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getVersion } from "@tauri-apps/api/app";
+import { getCurrentView } from "./uibinder.js";
 
 import Lang from "../langloader.js";
 import { LoggerUtil } from "./loggerutil.js";
@@ -14,8 +17,12 @@ import { VIEWS } from "./views.js";
 // Requirements
 // TODO: port to Rust — Mojang API, downloads, and Java toolchain management
 const MojangRestAPI = {
-  /* fill in real methods as you hit "X is not a function" errors */
+  status: async () => ({ responseStatus: "ERROR", data: [] }),
+  getDefaultStatuses: () => [],
+  statusToHex: () => "#808080",
+  // add more methods here as you hit further "X is not a function" errors
 };
+
 const getServerStatus = async () => ({
   online: false,
   players: { online: 0, max: 0 },
@@ -225,8 +232,8 @@ const refreshMojangStatuses = async function () {
     statuses = MojangRestAPI.getDefaultStatuses();
   }
 
-  greenCount = 0;
-  greyCount = 0;
+  let greenCount = 0;
+  let greyCount = 0;
 
   for (let i = 0; i < statuses.length; i++) {
     const service = statuses[i];

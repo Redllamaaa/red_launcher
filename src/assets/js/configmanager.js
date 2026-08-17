@@ -3,6 +3,8 @@ import path from "path";
 import { appDataDir } from "@tauri-apps/api/path";
 
 import { LoggerUtil } from "./scripts/loggerutil.js";
+const logger = LoggerUtil.getLogger("ConfigManager");
+
 import {
   exists,
   mkdir,
