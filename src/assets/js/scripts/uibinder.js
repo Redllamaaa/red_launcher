@@ -2,12 +2,14 @@
  * Initialize UI functions which depend on internal modules.
  * Loaded after core UI functions are initialized in uicore.js.
  */
+// Tauri
+import { getCurrentWindow } from "@tauri-apps/api/window";
+
 // Requirements
 import $ from "jquery";
 import isDev from "../isdev.js";
 import Lang from "../langloader.js";
 import { loggerAutoUpdater } from "./uicore.js";
-import { getCurrentWindow } from "@tauri-apps/api/window";
 
 import { Type } from "helios-distribution-types";
 

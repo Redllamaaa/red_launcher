@@ -1,3 +1,8 @@
+// Taurio
+import { open } from "@tauri-apps/plugin-dialog";
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import { getVersion } from "@tauri-apps/api/app";
+
 // Requirements
 const os = require("os");
 const semver = require("semver");

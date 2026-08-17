@@ -1,6 +1,11 @@
 /**
  * Script for landing.ejs
  */
+
+// Tauri
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import { getVersion } from "@tauri-apps/api/app";
+
 // Requirements
 const { URL } = require("url");
 const { MojangRestAPI, getServerStatus } = require("helios-core/mojang");

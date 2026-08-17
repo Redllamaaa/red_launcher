@@ -4,6 +4,10 @@
  * actions in this file should not require the usage of any internal
  * modules, excluding dependencies.
  */
+// Tauri
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import { open } from "@tauri-apps/plugin-shell";
+
 // Requirements
 import $ from "jquery";
 import isDev from "../isdev.js";
