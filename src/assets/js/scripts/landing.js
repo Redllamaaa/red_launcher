@@ -6,8 +6,10 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getVersion } from "@tauri-apps/api/app";
 
-import { LoggerUtil } from "./uicore.js";
-import { ConfigManager } from "../configmanager";
+import Lang from "../langloader.js";
+import { LoggerUtil } from "./loggerutil.js";
+import * as ConfigManager from "../configmanager.js";
+import { VIEWS } from "./views.js";
 
 // Requirements
 // TODO: port to Rust — Mojang API, downloads, and Java toolchain management
@@ -174,7 +176,8 @@ function updateSelectedAccount(authUser) {
   }
   user_text.innerHTML = username;
 }
-updateSelectedAccount(ConfigManager.getSelectedAccount());
+// TODO: move into startup sequence after ConfigManager.load() resolves
+// updateSelectedAccount(ConfigManager.getSelectedAccount());
 
 // Bind selected server
 function updateSelectedServer(serv) {

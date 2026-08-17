@@ -4,6 +4,9 @@
 
 /* Overlay Wrapper Functions */
 
+import * as ConfigManager from "../configmanager.js";
+import { VIEWS } from "./views.js";
+
 /**
  * Check to see if the overlay is visible.
  *

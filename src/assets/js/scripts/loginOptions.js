@@ -1,3 +1,5 @@
+import { VIEWS } from "./views.js";
+
 const loginOptionsCancelContainer = document.getElementById(
   "loginOptionCancelContainer",
 );

@@ -11,17 +11,15 @@ import { open } from "@tauri-apps/plugin-shell";
 // Requirements
 import $ from "jquery";
 import isDev from "../isdev.js";
-import Lang from "../langloader.js";
-import { VIEWS } from "./uibinder.js";
+import { VIEWS } from "./views.js";
 
-// Placeholder until we wire up real Rust-backed logging.
-const LoggerUtil = {
-  getLogger: (name) => ({
-    info: (...args) => console.log(`[${name}]`, ...args),
-    warn: (...args) => console.warn(`[${name}]`, ...args),
-    error: (...args) => console.error(`[${name}]`, ...args),
-  }),
-};
+import Lang from "../langloader.js";
+import * as ConfigManager from "../configmanager.js";
+
+await Lang.setupLanguage();
+await ConfigManager.load();
+
+import { LoggerUtil } from "./loggerutil.js";
 
 const loggerUICore = LoggerUtil.getLogger("UICore");
 const loggerAutoUpdater = LoggerUtil.getLogger("AutoUpdater");

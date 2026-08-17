@@ -14,28 +14,13 @@ import { loggerAutoUpdater } from "./uicore.js";
 import { Type } from "helios-distribution-types";
 
 const AuthManager = { validateSelected: async () => false };
-const ConfigManager = {
-  getAllowPrerelease: () => false,
-  getAuthAccounts: () => ({}),
-  isFirstLaunch: () => true,
-  getSelectedServer: () => null,
-  getSelectedAccount: () => null,
-  save: () => {},
-};
+import * as ConfigManager from "../configmanager.js";
 const DistroAPI = { getDistribution: async () => ({ servers: [] }) };
 
 let rscShouldLoad = false;
 let fatalStartupError = false;
 
-// Mapping of each view to their container IDs.
-const VIEWS = {
-  landing: "#landingContainer",
-  loginOptions: "#loginOptionsContainer",
-  login: "#loginContainer",
-  settings: "#settingsContainer",
-  welcome: "#welcomeContainer",
-  waiting: "#waitingContainer",
-};
+import { VIEWS } from "./views.js";
 
 // The currently shown view container.
 let currentView;
@@ -539,4 +524,4 @@ async function devModeToggle() {
   syncModConfigurations(data);
 }
 
-export { VIEWS };
+export { VIEWS, getCurrentView };

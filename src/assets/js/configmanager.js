@@ -3,7 +3,6 @@ import os from "os";
 import path from "path";
 import { appDataDir } from "@tauri-apps/api/path";
 
-import { LoggerUtil } from "./uicore.js";
 
 const sysRoot =
   import.meta.env.APPDATA ||
@@ -12,6 +11,7 @@ const sysRoot =
     : import.meta.env.HOME);
 
 const dataPath = path.join(sysRoot, ".tsmplauncher");
+import { LoggerUtil } from "./scripts/loggerutil.js";
 
 const launcherDir = await appDataDir();
 

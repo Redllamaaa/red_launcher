@@ -1,8 +1,7 @@
 // Work in progress
 import { Client } from "discord-rpc-patch";
 import Lang from "./langloader";
-
-import { LoggerUtil } from "./uicore.js";
+import { LoggerUtil } from "./loggerutil.js";
 
 const logger = LoggerUtil.getLogger("DiscordWrapper");
 

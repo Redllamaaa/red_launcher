@@ -2,7 +2,7 @@ import AdmZip from "adm-zip";
 import child_process from "child_process";
 import crypto from "crypto";
 import fs from "fs-extra";
-import { LoggerUtil } from "./uicore.js";
+import { LoggerUtil } from "./loggerutil.js";
 import {
   getMojangOS,
   isLibraryCompatible,

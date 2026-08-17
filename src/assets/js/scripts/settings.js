@@ -3,10 +3,12 @@ import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getVersion } from "@tauri-apps/api/app";
 
-import { LoggerUtil } from "./uicore.js";
+import { LoggerUtil } from "./loggerutil.js";
+import * as ConfigManager from "../configmanager.js";
 
 // Requirements
-import { VIEWS } from "./uibinder.js";
+import { getCurrentView } from "./uibinder.js";
+import { VIEWS } from "./views.js";
 import semver from "semver";
 
 // TODO: replace with Tauri command using the `sysinfo` Rust crate
