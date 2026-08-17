@@ -178,3 +178,4 @@ node_modules/.package-map.json
 node_modules/.pnpm-workspace-state-v1.json
 node_modules/.pnpm/lock.yaml
 node_modules/.vite/deps/_metadata.json
+/node_modules
