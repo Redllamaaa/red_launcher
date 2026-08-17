@@ -1,5 +1,4 @@
 import fs from "fs-extra";
-import { LoggerUtil } from "helios-core";
 import os from "os";
 import path from "path";
 import { appDataDir } from "@tauri-apps/api/path";

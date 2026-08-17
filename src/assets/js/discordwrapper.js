@@ -1,5 +1,4 @@
 // Work in progress
-import { LoggerUtil } from "helios-core";
 import { Client } from "discord-rpc-patch";
 import Lang from "./langloader";
 
