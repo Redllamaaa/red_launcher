@@ -7,10 +7,10 @@ import { appDataDir } from "@tauri-apps/api/path";
 const logger = LoggerUtil.getLogger("ConfigManager");
 
 const sysRoot =
-  process.env.APPDATA ||
+  import.meta.env.APPDATA ||
   (process.platform == "darwin"
-    ? process.env.HOME + "/Library/Application Support"
-    : process.env.HOME);
+    ? import.meta.env.HOME + "/Library/Application Support"
+    : import.meta.env.HOME);
 
 const dataPath = path.join(sysRoot, ".tsmplauncher");
 

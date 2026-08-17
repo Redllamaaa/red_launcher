@@ -79,11 +79,15 @@ function getCurrentView() {
 async function showMainUI(data) {
   if (!isDev) {
     loggerAutoUpdater.info("Initializing..");
+
+    // TODO: Tauri updater Plugin
+    /**   
     ipcRenderer.send(
       "autoUpdateAction",
       "initAutoUpdater",
       ConfigManager.getAllowPrerelease(),
     );
+    */
   }
 
   await prepareSettings(true);
