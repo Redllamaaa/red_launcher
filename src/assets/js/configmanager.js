@@ -48,8 +48,6 @@ export function setDataDirectory(dataDirectory) {
 }
 
 const configPath = pathJoin(getLauncherDirectory(), "config.json");
-// TODO: legacy config path migration - needs Rust fs check, not launch-blocking
-// const configPathLEGACY = pathJoin(dataPath, "config.json");
 const firstLaunch = !(await exists(configPath));
 
 export function getAbsoluteMinRAM(ram) {
@@ -146,13 +144,9 @@ export async function load() {
   if (!(await exists(configPath))) {
     await mkdir(getLauncherDirectory(), { recursive: true });
 
-    if (await exists(configPathLEGACY)) {
-      await rename(configPathLEGACY, configPath);
-    } else {
-      doLoad = false;
-      config = DEFAULT_CONFIG;
-      await save();
-    }
+    doLoad = false;
+    config = DEFAULT_CONFIG;
+    await save();
   }
 
   if (doLoad) {
