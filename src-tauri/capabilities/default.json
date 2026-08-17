@@ -7,6 +7,11 @@
     "core:default",
     "opener:default",
     "fs:default",
+    "fs:allow-write-text-file",
+    "fs:allow-read-text-file",
+    "fs:allow-mkdir",
+    "fs:allow-exists",
+    "fs:allow-rename",
     {
       "identifier": "fs:scope",
       "allow": ["$APPDATA", "$APPDATA/**"]
