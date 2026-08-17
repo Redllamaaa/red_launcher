@@ -1,19 +1,21 @@
-import fs from "fs-extra";
 import os from "os";
 import path from "path";
 import { appDataDir } from "@tauri-apps/api/path";
 
-
-const sysRoot =
-  import.meta.env.APPDATA ||
-  (process.platform == "darwin"
-    ? import.meta.env.HOME + "/Library/Application Support"
-    : import.meta.env.HOME);
-
-const dataPath = path.join(sysRoot, ".tsmplauncher");
 import { LoggerUtil } from "./scripts/loggerutil.js";
+import {
+  exists,
+  mkdir,
+  writeTextFile,
+  readTextFile,
+  rename,
+} from "@tauri-apps/plugin-fs";
 
 const launcherDir = await appDataDir();
+
+function pathJoin(...parts) {
+  return parts.join("/").replace(/\/+/g, "/");
+}
 
 /**
  * Retrieve the absolute path of the launcher directory.
@@ -45,10 +47,10 @@ export function setDataDirectory(dataDirectory) {
   config.settings.launcher.dataDirectory = dataDirectory;
 }
 
-const configPath = path.join(exports.getLauncherDirectory(), "config.json");
-const configPathLEGACY = path.join(dataPath, "config.json");
-const firstLaunch =
-  !fs.existsSync(configPath) && !fs.existsSync(configPathLEGACY);
+const configPath = pathJoin(getLauncherDirectory(), "config.json");
+// TODO: legacy config path migration - needs Rust fs check, not launch-blocking
+// const configPathLEGACY = pathJoin(dataPath, "config.json");
+const firstLaunch = !(await exists(configPath));
 
 export function getAbsoluteMinRAM(ram) {
   if (ram?.minimum != null) {
@@ -63,6 +65,8 @@ export function getAbsoluteMinRAM(ram) {
 }
 
 export function getAbsoluteMaxRAM(_ram) {
+  // TODO: replace with real Tauri command (sysinfo crate) - shared with settings.js RAM display
+  const os = { totalmem: () => 8 * 1073741824 };
   const mem = os.totalmem();
   const gT16 = mem - 16 * 1073741824;
   return Math.floor(
@@ -79,6 +83,8 @@ function resolveSelectedRAM(ram) {
     return `${ram.recommended}M`;
   } else {
     // Legacy behavior
+    // TODO: replace with real Tauri command (sysinfo crate) - shared with settings.js RAM display
+    const os = { totalmem: () => 8 * 1073741824 };
     return mem >= 8 * 1073741824 ? "4G" : mem >= 6 * 1073741824 ? "3G" : "2G";
   }
 }
@@ -101,7 +107,7 @@ const DEFAULT_CONFIG = {
     },
     launcher: {
       allowPrerelease: false,
-      dataDirectory: dataPath,
+      dataDirectory: launcherDir,
     },
   },
   newsCache: {
@@ -124,9 +130,9 @@ let config = null;
 /**
  * Save the current configuration to a file.
  */
-exports.save = function () {
-  fs.writeFileSync(configPath, JSON.stringify(config, null, 4), "UTF-8");
-};
+export async function save() {
+  await writeTextFile(configPath, JSON.stringify(config, null, 4));
+}
 
 /**
  * Load the configuration into memory. If a configuration file exists,
@@ -134,40 +140,42 @@ exports.save = function () {
  * be generated. Note that "resolved" values default to null and will
  * need to be externally assigned.
  */
-exports.load = function () {
+export async function load() {
   let doLoad = true;
 
-  if (!fs.existsSync(configPath)) {
-    // Create all parent directories.
-    fs.ensureDirSync(path.join(configPath, ".."));
-    if (fs.existsSync(configPathLEGACY)) {
-      fs.moveSync(configPathLEGACY, configPath);
+  if (!(await exists(configPath))) {
+    await mkdir(getLauncherDirectory(), { recursive: true });
+
+    if (await exists(configPathLEGACY)) {
+      await rename(configPathLEGACY, configPath);
     } else {
       doLoad = false;
       config = DEFAULT_CONFIG;
-      exports.save();
+      await save();
     }
   }
+
   if (doLoad) {
     let doValidate = false;
     try {
-      config = JSON.parse(fs.readFileSync(configPath, "UTF-8"));
+      const text = await readTextFile(configPath);
+      config = JSON.parse(text);
       doValidate = true;
     } catch (err) {
       logger.error(err);
       logger.info("Configuration file contains malformed JSON or is corrupt.");
       logger.info("Generating a new configuration file.");
-      fs.ensureDirSync(path.join(configPath, ".."));
+      await mkdir(getLauncherDirectory(), { recursive: true });
       config = DEFAULT_CONFIG;
-      exports.save();
+      await save();
     }
     if (doValidate) {
       config = validateKeySet(DEFAULT_CONFIG, config);
-      exports.save();
+      await save();
     }
   }
   logger.info("Successfully Loaded");
-};
+}
 
 /**
  * @returns {boolean} Whether or not the manager has been loaded.
