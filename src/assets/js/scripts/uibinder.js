@@ -501,6 +501,8 @@ document.addEventListener(
 );
 
 // Actions that must be performed after the distribution index is downloaded.
+/**
+ // TODO: This is a temporary function until we replace Electron IPC with Tauri IPC.
 ipcRenderer.on("distributionIndexDone", async (event, res) => {
   if (res) {
     const data = await DistroAPI.getDistribution();
@@ -526,6 +528,7 @@ ipcRenderer.on("distributionIndexDone", async (event, res) => {
     }
   }
 });
+*/
 
 // Util for development
 async function devModeToggle() {

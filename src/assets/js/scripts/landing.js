@@ -7,33 +7,44 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getVersion } from "@tauri-apps/api/app";
 
 import { LoggerUtil } from "./uicore.js";
+import { ConfigManager } from "../configmanager";
+
 // Requirements
-const { URL } = require("url");
-const { MojangRestAPI, getServerStatus } = require("helios-core/mojang");
-const {
-  RestResponseStatus,
-  isDisplayableError,
-  validateLocalFile,
-} = require("helios-core/common");
-const {
-  FullRepair,
-  DistributionIndexProcessor,
-  MojangIndexProcessor,
-  downloadFile,
-} = require("helios-core/dl");
-const {
-  validateSelectedJvm,
-  ensureJavaDirIsRoot,
-  javaExecFromRoot,
-  discoverBestJvmInstallation,
-  latestOpenJDK,
-  extractJdk,
-} = require("helios-core/java");
+// TODO: port to Rust — Mojang API, downloads, and Java toolchain management
+const MojangRestAPI = {
+  /* fill in real methods as you hit "X is not a function" errors */
+};
+const getServerStatus = async () => ({
+  online: false,
+  players: { online: 0, max: 0 },
+});
+const RestResponseStatus = { SUCCESS: "SUCCESS", ERROR: "ERROR" };
+const isDisplayableError = () => false;
+const validateLocalFile = async () => true;
+const FullRepair = class {
+  async verifyFiles() {}
+  async download() {}
+};
+const DistributionIndexProcessor = class {};
+const MojangIndexProcessor = class {};
+const downloadFile = async () => {};
+const validateSelectedJvm = async () => false;
+const ensureJavaDirIsRoot = () => true;
+const javaExecFromRoot = (root) => root;
+const discoverBestJvmInstallation = async () => null;
+const latestOpenJDK = async () => null;
+const extractJdk = async () => {};
 
 // Internal Requirements
-const DiscordWrapper = require("./src/assets/js/discordwrapper");
-const ForgePatcher = require("./src/assets/js/forgepatcher");
-const ProcessBuilder = require("./src/assets/js/processbuilder");
+// TODO: port to Rust
+const DiscordWrapper = { updatePresence: () => {}, shutdownRPC: () => {} };
+const ForgePatcher = { patchForge: async () => {} };
+const ProcessBuilder = class {
+  constructor() {}
+  build() {
+    return { on: () => {} };
+  }
+};
 
 // Launch Elements
 const launch_content = document.getElementById("launch_content");

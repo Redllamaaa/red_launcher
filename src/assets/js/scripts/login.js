@@ -1,6 +1,8 @@
 /**
  * Script for login.ejs
  */
+import { VIEWS } from "./uibinder.js";
+
 // Validation Regexes.
 const validUsername = /^[a-zA-Z0-9_]{1,16}$/;
 const basicEmail = /^\S+@\S+\.\S+$/;

@@ -7,15 +7,29 @@ import { LoggerUtil } from "./uicore.js";
 
 // Requirements
 import { VIEWS } from "./uibinder.js";
-const os = require("os");
-const semver = require("semver");
+import semver from "semver";
 
-const DropinModUtil = require("./src/assets/js/dropinmodutil");
-const {
-  MSFT_OPCODE,
-  MSFT_REPLY_TYPE,
-  MSFT_ERROR,
-} = require("./src/assets/js/ipcconstants");
+// TODO: replace with Tauri command using the `sysinfo` Rust crate
+const os = {
+  totalmem: () => 17179869184, // fake 16GB placeholder
+  freemem: () => 8589934592, // fake 8GB placeholder
+};
+
+// TODO: port to Rust — real filesystem scanning of mods/shaderpacks dirs
+const DropinModUtil = {
+  validateDir: () => false,
+  scanForDropinMods: () => [],
+  addDropinMods: async () => {},
+  deleteDropinMod: async () => {},
+  toggleDropinMod: () => {},
+  isDropinModEnabled: () => false,
+  scanForShaderpacks: () => [],
+  getEnabledShaderpack: () => null,
+  setEnabledShaderpack: () => {},
+  addShaderpacks: async () => {},
+};
+
+import { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } from "../ipcconstants.js";
 
 const settingsState = {
   invalid: new Set(),
@@ -112,8 +126,10 @@ bindFileSelectors();
  * process. More complex UI may need to be bound separately.
  */
 
-closeOnLaunchCheckbox = document.querySelector('input[cValue="CloseOnLaunch"]');
-launchDetachedCheckbox = document.querySelector(
+const closeOnLaunchCheckbox = document.querySelector(
+  'input[cValue="CloseOnLaunch"]',
+);
+const launchDetachedCheckbox = document.querySelector(
   'input[cValue="LaunchDetached"]',
 );
 
@@ -408,6 +424,8 @@ document.getElementById("settingsAddMicrosoftAccount").onclick = (e) => {
 };
 
 // Bind reply for Microsoft Login.
+// TODO: Replace with Tauri IPC once the Rust command/event exists.
+/**
 ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
   if (arguments_[0] === MSFT_REPLY_TYPE.ERROR) {
     const viewOnClose = arguments_[2];
@@ -499,6 +517,7 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
     }
   }
 });
+*/
 
 /**
  * Bind functionality for the account selection buttons. If another account
@@ -610,6 +629,8 @@ function processLogOut(val, isLastAccount) {
 }
 
 // Bind reply for Microsoft Logout.
+// TODO: Replace with Tauri IPC once the Rust command/event exists.
+/**
 ipcRenderer.on(MSFT_OPCODE.REPLY_LOGOUT, (_, ...arguments_) => {
   if (arguments_[0] === MSFT_REPLY_TYPE.ERROR) {
     switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
@@ -663,6 +684,7 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGOUT, (_, ...arguments_) => {
       });
   }
 });
+*/
 
 /**
  * Refreshes the status of the selected account on the auth account
