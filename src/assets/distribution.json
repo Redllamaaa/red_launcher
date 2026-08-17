@@ -1,0 +1,943 @@
+{
+  "version": "2.1.8",
+  "servers": [
+    {
+      "id": "tsmp4deathhill",
+      "name": "TSMP Death Hill",
+      "description": "TSMP Death Hill, 1.20.4 (Fabric v0.15.11)",
+      "icon": "https://raw.githubusercontent.com/Redllamaaa/tsmplauncher/master/app/assets/images/distribution_icons/tsmp4deathhill.png",
+      "version": "4.2.3",
+      "address": "135.125.123.114:25578",
+      "minecraftVersion": "1.20.1",
+      "mainServer": true,
+      "autoconnect": true,
+      "untrackedFiles": [
+        {
+          "appliesTo": ["files"],
+          "patterns": [
+            "config/*.cfg",
+            "config/**/*.yml",
+            "*.dat",
+            "options.txt"
+          ]
+        }
+      ],
+      "modules": [
+        {
+          "id": "net.fabricmc:fabric-loader:0.15.11",
+          "name": "Fabric (fabric-loader)",
+          "type": "Fabric",
+          "artifact": {
+            "size": 1327691,
+            "MD5": "b49fcf1bafc14bcda2472a0f060ebe41",
+            "url": "https://www.dropbox.com/scl/fi/771y9gp6mghbcv9yk824z/fabric-loader-0.15.11.jar?rlkey=e1kz61eee9qoo54ljnnghkg78&st=ox5j27s8&dl=1"
+          },
+          "subModules": [
+            {
+              "id": "1.20.1-fabric-0.15.11",
+              "name": "Fabric (version.json)",
+              "type": "VersionManifest",
+              "artifact": {
+                "size": 2849,
+                "MD5": "772770d92db5ff332c4439274e230fca",
+                "url": "https://www.dropbox.com/scl/fi/tmovfq2ki1vkedvf16ikr/1.20.1-fabric-0.15.11.json?rlkey=4el0vr6kvzjqpmqcqmea1b5qf&st=0o13fcay&dl=1"
+              }
+            },
+            {
+              "id": "org.ow2.asm:asm:9.6",
+              "name": "Fabric (asm)",
+              "type": "Library",
+              "artifact": {
+                "size": 123598,
+                "MD5": "6f8bccf756f170d4185bb24c8c2d2020",
+                "url": "https://www.dropbox.com/scl/fi/syeibgnbi99vo77qvvtqd/asm-9.6.jar?rlkey=qrffpfhx2mxr9rboc41zu5irc&st=tzj3pz8q&dl=1"
+              }
+            },
+            {
+              "id": "org.ow2.asm:asm-analysis:9.6",
+              "name": "Fabric (asm-analysis)",
+              "type": "Library",
+              "artifact": {
+                "size": 34041,
+                "MD5": "31c84ef7cc893fb278952ae2d6a2674f",
+                "url": "https://www.dropbox.com/scl/fi/vkguwyt192uw8eawjogg7/asm-analysis-9.6.jar?rlkey=at330yju8nu4rr9k4po8cq59s&st=wm0xpvie&dl=1"
+              }
+            },
+            {
+              "id": "org.ow2.asm:asm-commons:9.6",
+              "name": "Fabric (asm-commons)",
+              "type": "Library",
+              "artifact": {
+                "size": 72194,
+                "MD5": "9e317c75534bd1da8c00a67c618ab288",
+                "url": "https://www.dropbox.com/scl/fi/77xguk2wh26fmc6twfuau/asm-commons-9.6.jar?rlkey=sxpwwsb1sjaybg04dqn7mi3pa&st=aou6aao3&dl=1"
+              }
+            },
+            {
+              "id": "org.ow2.asm:asm-tree:9.6",
+              "name": "Fabric (asm-tree)",
+              "type": "Library",
+              "artifact": {
+                "size": 51935,
+                "MD5": "6062608f1a98afe1e853d01fa1221a9e",
+                "url": "https://www.dropbox.com/scl/fi/m030ofzgi5o2d3htmcm7p/asm-tree-9.6.jar?rlkey=bt36achkjhp01zd5crzdj6l7j&st=lhu1wloa&dl=1"
+              }
+            },
+            {
+              "id": "org.ow2.asm:asm-util:9.6",
+              "name": "Fabric (asm-util)",
+              "type": "Library",
+              "artifact": {
+                "size": 91131,
+                "MD5": "bd3bc1c176a787373e9a031073c9574b",
+                "url": "https://www.dropbox.com/scl/fi/oez1tg29g53cjtft4gufv/asm-util-9.6.jar?rlkey=aurgjrrpgn487j9jvlqj9prdw&st=gppx1oq1&dl=1"
+              }
+            },
+            {
+              "id": "net.fabricmc:sponge-mixin:0.13.3+mixin.0.8.5",
+              "name": "Fabric (sponge-mixin)",
+              "type": "Library",
+              "artifact": {
+                "size": 1458875,
+                "MD5": "9dcf01250f72212bf97f0fef55ba5acd",
+                "url": "https://www.dropbox.com/scl/fi/ngkn0qlsexf6re7q8re9d/sponge-mixin-0.13.3-mixin.0.8.5.jar?rlkey=ucoso00ysscgv8m5iebno7yx2&st=elpemy8d&dl=1"
+              }
+            },
+            {
+              "id": "net.fabricmc:intermediary:1.20.1",
+              "name": "Fabric (intermediary)",
+              "type": "Library",
+              "artifact": {
+                "size": 573365,
+                "MD5": "3f4768ac751cac3418266d1d7aa15f55",
+                "url": "https://www.dropbox.com/scl/fi/fq2f5arf81isyfwhcekp5/intermediary-1.20.1.jar?rlkey=muu8u4ytrfdwstmzsha3gibbn&st=jq0fmrxy&dl=1"
+              }
+            }
+          ]
+        },
+        {
+          "id": "de.guntram.mcmod:advancementinfo:1.20-fabric0.83.0-1.4@jar",
+          "name": "AdvancementInfo",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 43895,
+            "url": "https://www.dropbox.com/scl/fi/hxhl7hcpfnwia8e0m4bur/advancementinfo-1.20-fabric0.83.0-1.4.jar?rlkey=m5g5ugmxhvzm0l5m3hi56mdgv&st=4baw5rvu&dl=1",
+            "MD5": "1d9875ca82a3f4d545db092f073bcc63"
+          }
+        },
+        {
+          "id": "com.blamejared:crafttweaker:14.0.38@jar",
+          "name": "CraftTweaker",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 3983289,
+            "url": "https://www.dropbox.com/scl/fi/buv1xzf3k71fkohmfg4xb/CraftTweaker-fabric-1.20.1-14.0.38.jar?rlkey=7ki2vs4agrd5dmrtdovdje59d&st=jbnjyjdv&dl=1",
+            "MD5": "28ab931cd9b04d9f8bd7e51341d1a86e"
+          }
+        },
+        {
+          "id": "io.github.foundationgames:animatica:0.6+1.20@jar",
+          "name": "Animatica",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 69810,
+            "url": "https://www.dropbox.com/scl/fi/stfsv0nvckpfg922stn47/animatica-0.6-1.20.jar?rlkey=dyiixwvm4o2q3p6vqafqrva9m&st=3tc9dg9l&dl=1",
+            "MD5": "d57ba4c6253e84af7ce10719ee1e7a8a"
+          }
+        },
+        {
+          "id": "generated.fabricmod:borderlessmining:1.1.8+1.20.1@jar",
+          "name": "Borderless Mining",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 118295,
+            "url": "https://www.dropbox.com/scl/fi/re7kkblcavpekvs7fnll3/borderless-mining-1.1.8-1.20.1.jar?rlkey=bp1l3hrlrndypeceiilrljdtp&st=l7hoaup4&dl=1",
+            "MD5": "e35125dd22a96775fea86c1acef59a9a"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "earth.terrarium.athena.impl:athena:3.1.2@jar",
+          "name": "Athena",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 74370,
+            "url": "https://www.dropbox.com/scl/fi/pkt4q8h08lc0ff1hxo7lt/athena-fabric-1.20.1-3.1.2.jar?rlkey=9femsiqhov7s5bxjpk7o8rc32&st=3fov757k&dl=1",
+            "MD5": "4fd1c38eaf802239c3faeda982a77f2d"
+          }
+        },
+        {
+          "id": "com.nick:chimes:2.0.1@jar",
+          "name": "Chimes",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 11844738,
+            "url": "https://www.dropbox.com/scl/fi/d622inopsdld01hnbaliw/Chimes-v2.0.1-1.20.1-Fabric.jar?rlkey=ug4uznbe7yerjyfsdcaht07xr&st=raui0tcm&dl=1",
+            "MD5": "19c787b98182728444dc38f229e68a28"
+          }
+        },
+        {
+          "id": "com.samgj15:nightlights:1.1@jar",
+          "name": "Night Lights",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 428217,
+            "url": "https://www.dropbox.com/scl/fi/ccunvxofy2tepr8pqq6re/nightlights-fabric-1.20.1-1.1.jar?rlkey=o703u971kabnpr7jxqh9ia2pf&st=98ccp68u&dl=1",
+            "MD5": "609ce0a80148c3612123152079c2095a"
+          }
+        },
+        {
+          "id": "net.redllamaaa:variantchests:1.7@jar",
+          "name": "Variant Chests",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 256171,
+            "url": "https://www.dropbox.com/scl/fi/odkp7orqlmosf9fr4lquf/variantchests-1.7.jar?rlkey=332dmsxoa5jqgpdoguf9touip&st=60klkzxx&dl=1",
+            "MD5": "c965725f70b4e209733aad3c6ac9605c"
+          }
+        },
+        {
+          "id": "net.blay09.mods.balm:balm-fabric:7.2.2@jar",
+          "name": "Balm",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 380905,
+            "url": "https://www.dropbox.com/scl/fi/8mgjkn0051qvhqygb2k1k/balm-fabric-1.20.1-7.2.2.jar?rlkey=u21y0gb8jbdmfqwy6nb81d5hu&st=2ssxlzj6&dl=1",
+            "MD5": "7847527fab387e9ba7e7f1208ebb0d21"
+          }
+        },
+        {
+          "id": "net.blay09.mods:waystones:14.1.3@jar",
+          "name": "Waystones",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 494370,
+            "url": "https://www.dropbox.com/scl/fi/fm0b2cn0wjiayc5njb5yd/waystones-fabric-1.20-14.1.3.jar?rlkey=jlaf2tdu6qrm42pa853nh22z0&st=2zkyp5wf&dl=1",
+            "MD5": "e84e4a2a0d15da16eddcdf277cf0f1f9"
+          }
+        },
+        {
+          "id": "com.illusivesoulworks:polymorph:0.49.4+1.20.1@jar",
+          "name": "Polymorph",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 673584,
+            "url": "https://www.dropbox.com/scl/fi/ruucueef8l9dqd2w7sdmq/polymorph-fabric-0.49.4-1.20.1.jar?rlkey=kzwk7yopbbwffpv9m0ag1l721&st=4lyjl42d&dl=1",
+            "MD5": "d657ddee2847051fad990d9276af09e8"
+          }
+        },
+        {
+          "id": "squeek.appleskin:appleskin:2.5.1+mc1.20@jar",
+          "name": "AppleSkin",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 1064362,
+            "url": "https://www.dropbox.com/scl/fi/n4fyan73t1ovftp2hyrvq/appleskin-fabric-mc1.20.1-2.5.1.jar?rlkey=rc70xjqxnogcqpd800mrxtav2&st=6g4htrd5&dl=1",
+            "MD5": "723370be246a876144ae424cbbfd60f4"
+          }
+        },
+        {
+          "id": "mezz.jei:jei:15.3.0.4@jar",
+          "name": "Just Enough Items",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 1151862,
+            "url": "https://www.dropbox.com/scl/fi/240h07l3twdp779ytkc09/jei-1.20.1-fabric-15.3.0.4.jar?rlkey=slabj6j7n2846jmnmdpi35rbw&st=buoxqzfr&dl=1",
+            "MD5": "4e5a089e23f995c28f11a2387be85532"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "eu.midnightdust:betterbeds:1.3.0@jar",
+          "name": "Better Beds",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 50218,
+            "url": "https://www.dropbox.com/scl/fi/bo2po5zsj4y0mv5jn79rx/betterbeds-1.3.0-1.19.3.jar?rlkey=wbbq46g6zgygjbc8oiyedwbv5&st=ivtfuz4q&dl=1",
+            "MD5": "8172f68d93a79b716aaf6d885026600c"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "me.cominixo:betterf3:7.0.2@jar",
+          "name": "BetterF3",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 1782676,
+            "url": "https://www.dropbox.com/scl/fi/3nankmnqoild9e8w2mkfu/BetterF3-7.0.2-Fabric-1.20.1.jar?rlkey=rhklrko5p9weawnyws7zhlvw7&st=tgwmnoox&dl=1",
+            "MD5": "acda45b22c255f78f3242056b1221c8e"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "generated.fabricmod:bettermounthud:1.2.2@jar",
+          "name": "Better Mount HUD",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 21587,
+            "url": "https://www.dropbox.com/scl/fi/zxyj6nz4xz25589t5l2rx/bettermounthud-1.2.2.jar?rlkey=x990hpzp4qq2huutwj2icayag&st=3vlpunuo&dl=1",
+            "MD5": "fdd255bd204f7d84850fd31ba687ad01"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "de.maxhenkel:voicechat:1.20.1-2.5.15@jar",
+          "name": "Simple Voice Chat",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 8057403,
+            "url": "https://www.dropbox.com/scl/fi/m5x5i1romzn7d18w2xsbq/voicechat-fabric-1.20.1-2.5.15.jar?rlkey=x1ndbcyycjk5wi64yfiaaynym&st=huageq8z&dl=1",
+            "MD5": "b288b46e73ea7914466407538910e4d8"
+          }
+        },
+        {
+          "id": "me.soapsuds:boatiview:0.0.5@jar",
+          "name": "Boat Item View Fabric",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 1031662,
+            "url": "https://www.dropbox.com/scl/fi/vb0lfmq2djesdv03dwlu6/Boat-Item-View-Fabric-1.20.1-0.0.5.jar?rlkey=v128pvagyrun66u74sjk8uwt0&st=isryr5vk&dl=1",
+            "MD5": "7424186d38ca5102bc75ebfbe4231637"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "me.cael:capes:1.5.2+1.20@jar",
+          "name": "Capes",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 170082,
+            "url": "https://www.dropbox.com/scl/fi/prcqwvwboo4sydxekawcu/capes-1.5.2-1.20-fabric.jar?rlkey=oiq9hpd1yzrpyvjdps0ztmgya&st=igcz329o&dl=1",
+            "MD5": "312590823dd12dc676f8908be2e8396d"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "dzwdz.chat_heads:chat_heads:0.12.0@jar",
+          "name": "Chat Heads",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 54628,
+            "url": "https://www.dropbox.com/scl/fi/qk2sni6sy31614v6cmvpi/chat_heads-0.12.0-fabric-1.20.jar?rlkey=nf8xlh22qdeis5u91j74yr7aj&st=xv73yw6l&dl=1",
+            "MD5": "b37b0aea75602e99aeb656251ef8641d"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "earth.terrarium:chipped:3.0.6@jar",
+          "name": "Chipped",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 15057238,
+            "url": "https://www.dropbox.com/scl/fi/rycxrvtddvxr9jwf71jlx/Chipped-fabric-1.20.1-3.0.6.jar?rlkey=madk9eafrjbrn33uqdqjcr7mb&st=6wmt2rmv&dl=1",
+            "MD5": "e3f342d117522d03f5a65781a3712ab0"
+          }
+        },
+        {
+          "id": "shcm.shsupercm:citresewn:1.1.5+1.20.1@jar",
+          "name": "CIT Resewn",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 391752,
+            "url": "https://www.dropbox.com/scl/fi/pwznqqwmk1af2xtej4dpy/citresewn-1.1.5-1.20.1.jar?rlkey=b3dn0bqx4np4h14pt9d293ra9&st=hxurghdr&dl=1",
+            "MD5": "d0d036a2aeff226687f369269524653d"
+          }
+        },
+        {
+          "id": "me.shedaniel.autoconfig.example:cloth-config:11.1.118@jar",
+          "name": "Cloth Config v11",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 1159192,
+            "url": "https://www.dropbox.com/scl/fi/06h2twqqb0u31ucyj561r/cloth-config-11.1.118-fabric.jar?rlkey=e09retpdnqxqwznrws53f03fq&st=5gf2o65f&dl=1",
+            "MD5": "eb13a834db10ee7e8c5e6a6d4b037fbd"
+          }
+        },
+        {
+          "id": "com.illusivesoulworks:comforts:6.3.5+1.20.1@jar",
+          "name": "Comforts",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 719114,
+            "url": "https://www.dropbox.com/scl/fi/awo4mgfcol9t5y7f9acm9/comforts-fabric-6.3.5-1.20.1.jar?rlkey=xf9g2gn32o38h627i1hyw1dx8&st=7pms4mvf&dl=1",
+            "MD5": "08251bc449a1fdfcce0d077985db434c"
+          }
+        },
+        {
+          "id": "me.pepperbell:continuity:3.0.0-beta.5+1.20.1@jar",
+          "name": "Continuity",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 1009252,
+            "url": "https://www.dropbox.com/scl/fi/zlg2zpdw7qq68nc902neu/continuity-3.0.0-beta.5-1.20.1.jar?rlkey=uyxec3pfmr8638j9lof15va8h&st=5nke9zku&dl=1",
+            "MD5": "1772f06a48c83414f4c6dfc2db4ac530"
+          }
+        },
+        {
+          "id": "dev.isxander.controlify.server:controlify:2.0.0-beta.8+1.20.1@jar",
+          "name": "Controlify",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 2452820,
+            "url": "https://www.dropbox.com/scl/fi/7740x1iihtdydanlxyvqd/Controlify-2.0.0-beta.8-1.20.1.jar?rlkey=yya53u8p6xjzw8m5208m3s2s8&st=r06az8j3&dl=1",
+            "MD5": "09b22995fcf81cc12bec38d50c14abcf"
+          }
+        },
+        {
+          "id": "dev.isxander:debugify:1.20.1+2.0@jar",
+          "name": "Debugify",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 337545,
+            "url": "https://www.dropbox.com/scl/fi/vw5kp8f9xkzzvrhkq37mf/Debugify-1.20.1-2.0.jar?rlkey=uus3tozkxi4or2b6u16nkr9is&st=v0qrdhg6&dl=1",
+            "MD5": "39e6ead07cd3ce225fb24775e0cb0341"
+          }
+        },
+        {
+          "id": "net.lostluma.dynamic_fps.impl.fabric.compat:dynamic_fps:3.4.3@jar",
+          "name": "Dynamic FPS",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 99715,
+            "url": "https://www.dropbox.com/scl/fi/h2lzdgsvx1flsnylnn8ms/dynamic-fps-3.4.3-minecraft-1.20.0-fabric.jar?rlkey=wav6gxieysq9ss8yvfa0azbjs&st=ovuwbst3&dl=1",
+            "MD5": "6389125cb5c605300985078ce51a4b3c"
+          }
+        },
+        {
+          "id": "io.github.kosmx.emotes:emotecraft:2.2.7-b.build.50@jar",
+          "name": "Emotecraft",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 873611,
+            "url": "https://www.dropbox.com/scl/fi/awz8h6os1b7ir7928b1w5/emotecraft-for-MC1.20.1-2.2.7-b.build.50-fabric.jar?rlkey=ofjwxcg9wdtru4yo3xggaruxj&st=m6eh7nv9&dl=1",
+            "MD5": "3a7abdac2462955c5a51af3cd14712ff"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "foundationgames.enhancedblockentities:enhancedblockentities:0.9+1.20@jar",
+          "name": "Enhanced Block Entities",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 490690,
+            "url": "https://www.dropbox.com/scl/fi/awz8h6os1b7ir7928b1w5/emotecraft-for-MC1.20.1-2.2.7-b.build.50-fabric.jar?rlkey=ofjwxcg9wdtru4yo3xggaruxj&st=m6eh7nv9&dl=1",
+            "MD5": "bfc7a62a2834f824bb426b73f383e0cb"
+          }
+        },
+        {
+          "id": "traben.entity_model_features:entity_model_features:2.0.2@jar",
+          "name": "Entity Model Features",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 388685,
+            "url": "https://www.dropbox.com/scl/fi/7rj71n7teluejivd8i3go/entity_model_features_fabric_1.20.1-2.0.2.jar?rlkey=a1ffu5oyodkn6vrmyssqcdk85&st=kkn25q8p&dl=1",
+            "MD5": "c01d0770b85957ccdce6e76c5ab63836"
+          }
+        },
+        {
+          "id": "traben.entity_texture_features:entity_texture_features:6.0.1@jar",
+          "name": "Entity Texture Features",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 532804,
+            "url": "https://www.dropbox.com/scl/fi/1j29hfmwf3q0bsly263zn/entity_texture_features_fabric_1.20.1-6.0.1.jar?rlkey=1ugx1qlhekdibq0b6jrwersk1&st=m8zfw7tg&dl=1",
+            "MD5": "c22372d2aae8f8d9a99a3a26361d14ec"
+          }
+        },
+        {
+          "id": "dev.tr7zw:entityculling:1.6.2-mc1.20.1@jar",
+          "name": "EntityCulling-Fabric",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 59348,
+            "url": "https://www.dropbox.com/scl/fi/z3zd8q0ol4ez2rq6w32gv/entityculling-fabric-1.6.2-mc1.20.1.jar?rlkey=cyntvg0gxfte8iqdozor03p8y&st=jzfd370w&dl=1",
+            "MD5": "29b1642d4e958fd88822e55410f70dfd"
+          }
+        },
+        {
+          "id": "generated.fabricmod:fabric-api:0.92.1+1.20.1@jar",
+          "name": "Fabric API",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 2106811,
+            "url": "https://www.dropbox.com/scl/fi/1y6cvol04tv2d1378hfaj/fabric-api-0.92.1-1.20.1.jar?rlkey=c8przr2dc52s3lj8wb7e0oimv&st=qqj4kxwk&dl=1",
+            "MD5": "686c88c0f615e58e9fbd13c678fe543a"
+          }
+        },
+        {
+          "id": "generated.fabricmod:fabric-language-kotlin:1.10.20+kotlin.1.9.24@jar",
+          "name": "Fabric Language Kotlin",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 6734770,
+            "url": "https://www.dropbox.com/scl/fi/f6b2agcsqoadixksadfpg/fabric-language-kotlin-1.10.20-kotlin.1.9.24.jar?rlkey=e9xpd4r1vn1ddj5snz26jgndi&st=uftu404u&dl=1",
+            "MD5": "4c8e09c4f147330a4e2941eb3a73f843"
+          }
+        },
+        {
+          "id": "io.github.amerebagatelle:fabricskyboxes:0.7.3+mc1.20.1@jar",
+          "name": "FabricSkyBoxes",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 207272,
+            "url": "https://www.dropbox.com/scl/fi/bhwjim9n9p8bmg8gody4c/fabricskyboxes-0.7.3-mc1.20.1.jar?rlkey=jnhy80pqxsvsz26eyt9jhumsd&st=g1rv9tvl&dl=1",
+            "MD5": "a3e21b6bb94f98d3b5d29c77d1ad703a"
+          }
+        },
+        {
+          "id": "me.ramidzkh:fabrishot:1.10.1@jar",
+          "name": "Fabrishot",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 46663,
+            "url": "https://www.dropbox.com/scl/fi/pr6igfzt3fvo219pjtqt4/fabrishot-1.10.1.jar?rlkey=vjk3bgmlrt4so80vwk77x9z7v&st=wrtasdg1&dl=1",
+            "MD5": "2e08783777a9735f056911f190c3b722"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "io.github.ultimateboomer.nofade:fadeless:1.0.1@jar",
+          "name": "Fadeless",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 7876,
+            "url": "https://www.dropbox.com/scl/fi/f6sti3cyj2kyts5lsu149/fadeless-1.0.1.jar?rlkey=p16xoiasr5amz3qeyru8p2m6q&st=kf1n5sih&dl=1",
+            "MD5": "1b17811bcc7052b8fc38a4c44bcf74a9"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "com.nhoryzon.mc:farmersdelight:1.20.1-1.4.3@jar",
+          "name": "Farmer's Delight",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 2718948,
+            "url": "https://www.dropbox.com/scl/fi/mziuo8ma70s0yt5k2pq4m/farmers-delight-fabric-1.4.3.jar?rlkey=a1dst77wovquudzd3ek4o8qvm&st=qcfsji65&dl=1",
+            "MD5": "dfcfdea62c47c8af60b5a72ce205b75c"
+          }
+        },
+        {
+          "id": "com.kingcontaria:fastquit:3.0.0+1.20+@jar",
+          "name": "FastQuit",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 79306,
+            "url": "https://www.dropbox.com/scl/fi/3qt6puh3xcuoy4t68yf02/fastquit-3.0.0-1.20.jar?rlkey=yxlccnge836om1vtrnmnubeti&st=qw6o5gpp&dl=1",
+            "MD5": "a1b2847e248207157f5bbe7285b41927"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "generated.fabricmod:ferritecore:6.0.1@jar",
+          "name": "FerriteCore",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 125197,
+            "url": "https://www.dropbox.com/scl/fi/nmzkljk5z4wcd3xjnncw3/ferritecore-6.0.1-fabric.jar?rlkey=eqphj532aeoo8u18jyscphl17&st=316f6t7p&dl=1",
+            "MD5": "a19272e427f75fea59127de6610ea26b"
+          }
+        },
+        {
+          "id": "fuzs.forgeconfigapiport.impl:forgeconfigapiport:8.0.0@jar",
+          "name": "Forge Config API Port",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 397198,
+            "url": "https://www.dropbox.com/scl/fi/0gxgk6r5kke3eh6ldcewl/ForgeConfigAPIPort-v8.0.0-1.20.1-Fabric.jar?rlkey=2u8kmsnlq3sma2i0iiwqer6b0&st=ismagzh1&dl=1",
+            "MD5": "9b680a583230400e887dc545aa974936"
+          }
+        },
+        {
+          "id": "generated.fabricmod:fsb-interop:1.3.6+mc1.20.1-build.50@jar",
+          "name": "FabricSkyBoxes Interop",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 49495,
+            "url": "https://www.dropbox.com/scl/fi/4fmvgj0qflecj9jzue5y9/fsb-interop-1.3.6-mc1.20.1-build.50.jar?rlkey=2cupvpw5kw5997nasi3t3ere5&st=0opsviqn&dl=1",
+            "MD5": "87fa8fe095bad30e9ca15ceb660b5e45"
+          }
+        },
+        {
+          "id": "earth.terrarium:handcrafted:3.0.6@jar",
+          "name": "Handcrafted",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 7106384,
+            "url": "https://www.dropbox.com/scl/fi/7j5dgjslfrlhorfsvih0p/handcrafted-fabric-1.20.1-3.0.6.jar?rlkey=i5ttlivx8a8eyfc3xxchh99ah&st=ggg3rae8&dl=1",
+            "MD5": "0cb41833dc35949cb23625d2e2b3579d"
+          }
+        },
+        {
+          "id": "generated.fabricmod:immediatelyfast:1.2.14+1.20.4@jar",
+          "name": "ImmediatelyFast",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 235371,
+            "url": "https://www.dropbox.com/scl/fi/9ydhx65fsmn85bp9fc69o/ImmediatelyFast-Fabric-1.2.14-1.20.4.jar?rlkey=6uiikkog27rkib9nsg0byyf0g&st=jaqf4ngk&dl=1",
+            "MD5": "03c304d6dc518ff5f0177bd2b1728e45"
+          }
+        },
+        {
+          "id": "link.infra:indium:1.0.30+mc1.20.4@jar",
+          "name": "Indium",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 104805,
+            "url": "https://www.dropbox.com/scl/fi/whpvk3ojbdkqkr9kb5p2s/indium-1.0.30-mc1.20.4.jar?rlkey=lznowo86oit85j1asatxuguc7&st=7lg0ke31&dl=1",
+            "MD5": "e0b3675f1e6e8f00da58d42ec1bd1be7"
+          }
+        },
+        {
+          "id": "generated.fabricmod:iris:1.7.0+mc1.20.1@jar",
+          "name": "Iris",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 2668790,
+            "url": "https://www.dropbox.com/scl/fi/pjma8z27n8ihdj9vqlpp0/iris-1.7.0-mc1.20.1.jar?rlkey=gq3y1w34m9loeket2womre8i2&st=bt94h5i6&dl=1",
+            "MD5": "4fffc15dba4b021e626beea0ec00099b"
+          }
+        },
+        {
+          "id": "dev.lambdaurora:lambdynlights:2.3.2+1.20.1@jar",
+          "name": "LambDynamicLights",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 573183,
+            "url": "https://www.dropbox.com/scl/fi/kmier6rbiwrz0prftudke/lambdynamiclights-2.3.2-1.20.1.jar?rlkey=9fhcnwu9kqwkddpbflxoo9lpy&st=tafnicst&dl=1",
+            "MD5": "9e931a5331bfe8cee677a413b8aea776"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "generated.fabricmod:languagereload:1.6.1+1.20.1@jar",
+          "name": "Language Reload",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 67109,
+            "url": "https://www.dropbox.com/scl/fi/gqyhzi5w7wzaz2xar3g2s/language-reload-1.6.1-1.20.1.jar?rlkey=3nt8d6dxg6k68yzsoxvu1udsy&st=dqomi13p&dl=1",
+            "MD5": "8cec8f42b9f6e42c02c95b4549aeec44"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "me.jellysquid.mods:lithium:0.11.2@jar",
+          "name": "Lithium",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 645865,
+            "url": "https://www.dropbox.com/scl/fi/rhsbu9l984gd36kavf88p/lithium-fabric-mc1.20.1-0.11.2.jar?rlkey=g7to9kt666qmktmo5o705lvdb&st=8vnxzfd1&dl=1",
+            "MD5": "026ca4110d57f16f701b400ad5d2ca26"
+          }
+        },
+        {
+          "id": "ca.fxco:memoryleakfix:1.1.5@jar",
+          "name": "Memory Leak Fix",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 49334,
+            "url": "https://www.dropbox.com/scl/fi/ogrm4fkibjvibb7pgifpn/memoryleakfix-fabric-1.17-1.1.5.jar?rlkey=c9p19alxe9okxudhs5nxny644&st=u4sktn65&dl=1",
+            "MD5": "a8461f89d267441752c95beb5448e940"
+          }
+        },
+        {
+          "id": "generated.fabricmod:mixintrace:1.1.1+1.17@jar",
+          "name": "MixinTrace",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 36039,
+            "url": "https://www.dropbox.com/scl/fi/xfrk0y5rgfqqlb4xh7rpn/mixintrace-1.1.1-1.17.jar?rlkey=xe5vvp9y5ok5egfsae6j3u81o&st=0rgoghez&dl=1",
+            "MD5": "25673336ece740d8127ae7525bc0cd4f"
+          }
+        },
+        {
+          "id": "net.mehvahdjukaar:modelfix:1.15@jar",
+          "name": "Model Gap Fix",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 65491,
+            "url": "https://www.dropbox.com/scl/fi/65q1m7q0pv91347y6hvl7/modelfix-1.15-fabric.jar?rlkey=zmjg0zmaanr67oz47xq38kll2&st=6kphhna9&dl=1",
+            "MD5": "5503cf88c4ecb768330655258fa9b388"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "org.embeddedt:modernfix:5.17.0+mc1.20.1@jar",
+          "name": "ModernFix",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 612564,
+            "url": "https://www.dropbox.com/scl/fi/lq3ntz71ltbaptlo0w92t/modernfix-fabric-5.17.0-mc1.20.1.jar?rlkey=e4ramo9tu49loxdb7tr0p1fja&st=khlloq8t&dl=1",
+            "MD5": "112e1c51795953cdedc46fe31b70a7ce"
+          }
+        },
+        {
+          "id": "com.terraformersmc:modmenu:7.2.2@jar",
+          "name": "Mod Menu",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 721366,
+            "url": "https://www.dropbox.com/scl/fi/3fnbxtf2q5kpj91np8ua3/modmenu-7.2.2.jar?rlkey=22ks76hjwm8toeu5pzlji6wxd&st=baayrgd3&dl=1",
+            "MD5": "2629511a2d3b141d9f2a24dc9685637e"
+          }
+        },
+        {
+          "id": "net.mehvahdjukaar:moonlight:1.20-2.11.20@jar",
+          "name": "Moonlight",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 1145976,
+            "url": "https://www.dropbox.com/scl/fi/katb32ldjyv6p6vx0mt6c/moonlight-1.20-2.11.20-fabric.jar?rlkey=oxkcnqrtnbsshd8szutu4alay&st=r1z1zyuk&dl=1",
+            "MD5": "abbcd93bb5762d325a72d718a1e210d5"
+          }
+        },
+        {
+          "id": "generated.fabricmod:morechathistory:1.3.0@jar",
+          "name": "More Chat History",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 3546,
+            "url": "https://www.dropbox.com/scl/fi/076kr3j8klamwth8m48fz/morechathistory-1.3.0.jar?rlkey=vz33ujmcfio56krpoz4bfi9p8&st=fquc7hz4&dl=1",
+            "MD5": "1980ac8b5b66417091d101682af8865c"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "ca.fxco:moreculling:1.20.4-0.24.0@jar",
+          "name": "More Culling",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 272851,
+            "url": "https://www.dropbox.com/scl/fi/fl6wknhjnqtdgyzd7w7bd/moreculling-1.20.4-0.24.0.jar?rlkey=nnnxcblcxd119g9797bgg3sjj&st=jqldwpyr&dl=1",
+            "MD5": "109804ad4b9f14a549f02bf26c98ac44"
+          }
+        },
+        {
+          "id": "dev.tr7zw:notenoughanimations:1.7.3@jar",
+          "name": "NotEnoughAnimations",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 420381,
+            "url": "https://www.dropbox.com/scl/fi/9m2uxqryzyai34s6koin6/notenoughanimations-fabric-1.7.3-mc1.20.1.jar?rlkey=lyqa0x19ov5f7bvf96y7wbe5k&st=woue75li&dl=1",
+            "MD5": "e2c58271120d6afa04d13073183f9588"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "net.mehvahdjukaar:amendments:1.20-1.1.29@jar",
+          "name": "Amendments",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 921750,
+            "url": "https://www.dropbox.com/scl/fi/xdjajh2fm1ok1wlokjndh/amendments-1.20-1.1.29-fabric.jar?rlkey=w5wkgh8n4vxgwqy0xsgvqsjs0&st=1ejaktik&dl=1",
+            "MD5": "d6f98e4bc74ea58f35f88f55e913959a"
+          }
+        },
+        {
+          "id": "opekope2.optigui:optigui:2.1.7@jar",
+          "name": "OptiGUI",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 780572,
+            "url": "https://www.dropbox.com/scl/fi/9j2dpyc3b6iasqnur857g/optigui-2.1.7.jar?rlkey=4kq2kg5pbl7300690a87ilce2&st=3pztey5x&dl=1",
+            "MD5": "2744ac9b3e4908c3cfcf4362d1437e0f"
+          }
+        },
+        {
+          "id": "generated.fabricmod:puzzle:1.5.2+1.20@jar",
+          "name": "Puzzle",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 133463,
+            "url": "https://www.dropbox.com/scl/fi/fl8lzpxzc20whoawx3o7d/puzzle-1.5.2-1.20.jar?rlkey=i0sp4j6v3d9qzpm6fa7jeq3z2&st=wxsqjynj&dl=1",
+            "MD5": "398c46e49c5225266262fbb06a8bea07"
+          }
+        },
+        {
+          "id": "fuzs.puzzleslib.impl:puzzleslib:8.1.19@jar",
+          "name": "Puzzles Lib",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 979035,
+            "url": "https://www.dropbox.com/scl/fi/nuz74g4n6scdxcgn69ruy/PuzzlesLib-v8.1.19-1.20.1-Fabric.jar?rlkey=6egad59vy0wpk9hjhuhx4f896&st=hwbzykeb&dl=1",
+            "MD5": "474c3dbf29d7d813cc1f6976ed55b1fd"
+          }
+        },
+        {
+          "id": "generated.fabricmod:reeses-sodium-options:1.7.2+mc1.20.1-build.101@jar",
+          "name": "Reese's Sodium Options",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 77304,
+            "url": "https://www.dropbox.com/scl/fi/vlm3022khtydysn2cyqt1/reeses_sodium_options-1.7.2-mc1.20.1-build.101.jar?rlkey=f0wzkzua6q4bj2ixzc71x94ij&st=90q176x4&dl=1",
+            "MD5": "0db2ef332dd00de8c64e34f192317118"
+          }
+        },
+        {
+          "id": "com.teamresourceful:resourcefullib:2.1.24@jar",
+          "name": "Resourceful Lib",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 423114,
+            "url": "https://www.dropbox.com/scl/fi/3stta0gmjdastjxe4na4t/resourcefullib-fabric-1.20.1-2.1.24.jar?rlkey=qq2n3xei9jjvlr0nz1819odjc&st=yytob5pn&dl=1",
+            "MD5": "28dc303cc299a09ea7c1d0199a0bd882"
+          }
+        },
+        {
+          "id": "com.github.dimadencep.mods:rrls:3.2.0-1.20.1-fabric@jar",
+          "name": "Remove Reloading Screen",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 138928,
+            "url": "https://www.dropbox.com/scl/fi/1sec1bj1wkdaafhcbdg5g/Rrls-3.2.0-1.20.1-fabric.jar?rlkey=vbgu7hhjg6b8imhz7pkcal3vb&st=ji489vcn&dl=1",
+            "MD5": "2226efe0a9b773995edbf1ecd3a7d0fd"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "dev.tr7zw.skinlayers:skinlayers3d:1.6.4@jar",
+          "name": "3d-Skin-Layers",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 471410,
+            "url": "https://www.dropbox.com/scl/fi/2izey01hl0p35e5v2spc6/skinlayers3d-fabric-1.6.4-mc1.20.1.jar?rlkey=vlk3opxf2ea1b6h29jmjcd1ny&st=gchgizof&dl=1",
+            "MD5": "22e1f4e5afcc852ea137b5ffb07294fa"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "me.flashyreese.mods.sodiumextra:sodium-extra:0.5.4+mc1.20.1-build.115@jar",
+          "name": "Sodium Extra",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 385539,
+            "url": "https://www.dropbox.com/scl/fi/gkn8ewygtb3b7pqj73yld/sodium-extra-0.5.4-mc1.20.1-build.115.jar?rlkey=ufz01ep4ht5cu22siap9srp2s&st=wz9y4d1s&dl=1",
+            "MD5": "9eaed09a486eee9a1326de5dd80faa0a"
+          }
+        },
+        {
+          "id": "me.jellysquid.mods:sodium:0.5.8+mc1.20.1@jar",
+          "name": "Sodium",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 942134,
+            "url": "https://www.dropbox.com/scl/fi/9a5x9v3o1x8pfhh6l8tat/sodium-fabric-0.5.8-mc1.20.1.jar?rlkey=81wurx31vxfjs0emmlssr1ecy&st=yu667tma&dl=1",
+            "MD5": "68e366d87fa5c614d64ce031ff548e30"
+          }
+        },
+        {
+          "id": "fuzs.stoneworks:stoneworks:8.0.0@jar",
+          "name": "Stoneworks",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 2477930,
+            "url": "https://www.dropbox.com/scl/fi/wysm6f52jd7ocgd1yxre0/Stoneworks-v8.0.0-1.20.1-Fabric.jar?rlkey=alie7uxpfmjahbln6cc7hu5nq&st=fy5c5wui&dl=1",
+            "MD5": "a2769a27367d659e6d4d0e70e7dd5d9d"
+          }
+        },
+        {
+          "id": "generated.fabricmod:faux-custom-entity-data:6.0.1@jar",
+          "name": "Faux-Custom-Entity-Data",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 16177,
+            "url": "https://www.dropbox.com/scl/fi/siqulysmpmx6lw53vw966/FauxCustomEntityData-fabric-1.20.1-6.0.1.jar?rlkey=cr27x1sx6vtx5wj827cj3xmew&st=7tmd85ao&dl=1",
+            "MD5": "5b60a0524ed3e23b3c6243e4ae1ea266"
+          }
+        },
+        {
+          "id": "net.mehvahdjukaar:supplementaries:1.20-2.8.10@jar",
+          "name": "Supplementaries",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 14332064,
+            "url": "https://www.dropbox.com/scl/fi/hgfr0k7cg9qrwvexhcaej/supplementaries-1.20-2.8.10-fabric.jar?rlkey=2fth9q0fkjxrn49uscvy2dv13&st=pw41fxx1&dl=1",
+            "MD5": "3c1a6969318f228b9374f94b1a0619b9"
+          }
+        },
+        {
+          "id": "dev.isxander.yacl3.platform:yet_another_config_lib_v3:3.4.2+1.20.1-fabric@jar",
+          "name": "YetAnotherConfigLib",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 1072428,
+            "url": "https://www.dropbox.com/scl/fi/wup5h20tdjgq86avd3k0l/YetAnotherConfigLib-3.4.2-1.20.1-fabric.jar?rlkey=qs6biyqzeetay03qs00leq35a&st=swhlu955&dl=1",
+            "MD5": "050c286f463feb01cf68a3f05a225501"
+          }
+        },
+        {
+          "id": "dev.isxander:zoomify:2.13.4+1.20.1@jar",
+          "name": "Zoomify",
+          "type": "FabricMod",
+          "artifact": {
+            "size": 1064869,
+            "url": "https://www.dropbox.com/scl/fi/e7bsundvh34dcal1f6a9m/Zoomify-2.13.4-1.20.1.jar?rlkey=mln6zaj4pk8471tjl41gzjtre&st=cvpsp9vv&dl=1",
+            "MD5": "aef051881848f87e35945c2864359cfa"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "crafting_recipes.zs",
+          "name": "crafting_recipes.zs",
+          "type": "File",
+          "artifact": {
+            "size": 1372,
+            "url": "https://www.dropbox.com/scl/fi/5pn8cnhfxvj1e0pgs1g6y/crafting_recipes.zs?rlkey=8s4g3t9snzh9es9wwhqmavvux&st=lpkr0d5w&dl=1",
+            "MD5": "e996e41515f97e33f683903124ca7d87",
+            "path": "scripts/crafting_recipes.zs"
+          }
+        },
+        {
+          "id": "servers.dat",
+          "name": "servers.dat",
+          "type": "File",
+          "artifact": {
+            "size": 2964,
+            "url": "https://www.dropbox.com/scl/fi/c0dhq5mmydizdvted605y/servers.dat?rlkey=7zzquzommgy24cf0omi2gyeu0&st=1mqitsid&dl=1",
+            "MD5": "8b1f659b39b629438da15499c20ace95",
+            "path": "servers.dat"
+          }
+        }
+      ]
+    }
+  ]
+}
