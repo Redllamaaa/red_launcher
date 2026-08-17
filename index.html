@@ -80,7 +80,7 @@
     <span id="welcomeDescCTA">[welcome.welcomeDescCTA]</span>
     <button id="welcomeButton">
       <div id="welcomeButtonContent">
-        [welcome.continueButton]
+        CONTINUE
         <svg id="welcomeSVG" viewBox="0 0 24.87 13.97">
           <defs>
             <style>
@@ -106,21 +106,21 @@
     <div id="loginCancelContainer" style="display: none;">
         <button id="loginCancelButton">
             <div id="loginCancelIcon">X</div>
-            <span id="loginCancelText">[login.loginCancelText]</span>
+            <span id="loginCancelText">Cancel</span>
         </button>
     </div>
     <div id="loginContent">
         <form id="loginForm">
             <img id="loginImageSeal" src="assets/images/SealCircle.png"/>
-            <span id="loginSubheader">[login.loginSubheader]</span>
+            <span id="loginSubheader">MINECRAFT LOGIN</span>
             <div class="loginFieldContainer">
                 <svg id="profileSVG" class="loginSVG" viewBox="40 37 65.36 61.43">
                     <g>
                         <path d="M86.77,58.12A13.79,13.79,0,1,0,73,71.91,13.79,13.79,0,0,0,86.77,58.12M97,103.67a3.41,3.41,0,0,0,3.39-3.84,27.57,27.57,0,0,0-54.61,0,3.41,3.41,0,0,0,3.39,3.84Z"/>
                     </g>
                 </svg>
-                <span class="loginErrorSpan" id="loginEmailError">[login.loginEmailError]</span>
-                <input id="loginUsername" class="loginField" type="text" placeholder="[login.loginEmailPlaceholder]"/>
+                <span class="loginErrorSpan" id="loginEmailError">* Invalid Value</span>
+                <input id="loginUsername" class="loginField" type="text" placeholder="EMAIL OR USERNAME"/>
             </div>
             <div class="loginFieldContainer">
                 <svg id="lockSVG" class="loginSVG" viewBox="40 32 60.36 70.43">
@@ -128,22 +128,22 @@
                         <path d="M86.16,54a16.38,16.38,0,1,0-32,0H44V102.7H96V54Zm-25.9-3.39a9.89,9.89,0,1,1,19.77,0A9.78,9.78,0,0,1,79.39,54H60.89A9.78,9.78,0,0,1,60.26,50.59ZM70,96.2a6.5,6.5,0,0,1-6.5-6.5,6.39,6.39,0,0,1,3.1-5.4V67h6.5V84.11a6.42,6.42,0,0,1,3.39,5.6A6.5,6.5,0,0,1,70,96.2Z"/>
                     </g>
                 </svg>
-                <span class="loginErrorSpan" id="loginPasswordError">[login.loginPasswordError]</span>
-                <input id="loginPassword" class="loginField" type="password" placeholder="[login.loginPasswordPlaceholder]"/>
+                <span class="loginErrorSpan" id="loginPasswordError">* Required</span>
+                <input id="loginPassword" class="loginField" type="password" placeholder="PASSWORD"/>
             </div>
             <div id="loginOptions">
                 <span class="loginSpanDim">
-                    <a href="[login.loginForgotPasswordLink]">[login.loginForgotPasswordText]</a>
+                    <a href="https://minecraft.net/password/forgot/">forgot password?</a>
                 </span>
                 <label id="checkmarkContainer">
                     <input id="loginRememberOption" type="checkbox" checked>
-                    <span id="loginRememberText" class="loginSpanDim">[login.loginRememberMeText]</span>
+                    <span id="loginRememberText" class="loginSpanDim">remember me?</span>
                     <span class="loginCheckmark"></span>
                 </label>
             </div>
             <button id="loginButton" disabled>
                 <div id="loginButtonContent">
-                    [login.loginButtonText]
+                    LOGIN
                     <svg id="loginSVG" viewBox="0 0 24.87 13.97">
                         <defs>
                             <style>.arrowLine{fill:none;stroke:#FFF;stroke-width:2px;transition: 0.25s ease;}</style>
@@ -158,10 +158,10 @@
             </button>
             <div id="loginDisclaimer">
                 <span class="loginSpanDim" id="loginRegisterSpan">
-                    <a href="[login.loginNeedAccountLink]">[login.loginNeedAccountText]</a>
+                    <a href="https://minecraft.net/store/minecraft-java-edition/">Need an Account?</a>
                 </span>
-                <p class="loginDisclaimerText">[login.loginPasswordDisclaimer1]</p>
-                <p class="loginDisclaimerText">[login.loginPasswordDisclaimer2]</p>
+                <p class="loginDisclaimerText">Your password is sent directly to mojang and never stored.</p>
+                <p class="loginDisclaimerText">{appName} is not affiliated with Mojang AB.</p>
             </div>
         </form>
     </div>
@@ -170,13 +170,13 @@
     <div id="waitingContent">
         <div class="waitingSpinner"></div>
         <div id="waitingTextContainer">
-            <h2>[waiting.waitingText]</h2>
+            <h2>Waiting for Microsoft..</h2>
         </div>
     </div>
 </div> <div id="loginOptionsContainer" style="display: none">
   <div id="loginOptionsContent">
     <div class="loginOptionsMainContent">
-      <h2>[loginOptions.loginOptionsTitle]</h2>
+      <h2>Login Options</h2>
       <div class="loginOptionActions">
         <div class="loginOptionButtonContainer">
           <button id="loginOptionMicrosoft" class="loginOptionButton">
@@ -191,7 +191,7 @@
               <path fill="#05a6f0" d="M1 12h10v10H1z" />
               <path fill="#ffba08" d="M12 12h10v10H12z" />
             </svg>
-            <span>[loginOptions.loginWithMicrosoft]</span>
+            <span>Login with Microsoft</span>
           </button>
         </div>
         <div class="loginOptionButtonContainer">
@@ -215,13 +215,13 @@
                 fill="#fff"
               />
             </svg>
-            <span>[loginOptions.loginWithMojang]</span>
+            <span>Login with Mojang</span>
           </button>
         </div>
       </div>
       <div id="loginOptionCancelContainer" style="display: none">
         <button id="loginOptionCancelButton">
-          [loginOptions.cancelButton]
+          Cancel
         </button>
       </div>
     </div>
@@ -232,21 +232,21 @@
     <div id="settingsContainerLeft">
         <div id="settingsNavContainer">
             <div id="settingsNavHeader">
-                <span id="settingsNavHeaderText">[settings.navHeaderText]</span>
+                <span id="settingsNavHeaderText">Settings</span>
             </div>
             <div id="settingsNavItemsContainer">
                 <div id="settingsNavItemsContent">
-                    <button class="settingsNavItem" rSc="settingsTabAccount" id="settingsNavAccount" selected>[settings.navAccount]</button>
-                    <button class="settingsNavItem" rSc="settingsTabMinecraft">[settings.navMinecraft]</button>
-                    <button class="settingsNavItem" rSc="settingsTabMods">[settings.navMods]</button>
-                    <button class="settingsNavItem" rSc="settingsTabJava">[settings.navJava]</button>
-                    <button class="settingsNavItem" rSc="settingsTabLauncher">[settings.navLauncher]</button>
+                    <button class="settingsNavItem" rSc="settingsTabAccount" id="settingsNavAccount" selected>Account</button>
+                    <button class="settingsNavItem" rSc="settingsTabMinecraft">Minecraft</button>
+                    <button class="settingsNavItem" rSc="settingsTabMods">Mods</button>
+                    <button class="settingsNavItem" rSc="settingsTabJava">Java</button>
+                    <button class="settingsNavItem" rSc="settingsTabLauncher">Launcher</button>
                     <div class="settingsNavSpacer"></div>
-                    <button class="settingsNavItem" rSc="settingsTabAbout">[settings.navAbout]</button>
-                    <button class="settingsNavItem" rSc="settingsTabUpdate" id="settingsNavUpdate">[settings.navUpdates]</button>
+                    <button class="settingsNavItem" rSc="settingsTabAbout">About</button>
+                    <button class="settingsNavItem" rSc="settingsTabUpdate" id="settingsNavUpdate">Updates</button>
                     <div id="settingsNavContentBottom">
                         <div class="settingsNavDivider"></div>
-                        <button id="settingsNavDone">[settings.navDone]</button>
+                        <button id="settingsNavDone">Done</button>
                     </div>
                 </div>
             </div>
@@ -255,8 +255,8 @@
     <div id="settingsContainerRight">
         <div id="settingsTabAccount" class="settingsTab">
             <div class="settingsTabHeader">
-                <span class="settingsTabHeaderText">[settings.tabAccountHeaderText]</span>
-                <span class="settingsTabHeaderDesc">[settings.tabAccountHeaderDesc]</span>
+                <span class="settingsTabHeaderText">Account Settings</span>
+                <span class="settingsTabHeaderDesc">Add new accounts or manage existing ones.</span>
             </div>
             <div class="settingsAuthAccountTypeContainer">
                 <div class="settingsAuthAccountTypeHeader">
@@ -267,10 +267,10 @@
                             <path fill="#05a6f0" d="M1 12h10v10H1z" />
                             <path fill="#ffba08" d="M12 12h10v10H12z" />
                         </svg>
-                        <span>[settings.microsoftAccount]</span>
+                        <span>Microsoft</span>
                     </div>
                     <div class="settingsAuthAccountTypeHeaderRight">
-                        <button class="settingsAddAuthAccount" id="settingsAddMicrosoftAccount">[settings.addMicrosoftAccount]</button>
+                        <button class="settingsAddAuthAccount" id="settingsAddMicrosoftAccount">+ Add Microsoft Account</button>
                     </div>
                 </div>
                 
@@ -287,10 +287,10 @@
                             <path d="M2.598.022h7.07L9.665 7c-.003 1.334-1.113 2.46-2.402 2.654H0V2.542C.134 1.2 1.3.195 2.598.022z" fill="#db2331" />
                             <path d="M1.54 2.844c.314-.76 1.31-.46 1.954-.528.785-.083 1.503.272 2.1.758l.164-.9c.327.345.587.756.964 1.052.28.254.655-.342.86-.013.42.864.408 1.86.54 2.795l-.788-.373C6.9 4.17 5.126 3.052 3.656 3.685c-1.294.592-1.156 2.65.06 3.255 1.354.703 2.953.51 4.405.292-.07.42-.34.87-.834.816l-4.95.002c-.5.055-.886-.413-.838-.89l.04-4.315z" fill="#fff" />
                         </svg>
-                        <span>[settings.mojangAccount]</span>
+                        <span>Mojang</span>
                     </div>
                     <div class="settingsAuthAccountTypeHeaderRight">
-                        <button class="settingsAddAuthAccount" id="settingsAddMojangAccount">[settings.addMojangAccount]</button>
+                        <button class="settingsAddAuthAccount" id="settingsAddMojangAccount">+ Add Mojang Account</button>
                     </div>
                 </div>
                 
@@ -301,11 +301,11 @@
         </div>
         <div id="settingsTabMinecraft" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">
-                <span class="settingsTabHeaderText">[settings.minecraftTabHeaderText]</span>
-                <span class="settingsTabHeaderDesc">[settings.minecraftTabHeaderDesc]</span>
+                <span class="settingsTabHeaderText">Minecraft Settings</span>
+                <span class="settingsTabHeaderDesc">Options related to game launch.</span>
             </div>
             <div id="settingsGameResolutionContainer">
-                <span class="settingsFieldTitle">[settings.gameResolutionTitle]</span>
+                <span class="settingsFieldTitle">Game Resolution</span>
                 <div id="settingsGameResolutionContent">
                     <input type="number" id="settingsGameWidth" min="0" cValue="GameWidth">
                     <div id="settingsGameResolutionCross">&#10006;</div>
@@ -314,7 +314,7 @@
             </div>
             <div class="settingsFieldContainer">
                 <div class="settingsFieldLeft">
-                    <span class="settingsFieldTitle">[settings.launchFullscreenTitle]</span>
+                    <span class="settingsFieldTitle">Launch in fullscreen.</span>
                 </div>
                 <div class="settingsFieldRight">
                     <label class="toggleSwitch">
@@ -325,7 +325,7 @@
             </div>
             <div class="settingsFieldContainer">
                 <div class="settingsFieldLeft">
-                    <span class="settingsFieldTitle">[settings.autoConnectTitle]</span>
+                    <span class="settingsFieldTitle">Automatically connect to the server on launch.</span>
                 </div>
                 <div class="settingsFieldRight">
                     <label class="toggleSwitch">
@@ -336,7 +336,7 @@
             </div>
             <div class="settingsFieldContainer">
                 <div class="settingsFieldLeft">
-                    <span class="settingsFieldTitle">[settings.closeLauncherOnLaunch]</span>
+                    <span class="settingsFieldTitle">Close the launcher when the game is launched.</span>
                 </div>
                 <div class="settingsFieldRight">
                     <label class="toggleSwitch">
@@ -347,8 +347,8 @@
             </div>
             <div class="settingsFieldContainer">
                 <div class="settingsFieldLeft">
-                    <span class="settingsFieldTitle">[settings.launchDetachedTitle]</span>
-                    <span class="settingsFieldDesc">[settings.launchDetachedDesc]</span>
+                    <span class="settingsFieldTitle">Launch game process detached from launcher.</span>
+                    <span class="settingsFieldDesc">If the game is not detached, closing the launcher will also close the game.</span>
                 </div>
                 <div class="settingsFieldRight">
                     <label class="toggleSwitch">
@@ -360,8 +360,8 @@
         </div>
         <div id="settingsTabMods" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">
-                <span class="settingsTabHeaderText">[settings.tabModsHeaderText]</span>
-                <span class="settingsTabHeaderDesc">[settings.tabModsHeaderDesc]</span>
+                <span class="settingsTabHeaderText">Mod Settings</span>
+                <span class="settingsTabHeaderDesc">Enable or disable mods.</span>
             </div>
             <div class="settingsSelServContainer">
                 <div class="settingsSelServContent">
@@ -369,37 +369,37 @@
                 </div>
                 <div class="settingsSwitchServerContainer">
                     <div class="settingsSwitchServerContent">
-                        <button class="settingsSwitchServerButton">[settings.switchServerButton]</button>
+                        <button class="settingsSwitchServerButton">Switch</button>
                     </div>
                 </div>
             </div>
             <div id="settingsModsContainer">
                 <div id="settingsReqModsContainer">
-                    <div class="settingsModsHeader">[settings.requiredMods]</div>
+                    <div class="settingsModsHeader">Required Mods</div>
                     <div id="settingsReqModsContent">
 
                     </div>
                 </div>
                 <div id="settingsOptModsContainer">
-                    <div class="settingsModsHeader">[settings.optionalMods]</div>
+                    <div class="settingsModsHeader">Optional Mods</div>
                     <div id="settingsOptModsContent">
                         
                     </div>
                 </div>
                 <div id="settingsDropinModsContainer">
-                    <div class="settingsModsHeader">[settings.dropinMods]</div>
-                    <button id="settingsDropinFileSystemButton">[settings.addMods] <span id="settingsDropinRefreshNote">[settings.dropinRefreshNote]</span></button>
+                    <div class="settingsModsHeader">Drop-in Mods</div>
+                    <button id="settingsDropinFileSystemButton">Add Mods <span id="settingsDropinRefreshNote">(F5 to Refresh)</span></button>
                     <div id="settingsDropinModsContent">
                         
                     </div>
                 </div>
                 <div id="settingsShadersContainer">
-                    <div class="settingsModsHeader">[settings.shaderpacks]</div>
-                    <div id="settingsShaderpackDesc">[settings.shaderpackDesc]</div>
+                    <div class="settingsModsHeader">Shaderpacks</div>
+                    <div id="settingsShaderpackDesc">Enable or disable shaders. Please note, shaders will only run smoothly on powerful setups. You may add custom packs here.</div>
                     <div id="settingsShaderpackWrapper">
                         <button id="settingsShaderpackButton"> + </button>
                         <div class="settingsSelectContainer">
-                            <div class="settingsSelectSelected" id="settingsShadersSelected">[settings.selectShaderpack]</div>
+                            <div class="settingsSelectSelected" id="settingsShadersSelected">Select Shaderpack</div>
                             <div class="settingsSelectOptions" id="settingsShadersOptions" hidden>
 
                             </div>
@@ -410,8 +410,8 @@
         </div>
         <div id="settingsTabJava" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">
-                <span class="settingsTabHeaderText">[settings.tabJavaHeaderText]</span>
-                <span class="settingsTabHeaderDesc">[settings.tabJavaHeaderDesc]</span>
+                <span class="settingsTabHeaderText">Java Settings</span>
+                <span class="settingsTabHeaderDesc">Manage the Java configuration (advanced).</span>
             </div>
             <div class="settingsSelServContainer">
                 <div class="settingsSelServContent">
@@ -419,16 +419,16 @@
                 </div>
                 <div class="settingsSwitchServerContainer">
                     <div class="settingsSwitchServerContent">
-                        <button class="settingsSwitchServerButton">[settings.switchServerButton]</button>
+                        <button class="settingsSwitchServerButton">Switch</button>
                     </div>
                 </div>
             </div>
             <div id="settingsMemoryContainer">
-                <div id="settingsMemoryTitle">[settings.memoryTitle]</div>
+                <div id="settingsMemoryTitle">Memory</div>
                 <div id="settingsMemoryContent">
                     <div id="settingsMemoryContentLeft">
                         <div class="settingsMemoryContentItem">
-                            <span class="settingsMemoryHeader">[settings.maxRAM]</span>
+                            <span class="settingsMemoryHeader">Maximum RAM</span>
                             <div class="settingsMemoryActionContainer">
                                 <div id="settingsMaxRAMRange" class="rangeSlider" cValue="MaxRAM" serverDependent min="3" max="8" value="3" step="0.5">
                                     <div class="rangeSliderBar"></div>
@@ -438,7 +438,7 @@
                             </div>
                         </div>
                         <div class="settingsMemoryContentItem">
-                            <span class="settingsMemoryHeader">[settings.minRAM]</span>
+                            <span class="settingsMemoryHeader">Minimum RAM</span>
                             <div class="settingsMemoryActionContainer">
                                 <div id="settingsMinRAMRange" class="rangeSlider" cValue="MinRAM" serverDependent min="3" max="8" value="3" step="0.5">
                                     <div class="rangeSliderBar"></div>
@@ -447,16 +447,16 @@
                                 <span id="settingsMinRAMLabel" class="settingsMemoryLabel">3G</span>
                             </div>
                         </div>
-                        <div id="settingsMemoryDesc">[settings.memoryDesc]</div>
+                        <div id="settingsMemoryDesc">The recommended minimum RAM is 3 gigabytes. Setting the minimum and maximum values to the same value may reduce lag.</div>
                     </div>
                     <div id="settingsMemoryContentRight">
                         <div id="settingsMemoryStatus">
                             <div class="settingsMemoryStatusContainer">
-                                <span class="settingsMemoryStatusTitle">[settings.memoryTotalTitle]</span>
+                                <span class="settingsMemoryStatusTitle">Total</span>
                                 <span id="settingsMemoryTotal" class="settingsMemoryStatusValue">16G</span>
                             </div>
                             <div class="settingsMemoryStatusContainer">
-                                <span class="settingsMemoryStatusTitle">[settings.memoryAvailableTitle]</span>
+                                <span class="settingsMemoryStatusTitle">Available</span>
                                 <span id="settingsMemoryAvail" class="settingsMemoryStatusValue">7.3G</span>
                             </div>
                         </div>
@@ -464,7 +464,7 @@
                 </div>
             </div>
             <div class="settingsFileSelContainer">
-                <div class="settingsFileSelTitle">[settings.javaExecutableTitle]</div>
+                <div class="settingsFileSelTitle">Java Executable</div>
                 <div class="settingsFileSelContent">
                     <div id="settingsJavaExecDetails"><!-- Invalid Selection --></div>
                     <div class="settingsFileSelActions">
@@ -483,13 +483,13 @@
                             </svg>
                         </div>
                         <input class="settingsFileSelVal" id="settingsJavaExecVal" type="text" value="null" cValue="JavaExecutable" serverDependent disabled>
-                        <button class="settingsFileSelButton" id="settingsJavaExecSel" dialogTitle="[settings.javaExecSelDialogTitle]" dialogDirectory="false">[settings.javaExecSelButtonText]</button>
+                        <button class="settingsFileSelButton" id="settingsJavaExecSel" dialogTitle="Select Java Executable" dialogDirectory="false">Choose File</button>
                     </div>
                 </div>
-                <div class="settingsFileSelDesc">[settings.javaExecDesc] <strong id="settingsJavaReqDesc"><!-- Requires Java 8 x64. --></strong><br>[settings.javaPathDesc]</div>
+                <div class="settingsFileSelDesc">The Java executable is validated before game launch. <strong id="settingsJavaReqDesc"><!-- Requires Java 8 x64. --></strong><br>The path should end with <strong>{pathSuffix}</strong>.</div>
             </div>
             <div id="settingsJVMOptsContainer">
-                <div id="settingsJVMOptsTitle">[settings.jvmOptsTitle]</div>
+                <div id="settingsJVMOptsTitle">Additional JVM Options</div>
                 <div id="settingsJVMOptsContent">
                     <div class="settingsFileSelIcon">
                         <svg class="settingsFileSelSVG" x="0px" y="0px" viewBox="0 0 305.001 305.001">
@@ -507,18 +507,18 @@
                     </div>
                     <input id="settingsJVMOptsVal" cValue="JVMOptions" serverDependent type="text">
                 </div>
-                <div id="settingsJVMOptsDesc">[settings.jvmOptsDesc]<br><a href="#" id="settingsJvmOptsLink"><!-- Available Options --></a></div>
+                <div id="settingsJVMOptsDesc">Options to be provided to the JVM at runtime. <em>-Xms</em> and <em>-Xmx</em> should not be included.<br><a href="#" id="settingsJvmOptsLink"><!-- Available Options --></a></div>
             </div>
         </div>
         <div id="settingsTabLauncher" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">
-                <span class="settingsTabHeaderText">[settings.launcherTabHeaderText]</span>
-                <span class="settingsTabHeaderDesc">[settings.launcherTabHeaderDesc]</span>
+                <span class="settingsTabHeaderText">Launcher Settings</span>
+                <span class="settingsTabHeaderDesc">Options related to the launcher itself.</span>
             </div>
             <div class="settingsFieldContainer">
                 <div class="settingsFieldLeft">
-                    <span class="settingsFieldTitle">[settings.allowPrereleaseTitle]</span>
-                    <span class="settingsFieldDesc">[settings.allowPrereleaseDesc]</span>
+                    <span class="settingsFieldTitle">Allow Pre-Release Updates.</span>
+                    <span class="settingsFieldDesc">Pre-Releases include new features which may have not been fully tested or integrated.<br>This will always be true if you are using a pre-release version.</span>
                 </div>
                 <div class="settingsFieldRight">
                     <label class="toggleSwitch">
@@ -529,7 +529,7 @@
             </div>
             <div class="settingsFileSelContainer">
                 <div class="settingsFileSelContent">
-                    <div class="settingsFieldTitle" id="settingsDataDirTitle">[settings.dataDirectoryTitle]</div>
+                    <div class="settingsFieldTitle" id="settingsDataDirTitle">Data Directory</div>
                     <div class="settingsFileSelActions">
                         <div class="settingsFileSelIcon">
                             <svg class="settingsFileSelSVG">
@@ -541,60 +541,60 @@
                             </svg>
                         </div>
                         <input class="settingsFileSelVal" type="text" value="null" cValue="DataDirectory" disabled>
-                        <button class="settingsFileSelButton" dialogTitle="[settings.selectDataDirectory]" dialogDirectory="true">[settings.chooseFolder]</button>
+                        <button class="settingsFileSelButton" dialogTitle="Select Data Directory" dialogDirectory="true">Choose Folder</button>
                     </div>
                 </div>
-                <div class="settingsFileSelDesc">[settings.dataDirectoryDesc]</div>
+                <div class="settingsFileSelDesc">All game files and local Java installations will be stored in the data directory.<br>Screenshots and world saves are stored in the instance folder for the corresponding server configuration.</div>
             </div>
         </div>
         <div id="settingsTabAbout" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">
-                <span class="settingsTabHeaderText">[settings.aboutTabHeaderText]</span>
-                <span class="settingsTabHeaderDesc">[settings.aboutTabHeaderDesc]</span>
+                <span class="settingsTabHeaderText">About</span>
+                <span class="settingsTabHeaderDesc">View information and release notes for the current version.</span>
             </div>
             <div id="settingsAboutCurrentContainer">
                 <div id="settingsAboutCurrentContent">
                     <div id="settingsAboutCurrentHeadline">
                         <img id="settingsAboutLogo" src="./src/assets/images/SealCircle.png">
-                        <span id="settingsAboutTitle">[settings.aboutTitle]</span>
+                        <span id="settingsAboutTitle">{appName}</span>
                     </div>
                     <div id="settingsAboutCurrentVersion">
                         <div id="settingsAboutCurrentVersionCheck">&#10003;</div>
                         <div id="settingsAboutCurrentVersionDetails">
-                            <span id="settingsAboutCurrentVersionTitle">[settings.stableRelease]</span>
+                            <span id="settingsAboutCurrentVersionTitle">Stable Release</span>
                             <div id="settingsAboutCurrentVersionLine">
-                                <span id="settingsAboutCurrentVersionText">[settings.versionText]</span>
+                                <span id="settingsAboutCurrentVersionText">Version </span>
                                 <span id="settingsAboutCurrentVersionValue">0.0.1-alpha.18</span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div id="settingsAboutButtons">
-                    <a href="[settings.sourceGithubLink]" id="settingsAboutSourceButton" class="settingsAboutButton">[settings.sourceGithub]</a>
+                    <a href="[settings.sourceGithubLink]" id="settingsAboutSourceButton" class="settingsAboutButton">Source (GitHub)</a>
                     <a href="https://github.com/dscalzi/HeliosLauncher" id="settingsAboutSourceButton" class="settingsAboutButton">Original Source</a>
-                    <a href="[settings.supportLink]" id="settingsAboutSupportButton" class="settingsAboutButton">[settings.support]</a>
-                    <a href="#" id="settingsAboutDevToolsButton" class="settingsAboutButton">[settings.devToolsConsole]</a>
+                    <a href="[settings.supportLink]" id="settingsAboutSupportButton" class="settingsAboutButton">Support</a>
+                    <a href="#" id="settingsAboutDevToolsButton" class="settingsAboutButton">DevTools Console</a>
                 </div>
             </div>
             <div class="settingsChangelogContainer">
                 <div class="settingsChangelogContent">
                     <div class="settingsChangelogHeadline">
-                        <div class="settingsChangelogLabel">[settings.releaseNotes]</div>
-                        <div class="settingsChangelogTitle">[settings.changelog]</div>
+                        <div class="settingsChangelogLabel">Release Notes</div>
+                        <div class="settingsChangelogTitle">Changelog</div>
                     </div>
                     <div class="settingsChangelogText">
-                        [settings.noReleaseNotes]
+                        No Release Notes
                     </div>
                 </div>
                 <div class="settingsChangelogActions">
-                    <a class="settingsChangelogButton settingsAboutButton" href="#">[settings.viewReleaseNotes]</a>
+                    <a class="settingsChangelogButton settingsAboutButton" href="#">View Release Notes on GitHub</a>
                 </div>
             </div>
         </div>
         <div id="settingsTabUpdate" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">
-                <span class="settingsTabHeaderText">[settings.launcherUpdatesHeaderText]</span>
-                <span class="settingsTabHeaderDesc">[settings.launcherUpdatesHeaderDesc]</span>
+                <span class="settingsTabHeaderText">Launcher Updates</span>
+                <span class="settingsTabHeaderDesc">Download, install, and review updates for the launcher.</span>
             </div>
             <div id="settingsUpdateStatusContainer">
                 <div id="settingsUpdateStatusContent">
@@ -604,26 +604,26 @@
                     <div id="settingsUpdateVersion">
                         <div id="settingsUpdateVersionCheck">&#10003;</div>
                         <div id="settingsUpdateVersionDetails">
-                            <span id="settingsUpdateVersionTitle">[settings.stableRelease]</span>
+                            <span id="settingsUpdateVersionTitle">Stable Release</span>
                             <div id="settingsUpdateVersionLine">
-                                <span id="settingsUpdateVersionText">[settings.versionText] </span>
+                                <span id="settingsUpdateVersionText">Version  </span>
                                 <span id="settingsUpdateVersionValue">0.0.1-alpha.18</span>
                             </div>
                         </div>
                     </div>
                     <div id="settingsUpdateActionContainer">
-                        <button id="settingsUpdateActionButton">[settings.checkForUpdates]</button>
+                        <button id="settingsUpdateActionButton">Check for Updates</button>
                     </div>
                 </div>
             </div>
             <div class="settingsChangelogContainer">
                 <div class="settingsChangelogContent">
                     <div class="settingsChangelogHeadline">
-                        <div class="settingsChangelogLabel">[settings.whatsNew]</div>
-                        <div class="settingsChangelogTitle">[settings.updateReleaseNotes]</div>
+                        <div class="settingsChangelogLabel">What's New</div>
+                        <div class="settingsChangelogTitle">Update Release Notes</div>
                     </div>
                     <div class="settingsChangelogText">
-                        [settings.noReleaseNotes]
+                        No Release Notes
                     </div>
                 </div>
             </div>
@@ -635,7 +635,7 @@
         <div id="left">
             <div id="image_seal_container">
                 <img id="image_seal" src="assets/images/SealCircle.png"/>
-                <div id="updateAvailableTooltip">[landing.updateAvailableTooltip]</div>
+                <div id="updateAvailableTooltip">Update Available</div>
             </div>
         </div>
         <div id="content">
@@ -643,9 +643,9 @@
         <div id="right">
             <div id="rightContainer">
                 <div id="user_content">
-                    <span id="user_text">[landing.usernamePlaceholder]</span>
+                    <span id="user_text">Username</span>
                     <div id="avatarContainer">
-                        <button id="avatarOverlay">[landing.usernameEditButton]</button>
+                        <button id="avatarOverlay">Switch</button>
                     </div>
                 </div>
                 <div id="mediaContent">
@@ -655,7 +655,7 @@
                                 <svg id="settingsSVG" class="mediaSVG" viewBox="0 0 141.36 137.43">
                                     <path d="M70.70475616319865,83.36934004916053 a15.320781354859122,15.320781354859122 0 1 1 14.454501310561755,-15.296030496450625 A14.850515045097694,14.850515045097694 0 0 1 70.70475616319865,83.36934004916053 M123.25082856443602,55.425620905968366 h-12.375429204248078 A45.54157947163293,45.54157947163293 0 0 0 107.21227231573047,46.243052436416285 l8.613298726156664,-9.108315894326587 a9.727087354538993,9.727087354538993 0 0 0 0,-13.167456673319956 l-3.465120177189462,-3.6631270444574313 a8.489544434114185,8.489544434114185 0 0 0 -12.375429204248078,0 l-8.613298726156664,9.108315894326587 A40.442902639482725,40.442902639482725 0 0 0 81.99114759747292,25.427580514871032 V12.532383284044531 a9.108315894326587,9.108315894326587 0 0 0 -8.811305593424633,-9.306322761594556 h-4.950171681699231 a9.108315894326587,9.108315894326587 0 0 0 -8.811305593424633,9.306322761594556 v12.895197230826497 a40.17064319698927,40.17064319698927 0 0 0 -9.331073620003052,4.0591407789933704 l-8.613298726156664,-9.108315894326587 a8.489544434114185,8.489544434114185 0 0 0 -12.375429204248078,0 L25.58394128451018,23.967279868769744 a9.727087354538993,9.727087354538993 0 0 0 0,13.167456673319956 L34.19724001066683,46.243052436416285 a45.07131316187151,45.07131316187151 0 0 0 -3.6631270444574313,9.083565035918088 h-12.375429204248078 a9.083565035918088,9.083565035918088 0 0 0 -8.811305593424633,9.306322761594556 v5.197680265784193 a9.108315894326587,9.108315894326587 0 0 0 8.811305593424633,9.306322761594556 h11.979415469712139 a45.69008462208391,45.69008462208391 0 0 0 4.0591407789933704,10.642869115653347 l-8.613298726156664,9.108315894326587 a9.727087354538993,9.727087354538993 0 0 0 0,13.167456673319956 l3.465120177189462,3.6631270444574313 a8.489544434114185,8.489544434114185 0 0 0 12.375429204248078,0 l8.613298726156664,-9.108315894326587 a40.49240435629971,40.49240435629971 0 0 0 9.331073620003052,4.0591407789933704 v12.895197230826497 a9.083565035918088,9.083565035918088 0 0 0 8.811305593424633,9.306322761594556 h4.950171681699231 A9.083565035918088,9.083565035918088 0 0 0 81.99114759747292,123.68848839660077 V110.79329116577425 a40.78941465720167,40.78941465720167 0 0 0 9.331073620003052,-4.0591407789933704 l8.613298726156664,9.108315894326587 a8.489544434114185,8.489544434114185 0 0 0 12.375429204248078,0 l3.465120177189462,-3.6631270444574313 a9.727087354538993,9.727087354538993 0 0 0 0,-13.167456673319956 l-8.613298726156664,-9.108315894326587 a45.665333763675406,45.665333763675406 0 0 0 4.034389920584874,-10.642869115653347 h12.004166328120636 a9.108315894326587,9.108315894326587 0 0 0 8.811305593424633,-9.306322761594556 v-5.197680265784193 a9.083565035918088,9.083565035918088 0 0 0 -8.811305593424633,-9.306322761594556 " id="svg_3" class=""/>
                                 </svg>
-                                <div id="settingsTooltip">[landing.settingsTooltip]</div>
+                                <div id="settingsTooltip">Settings</div>
                             </button>
                         </div>
                     </div>
@@ -741,21 +741,21 @@
             <div class="bot_wrapper">
                 <div id="content">
                     <div id="server_status_wrapper">
-                        <span class="bot_label" id="landingPlayerLabel">[landing.serverStatus]</span>
-                        <span id="player_count">[landing.serverStatusPlaceholder]</span>
+                        <span class="bot_label" id="landingPlayerLabel">SERVER</span>
+                        <span id="player_count">OFFLINE</span>
                     </div>
                     <div class="bot_divider"></div>
                     <div id="mojangStatusWrapper">
-                        <span class="bot_label">[landing.mojangStatus]</span>
+                        <span class="bot_label">MOJANG STATUS</span>
                         <span id="mojang_status_icon">&#8226;</span>
                         <div id="mojangStatusTooltip">
-                            <div id="mojangStatusTooltipTitle">[landing.mojangStatusTooltipTitle]</div>
+                            <div id="mojangStatusTooltipTitle">Services</div>
                             <div id="mojangStatusEssentialContainer">
                                 <!-- Essential Mojang services are populated here. -->
                             </div>
                             <div id="mojangStatusNEContainer">
                                 <div class="mojangStatusNEBar"></div>
-                                <div id="mojangStatusNETitle">[landing.mojangStatusNETitle]</div>
+                                <div id="mojangStatusNETitle">Non&nbsp;Essential</div>
                                 <div class="mojangStatusNEBar"></div>
                             </div>
                             <div id="mojangStatusNonEssentialContainer">
@@ -778,7 +778,7 @@
                             </defs>
                             <polyline class="arrowLine" points="0.71 13.26 12.56 1.41 24.16 13.02"/>
                         </svg>
-                        &#10;<span id="newsButtonText">[landing.newsButton]</span>
+                        &#10;<span id="newsButtonText">NEWS</span>
                     </button>
                 </div>
             </div>
@@ -786,9 +786,9 @@
         <div id="right">
             <div class="bot_wrapper">
                 <div id="launch_content">
-                    <button id="launch_button">[landing.launchButton]</button>
+                    <button id="launch_button">PLAY</button>
                     <div class="bot_divider"></div>
-                    <button id="server_selection_button" class="bot_label">[landing.launchButtonPlaceholder]</button>
+                    <button id="server_selection_button" class="bot_label">&#8226; No Server Selected</button>
                 </div>
                 <div id="launch_details">
                     <div id="launch_details_left">
@@ -797,7 +797,7 @@
                     </div>
                     <div id="launch_details_right">
                         <progress id="launch_progress" value="22" max="100"></progress>
-                        <span id="launch_details_text" class="bot_label">[landing.launchDetails]</span>
+                        <span id="launch_details_text" class="bot_label">Please wait..</span>
                     </div>
                 </div>
             </div>
@@ -829,7 +829,7 @@
                             <polyline class="arrowLine" points="0.71 13.26 12.56 1.41 24.16 13.02"/>
                         </svg>
                     </button>
-                    <span id="newsNavigationStatus">[landing.newsNavigationStatus]</span>
+                    <span id="newsNavigationStatus">{currentPage} of {totalPages}</span>
                     <button id="newsNavigateRight">
                         <svg id="newsNavigationRightSVG" viewBox="0 0 24.87 13.97">
                             <defs>
@@ -850,14 +850,14 @@
         </div>
         <div id="newsErrorContainer">
             <div id="newsErrorLoading">
-                <span id="nELoadSpan" class="newsErrorContent">[landing.newsErrorLoadSpan]</span>
+                <span id="nELoadSpan" class="newsErrorContent">Checking for News..</span>
             </div>
             <div id="newsErrorFailed" style="display: none;">
-                <span id="nEFailedSpan" class="newsErrorContent">[landing.newsErrorFailedSpan]</span>
-                <button id="newsErrorRetry">[landing.newsErrorRetryButton]</button>
+                <span id="nEFailedSpan" class="newsErrorContent">Failed to Load News</span>
+                <button id="newsErrorRetry">Try Again</button>
             </div>
             <div id="newsErrorNone" style="display: none;">
-                <span id="nENoneSpan" class="newsErrorContent">[landing.newsErrorNoneSpan]</span>
+                <span id="nENoneSpan" class="newsErrorContent">No News</span>
             </div>
         </div>
     </div>
@@ -867,7 +867,7 @@
     <div id="overlayContainer" style="display: none">
   <div id="serverSelectContent" style="display: none">
     <span id="serverSelectHeader"
-      >[overlay.serverSelectHeader]</span
+      >Available Servers</span
     >
     <div id="serverSelectList">
       <div id="serverSelectListScrollable">
@@ -877,7 +877,7 @@
   </div>
   <div id="accountSelectContent" style="display: none">
     <span id="accountSelectHeader"
-      >[overlay.accountSelectHeader]</span
+      >Select an Account</span
     >
     <div id="accountSelectList">
       <div id="accountSelectListScrollable">
@@ -890,16 +890,16 @@
         class="overlayKeybindEnter"
         type="submit"
       >
-        [overlay.accountSelectConfirm]
+        Select
       </button>
       <div id="accountSelectCancelWrapper">
         <button id="accountSelectCancel" class="overlayKeybindEsc">
-          [overlay.accountSelectCancel]
+          Cancel
         </button>
       </div>
     </div>
     <button id="accountSelectManage" class="overlayKeybindEnter" type="submit">
-      [overlay.accountSelectManage]
+      Manage Accounts
     </button>
   </div>
   <div id="overlayContent">
