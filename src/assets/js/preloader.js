@@ -1,13 +1,13 @@
-const { ipcRenderer } = require("electron");
-const fs = require("fs-extra");
-const os = require("os");
-const path = require("path");
+import { ipcRenderer } from "electron";
+import fs from "fs-extra";
+import os from "os";
+import path from "path";
 
-const ConfigManager = require("./configmanager");
-const { DistroAPI } = require("./distromanager");
-const LangLoader = require("./langloader");
-const { LoggerUtil } = require("helios-core");
-const { HeliosDistribution } = require("helios-core/common");
+import ConfigManager from "./configmanager";
+import { DistroAPI } from "./distromanager";
+import LangLoader from "./langloader";
+import { LoggerUtil } from "helios-core";
+import { HeliosDistribution } from "helios-core/common";
 
 const logger = LoggerUtil.getLogger("Preloader");
 

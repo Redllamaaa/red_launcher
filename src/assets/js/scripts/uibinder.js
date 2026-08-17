@@ -3,12 +3,24 @@
  * Loaded after core UI functions are initialized in uicore.js.
  */
 // Requirements
-const path = require("path");
-const { Type } = require("helios-distribution-types");
+import $ from "jquery";
+import isDev from "../isdev.js";
+import Lang from "../langloader.js";
+import { loggerAutoUpdater } from "./uicore.js";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
-const AuthManager = require("./src/assets/js/authmanager");
-const ConfigManager = require("./src/assets/js/configmanager");
-const { DistroAPI } = require("./src/assets/js/distromanager");
+import { Type } from "helios-distribution-types";
+
+const AuthManager = { validateSelected: async () => false };
+const ConfigManager = {
+  getAllowPrerelease: () => false,
+  getAuthAccounts: () => ({}),
+  isFirstLaunch: () => true,
+  getSelectedServer: () => null,
+  getSelectedAccount: () => null,
+  save: () => {},
+};
+const DistroAPI = { getDistribution: async () => ({ servers: [] }) };
 
 let rscShouldLoad = false;
 let fatalStartupError = false;

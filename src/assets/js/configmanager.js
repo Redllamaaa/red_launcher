@@ -1,7 +1,8 @@
-const fs = require("fs-extra");
-const { LoggerUtil } = require("helios-core");
-const os = require("os");
-const path = require("path");
+import fs from "fs-extra";
+import { LoggerUtil } from "helios-core";
+import os from "os";
+import path from "path";
+import { appDataDir } from "@tauri-apps/api/path";
 
 const logger = LoggerUtil.getLogger("ConfigManager");
 
@@ -13,7 +14,7 @@ const sysRoot =
 
 const dataPath = path.join(sysRoot, ".tsmplauncher");
 
-const launcherDir = require("@electron/remote").app.getPath("userData");
+const launcherDir = await appDataDir();
 
 /**
  * Retrieve the absolute path of the launcher directory.

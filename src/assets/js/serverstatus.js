@@ -1,4 +1,4 @@
-const net = require("net");
+import net from "net";
 
 /**
  * Retrieves the status of a minecraft server.

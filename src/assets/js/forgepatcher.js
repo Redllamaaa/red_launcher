@@ -1,16 +1,16 @@
-const child_process = require("child_process");
-const {
+import child_process from "child_process";
+import {
   getLibraryDir,
   MavenUtil,
   getVersionJarPath,
-} = require("helios-core/common");
+} from "helios-core/common";
 
-const ConfigManager = require("./configmanager");
-const { join } = require("path");
-const AdmZip = require("adm-zip");
-const { getClasspathSeparator } = require("./processbuilder");
-const { exists } = require("fs-extra");
-const { existsSync } = require("fs");
+import ConfigManager from "./configmanager";
+import { join } from "path";
+import AdmZip from "adm-zip";
+import { getClasspathSeparator } from "./processbuilder";
+import { exists } from "fs-extra";
+import { existsSync } from "fs";
 
 /**
  * A class used to patch the Minecraft JAR for ForgeGradle3 modloader support, and possibly Neoforge in the future.

@@ -1,6 +1,5 @@
-const { DistributionAPI } = require("helios-core/common");
-
-const ConfigManager = require("./configmanager");
+import { DistributionAPI } from "helios-core/common";
+import ConfigManager from "./configmanager";
 
 exports.REMOTE_DISTRO_URL =
   "https://raw.githubusercontent.com/Redllamaaa/tsmplauncher/master/app/assets/distribution.json";

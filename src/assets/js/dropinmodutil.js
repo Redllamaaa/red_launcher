@@ -1,7 +1,7 @@
-const fs = require("fs-extra");
-const path = require("path");
-const { ipcRenderer, shell } = require("electron");
-const { SHELL_OPCODE } = require("./ipcconstants");
+import fs from "fs-extra";
+import path from "path";
+import { ipcRenderer, shell } from "electron";
+import { SHELL_OPCODE } from "./ipcconstants";
 
 // Group #1: File Name (without .disabled, if any)
 // Group #2: File Extension (jar, zip, or litemod)

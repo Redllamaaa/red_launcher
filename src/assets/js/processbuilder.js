@@ -1,20 +1,20 @@
-const AdmZip = require("adm-zip");
-const child_process = require("child_process");
-const crypto = require("crypto");
-const fs = require("fs-extra");
-const { LoggerUtil } = require("helios-core");
-const {
+import AdmZip from "adm-zip";
+import child_process from "child_process";
+import crypto from "crypto";
+import fs from "fs-extra";
+import { LoggerUtil } from "helios-core";
+import {
   getMojangOS,
   isLibraryCompatible,
   mcVersionAtLeast,
   getLibraryDir,
   MavenUtil,
-} = require("helios-core/common");
-const { Type } = require("helios-distribution-types");
-const os = require("os");
-const path = require("path");
+} from "helios-core/common";
+import { Type } from "helios-distribution-types";
+import os from "os";
+import path from "path";
 
-const ConfigManager = require("./configmanager");
+import ConfigManager from "./configmanager";
 
 const logger = LoggerUtil.getLogger("ProcessBuilder");
 

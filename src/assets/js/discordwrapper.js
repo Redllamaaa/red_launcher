@@ -1,11 +1,9 @@
 // Work in progress
-const { LoggerUtil } = require("helios-core");
+import { LoggerUtil } from "helios-core";
+import { Client } from "discord-rpc-patch";
+import Lang from "./langloader";
 
 const logger = LoggerUtil.getLogger("DiscordWrapper");
-
-const { Client } = require("discord-rpc-patch");
-
-const Lang = require("./langloader");
 
 let client;
 let activity;
