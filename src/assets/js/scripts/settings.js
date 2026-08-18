@@ -4,7 +4,7 @@ await ready();
 import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getVersion } from "@tauri-apps/api/app";
-
+import { platform } from "@tauri-apps/plugin-os";
 import { LoggerUtil } from "./loggerutil.js";
 import * as ConfigManager from "../configmanager.js";
 
@@ -102,12 +102,10 @@ function bindFileSelectors() {
         ];
       }
 
-      const res = await remote.dialog.showOpenDialog(
-        remote.getCurrentWindow(),
-        options,
-      );
-      if (!res.canceled) {
-        ele.previousElementSibling.value = res.filePaths[0];
+      const selected = await open(dialogOptions);
+
+      if (selected !== null) {
+        ele.previousElementSibling.value = selected;
         if (isJavaExecSel) {
           await populateJavaExecDetails(ele.previousElementSibling.value);
         }
