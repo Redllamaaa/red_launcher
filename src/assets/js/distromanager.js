@@ -1,15 +1,13 @@
 import { DistributionAPI } from "helios-core/common";
-import ConfigManager from "./configmanager";
+import { getLauncherDirectory } from "./configmanager.js";
 
-exports.REMOTE_DISTRO_URL =
+export const REMOTE_DISTRO_URL =
   "https://raw.githubusercontent.com/Redllamaaa/tsmplauncher/master/app/assets/distribution.json";
 
-const api = new DistributionAPI(
-  ConfigManager.getLauncherDirectory(),
+export const DistroAPI = new DistributionAPI(
+  getLauncherDirectory(),
   null, // Injected forcefully by the preloader.
   null, // Injected forcefully by the preloader.
-  exports.REMOTE_DISTRO_URL,
+  REMOTE_DISTRO_URL,
   false,
 );
-
-exports.DistroAPI = api;

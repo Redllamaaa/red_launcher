@@ -8,6 +8,7 @@ import { platform } from "@tauri-apps/plugin-os";
 import Lang from "../langloader.js";
 import { LoggerUtil } from "./loggerutil.js";
 import * as ConfigManager from "../configmanager.js";
+import { DistroAPI } from "../distromanager.js";
 
 // Requirements
 import { getCurrentView, switchView } from "./viewstate.js";

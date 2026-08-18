@@ -20,12 +20,12 @@ import {
   setOverlayHandler,
   toggleOverlay,
 } from "./overlay.js";
+import { DistroAPI } from "../distromanager.js";
 
 import { Type } from "helios-distribution-types";
 
 const AuthManager = { validateSelected: async () => false };
 import * as ConfigManager from "../configmanager.js";
-const DistroAPI = { getDistribution: async () => ({ servers: [] }) };
 
 let rscShouldLoad = false;
 let fatalStartupError = false;

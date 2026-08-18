@@ -539,7 +539,7 @@ async function dlAsync(login = true) {
   const fullRepairModule = new FullRepair(
     ConfigManager.getCommonDirectory(),
     ConfigManager.getInstanceDirectory(),
-    ConfigManager.getLauncherDirectory(),
+    getLauncherDirectory(),
     ConfigManager.getSelectedServer(),
     DistroAPI.isDevMode(),
   );
