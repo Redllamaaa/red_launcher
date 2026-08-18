@@ -621,7 +621,7 @@ export function ensureJavaConfig(serverid, effectiveJavaOptions, ram) {
  * @returns {string} The minimum amount of memory for JVM initialization.
  */
 export function getMinRAM(serverid) {
-  return config.javaConfig[serverid].minRAM;
+  return config.javaConfig[serverid]?.minRAM ?? "1G";
 }
 
 /**
@@ -633,6 +633,9 @@ export function getMinRAM(serverid) {
  * @param {string} minRAM The new minimum amount of memory for JVM initialization.
  */
 export function setMinRAM(serverid, minRAM) {
+  if (!config.javaConfig[serverid]) {
+    config.javaConfig[serverid] = {};
+  }
   config.javaConfig[serverid].minRAM = minRAM;
 }
 
@@ -657,6 +660,9 @@ export function getMaxRAM(serverid) {
  * @param {string} maxRAM The new maximum amount of memory for JVM initialization.
  */
 export function setMaxRAM(serverid, maxRAM) {
+  if (!config.javaConfig[serverid]) {
+    config.javaConfig[serverid] = {};
+  }
   config.javaConfig[serverid].maxRAM = maxRAM;
 }
 
@@ -669,7 +675,7 @@ export function setMaxRAM(serverid, maxRAM) {
  * @returns {string} The path of the Java Executable.
  */
 export function getJavaExecutable(serverid) {
-  return config.javaConfig[serverid].executable;
+  return config.javaConfig[serverid]?.executable ?? null;
 }
 
 /**
@@ -679,6 +685,9 @@ export function getJavaExecutable(serverid) {
  * @param {string} executable The new path of the Java Executable.
  */
 export function setJavaExecutable(serverid, executable) {
+  if (!config.javaConfig[serverid]) {
+    config.javaConfig[serverid] = {};
+  }
   config.javaConfig[serverid].executable = executable;
 }
 
@@ -691,7 +700,7 @@ export function setJavaExecutable(serverid, executable) {
  * @returns {Array.<string>} An array of the additional arguments for JVM initialization.
  */
 export function getJVMOptions(serverid) {
-  return config.javaConfig[serverid].jvmOptions;
+  return config.javaConfig[serverid]?.jvmOptions ?? [];
 }
 
 /**
@@ -704,6 +713,9 @@ export function getJVMOptions(serverid) {
  * initialization.
  */
 export function setJVMOptions(serverid, jvmOptions) {
+  if (!config.javaConfig[serverid]) {
+    config.javaConfig[serverid] = {};
+  }
   config.javaConfig[serverid].jvmOptions = jvmOptions;
 }
 
