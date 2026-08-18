@@ -5,11 +5,17 @@ import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getVersion } from "@tauri-apps/api/app";
 import { platform } from "@tauri-apps/plugin-os";
+import Lang from "../langloader.js";
 import { LoggerUtil } from "./loggerutil.js";
 import * as ConfigManager from "../configmanager.js";
 
 // Requirements
-import { getCurrentView } from "./uibinder.js";
+import { getCurrentView, switchView } from "./viewstate.js";
+import {
+  setOverlayContent,
+  setOverlayHandler,
+  toggleOverlay,
+} from "./overlay.js";
 import { VIEWS } from "./views.js";
 import semver from "semver";
 
@@ -77,20 +83,18 @@ function bindFileSelectors() {
       const directoryDialog =
         ele.hasAttribute("dialogDirectory") &&
         ele.getAttribute("dialogDirectory") == "true";
-      const properties = directoryDialog
-        ? ["openDirectory", "createDirectory"]
-        : ["openFile"];
 
-      const options = {
-        properties,
+      const dialogOptions = {
+        directory: directoryDialog,
+        multiple: false,
       };
 
       if (ele.hasAttribute("dialogTitle")) {
-        options.title = ele.getAttribute("dialogTitle");
+        dialogOptions.title = ele.getAttribute("dialogTitle");
       }
 
-      if (isJavaExecSel && process.platform === "win32") {
-        options.filters = [
+      if (isJavaExecSel && platform() === "windows") {
+        dialogOptions.filters = [
           {
             name: Lang.queryJS("settings.fileSelectors.executables"),
             extensions: ["exe"],
@@ -374,6 +378,15 @@ function settingsNavItemListener(ele, fade = true) {
       });
     });
   }
+}
+
+function openSettingsAccountTab() {
+  switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
+    settingsNavItemListener(
+      document.getElementById("settingsNavAccount"),
+      false,
+    );
+  });
 }
 
 const settingsNavDone = document.getElementById("settingsNavDone");
@@ -1602,7 +1615,7 @@ const settingsAboutChangelogButton = settingsTabAbout.getElementsByClassName(
 
 // Bind the devtools toggle button.
 document.getElementById("settingsAboutDevToolsButton").onclick = (e) => {
-  let window = remote.getCurrentWindow();
+  let window = getCurrentWindow();
   window.toggleDevTools();
 };
 
@@ -1649,7 +1662,7 @@ function populateVersionInformation(
  */
 function populateAboutVersionInformation() {
   populateVersionInformation(
-    remote.app.getVersion(),
+    getVersion(),
     document.getElementById("settingsAboutCurrentVersionValue"),
     document.getElementById("settingsAboutCurrentVersionTitle"),
     document.getElementById("settingsAboutCurrentVersionCheck"),
@@ -1664,7 +1677,7 @@ function populateReleaseNotes() {
   $.ajax({
     url: "https://github.com/Redllamaaa/tsmplauncher/releases.atom",
     success: (data) => {
-      const version = "v" + remote.app.getVersion();
+      const version = "v" + getVersion();
       const entries = $(data).find("entry");
 
       for (let i = 0; i < entries.length; i++) {
@@ -1778,7 +1791,7 @@ function populateSettingsUpdateInformation(data) {
     );
     settingsUpdateChangelogCont.style.display = "none";
     populateVersionInformation(
-      remote.app.getVersion(),
+      getVersion(),
       settingsUpdateVersionValue,
       settingsUpdateVersionTitle,
       settingsUpdateVersionCheck,
@@ -1834,3 +1847,5 @@ async function prepareSettings(first = false) {
 
 // Prepare the settings UI on startup.
 //prepareSettings(true)
+
+export { prepareSettings, settingsNavItemListener, openSettingsAccountTab };

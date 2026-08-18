@@ -4,8 +4,11 @@
 
 /* Overlay Wrapper Functions */
 
+import $ from "jquery";
+import Lang from "../langloader.js";
 import * as ConfigManager from "../configmanager.js";
 import { VIEWS } from "./views.js";
+import { getCurrentView, switchView } from "./viewstate.js";
 
 /**
  * Check to see if the overlay is visible.
@@ -271,18 +274,9 @@ document.getElementById("accountSelectCancel").addEventListener("click", () => {
 });
 
 // Bind account select manage button.
-document
-  .getElementById("accountSelectManage")
-  .addEventListener("click", async () => {
-    await prepareSettings();
-    switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
-      settingsNavItemListener(
-        document.getElementById("settingsNavAccount"),
-        false,
-      );
-    });
-    toggleOverlay(false);
-  });
+document.getElementById("accountSelectManage").addEventListener("click", () => {
+  toggleOverlay(false);
+});
 
 // Make the Server Selection background clickable to close the overlay.
 overlayContainer.addEventListener("click", (e) => {
@@ -401,3 +395,18 @@ async function prepareAccountSelectionList() {
   populateAccountListings();
   await setAccountListingHandlers();
 }
+
+export {
+  setOverlayContent,
+  setOverlayHandler,
+  setDismissHandler,
+  toggleOverlay,
+  toggleServerSelection,
+  toggleAccountSelection,
+  setServerListingHandlers,
+  setAccountListingHandlers,
+  populateServerListings,
+  populateAccountListings,
+  prepareServerSelectionList,
+  prepareAccountSelectionList,
+};

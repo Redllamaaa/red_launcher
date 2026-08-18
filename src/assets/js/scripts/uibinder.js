@@ -7,12 +7,19 @@ import { ready } from "./bootstrap.js";
 await ready();
 
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { getCurrentView, setCurrentView, switchView } from "./viewstate.js";
 
 // Requirements
 import $ from "jquery";
 import isDev from "../isdev.js";
 import Lang from "../langloader.js";
 import { loggerAutoUpdater } from "./uicore.js";
+import { prepareSettings } from "./settings.js";
+import {
+  setOverlayContent,
+  setOverlayHandler,
+  toggleOverlay,
+} from "./overlay.js";
 
 import { Type } from "helios-distribution-types";
 
@@ -24,47 +31,6 @@ let rscShouldLoad = false;
 let fatalStartupError = false;
 
 import { VIEWS } from "./views.js";
-
-// The currently shown view container.
-let currentView;
-
-/**
- * Switch launcher views.
- *
- * @param {string} current The ID of the current view container.
- * @param {*} next The ID of the next view container.
- * @param {*} currentFadeTime Optional. The fade out time for the current view.
- * @param {*} nextFadeTime Optional. The fade in time for the next view.
- * @param {*} onCurrentFade Optional. Callback function to execute when the current
- * view fades out.
- * @param {*} onNextFade Optional. Callback function to execute when the next view
- * fades in.
- */
-function switchView(
-  current,
-  next,
-  currentFadeTime = 500,
-  nextFadeTime = 500,
-  onCurrentFade = () => {},
-  onNextFade = () => {},
-) {
-  currentView = next;
-  $(`${current}`).fadeOut(currentFadeTime, async () => {
-    await onCurrentFade();
-    $(`${next}`).fadeIn(nextFadeTime, async () => {
-      await onNextFade();
-    });
-  });
-}
-
-/**
- * Get the currently shown view container.
- *
- * @returns {string} The currently shown view container.
- */
-function getCurrentView() {
-  return currentView;
-}
 
 async function showMainUI(data) {
   if (!isDev) {
@@ -505,7 +471,8 @@ document.addEventListener(
       rscShouldLoad = true;
     }
   } catch (err) {
-    console.error(err);
+    console.error("STARTUP ERROR:", err);
+    console.error("STACK:", err?.stack);
     fatalStartupError = true;
     if (
       document.readyState === "interactive" ||
@@ -527,4 +494,4 @@ async function devModeToggle() {
   syncModConfigurations(data);
 }
 
-export { VIEWS, getCurrentView };
+export { VIEWS, getCurrentView, switchView };

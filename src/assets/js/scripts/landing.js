@@ -13,6 +13,7 @@ import Lang from "../langloader.js";
 import { LoggerUtil } from "./loggerutil.js";
 import * as ConfigManager from "../configmanager.js";
 import { VIEWS } from "./views.js";
+import { setOverlayContent } from "./overlay.js";
 
 // Requirements
 // TODO: port to Rust — Mojang API, downloads, and Java toolchain management
