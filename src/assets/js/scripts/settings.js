@@ -1557,14 +1557,14 @@ function populateJvmOptsLink(server) {
     { major: major },
   );
   if (major >= 12) {
-    settingsJvmOptsLink.href = `https://docs.oracle.com/en/java/javase/${major}/docs/specs/man/java.html#extra-options-for-java`;
+    settingsJvmOptsLink.href = `https://docs.oracle.com/javase/${major}/docs/technotes/tools/${platform() === "windows" ? "windows" : "unix"}/java.html`;
   } else if (major >= 11) {
     settingsJvmOptsLink.href =
       "https://docs.oracle.com/en/java/javase/11/tools/java.html#GUID-3B1CE181-CD30-4178-9602-230B800D4FAE";
   } else if (major >= 9) {
     settingsJvmOptsLink.href = `https://docs.oracle.com/javase/${major}/tools/java.htm`;
   } else {
-    settingsJvmOptsLink.href = `https://docs.oracle.com/javase/${major}/docs/technotes/tools/${process.platform === "win32" ? "windows" : "unix"}/java.html`;
+    settingsJvmOptsLink.href = `https://docs.oracle.com/javase/${major}/docs/technotes/tools/${platform() === "windows" ? "windows" : "unix"}/java.html`;
   }
 }
 
@@ -1771,7 +1771,7 @@ function populateSettingsUpdateInformation(data) {
       settingsUpdateVersionCheck,
     );
 
-    if (process.platform === "darwin") {
+    if (platform() === "macos") {
       settingsUpdateButtonStatus(
         Lang.queryJS("settings.updates.downloadButton"),
         false,

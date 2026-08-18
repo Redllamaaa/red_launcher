@@ -150,7 +150,7 @@ class ProcessBuilder {
    * @returns {string} The classpath separator for the current operating system.
    */
   static getClasspathSeparator() {
-    return process.platform === "win32" ? ";" : ":";
+    return platform() === "windows" ? ";" : ":";
   }
 
   /**
@@ -441,7 +441,7 @@ class ProcessBuilder {
     );
 
     // Java Arguments
-    if (process.platform === "darwin") {
+    if (platform() === "macos") {
       args.push("-Xdock:name=HeliosLauncher");
       args.push(
         "-Xdock:icon=" + path.join(__dirname, "..", "images", "minecraft.icns"),
@@ -497,7 +497,7 @@ class ProcessBuilder {
     //args.push('-Dlog4j.configurationFile=D:\\WesterosCraft\\game\\common\\assets\\log_configs\\client-1.12.xml')
 
     // Java Arguments
-    if (process.platform === "darwin") {
+    if (platform() === "macos") {
       args.push("-Xdock:name=HeliosLauncher");
       args.push(
         "-Xdock:icon=" + path.join(__dirname, "..", "images", "minecraft.icns"),

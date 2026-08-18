@@ -7,6 +7,7 @@
 // Tauri
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { open } from "@tauri-apps/plugin-shell";
+import { platform, arch } from "@tauri-apps/plugin-os";
 
 // Requirements
 import $ from "jquery";
@@ -33,7 +34,7 @@ window.eval = globalThis.eval = function () {
   throw new Error("Sorry, this app does not support window.eval().");
 };
 
-// Disable zoom, needed for darwin.
+// Disable zoom, needed for macos.
 document.body.style.zoom = 1;
 document.addEventListener(
   "wheel",
@@ -58,8 +59,8 @@ if (!isDev) {
       case "update-available":
         loggerAutoUpdater.info("New update available", info.version);
 
-        if (process.platform === "darwin") {
-          info.darwindownload = `https://github.com/Redllamaaa/tsmplauncher/releases/download/v${info.version}/TSMP Launcher-setup-${info.version}${process.arch === "arm64" ? "-arm64" : "-x64"}.dmg`;
+        if (platform() === "macos") {
+          info.darwindownload = `https://github.com/Redllamaaa/tsmplauncher/releases/download/v${info.version}/TSMP Launcher-setup-${info.version}${platform() === "macos" && arch() === "aarch64" ? "-arm64" : "-x64"}.dmg`;
           showUpdateUI(info);
         }
 
