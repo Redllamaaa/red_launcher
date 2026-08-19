@@ -19,6 +19,16 @@ import {
 } from "./overlay.js";
 import { VIEWS } from "./views.js";
 import semver from "semver";
+import $ from "jquery";
+
+import {
+  validateSelectedJvm,
+  ensureJavaDirIsRoot,
+} from "../helios-core-stubs.js";
+import {
+  setLoginOptionsViewOnLoginSuccess,
+  setLoginOptionsViewOnLoginCancel,
+} from "./loginOptionsState.js";
 
 // TODO: replace with Tauri command using the `sysinfo` Rust crate
 const os = {
@@ -633,8 +643,8 @@ function processLogOut(val, isLastAccount) {
       }
       if (isLastAccount) {
         loginOptionsCancelEnabled(false);
-        loginOptionsViewOnLoginSuccess = VIEWS.settings;
-        loginOptionsViewOnLoginCancel = VIEWS.loginOptions;
+        setLoginOptionsViewOnLoginSuccess(VIEWS.settings);
+        setLoginOptionsViewOnLoginCancel(VIEWS.loginOptions);
         switchView(getCurrentView(), VIEWS.loginOptions);
       }
     });
@@ -684,8 +694,8 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGOUT, (_, ...arguments_) => {
         }
         if (isLastAccount) {
           loginOptionsCancelEnabled(false);
-          loginOptionsViewOnLoginSuccess = VIEWS.settings;
-          loginOptionsViewOnLoginCancel = VIEWS.loginOptions;
+          setLoginOptionsViewOnLoginSuccess(VIEWS.settings);
+          setLoginOptionsViewOnLoginCancel(VIEWS.loginOptions);
           switchView(getCurrentView(), VIEWS.loginOptions);
         }
         if (msAccDomElementCache) {
@@ -830,15 +840,12 @@ const settingsModsContainer = document.getElementById("settingsModsContainer");
  */
 async function resolveModsForUI() {
   const serv = ConfigManager.getSelectedServer();
-
   const distro = await DistroAPI.getDistribution();
-  const servConf = ConfigManager.getModConfiguration(serv);
+  const server = distro.getServerById(serv);
+  if (server == null) return;
 
-  const modStr = parseModulesForUI(
-    distro.getServerById(serv).modules,
-    false,
-    servConf.mods,
-  );
+  const servConf = ConfigManager.getModConfiguration(serv);
+  const modStr = parseModulesForUI(server.modules, false, servConf.mods);
 
   document.getElementById("settingsReqModsContent").innerHTML = modStr.reqMods;
   document.getElementById("settingsOptModsContent").innerHTML = modStr.optMods;
@@ -991,6 +998,8 @@ async function resolveDropinModsForUI() {
   const serv = (await DistroAPI.getDistribution()).getServerById(
     ConfigManager.getSelectedServer(),
   );
+  if (serv == null) return;
+
   CACHE_SETTINGS_MODS_DIR = path.join(
     ConfigManager.getInstanceDirectory(),
     serv.rawServer.id,
@@ -1151,6 +1160,8 @@ async function resolveShaderpacksForUI() {
   const serv = (await DistroAPI.getDistribution()).getServerById(
     ConfigManager.getSelectedServer(),
   );
+  if (serv == null) return;
+
   CACHE_SETTINGS_INSTANCE_DIR = path.join(
     ConfigManager.getInstanceDirectory(),
     serv.rawServer.id,
@@ -1240,6 +1251,7 @@ async function loadSelectedServerOnModsTab() {
   const serv = (await DistroAPI.getDistribution()).getServerById(
     ConfigManager.getSelectedServer(),
   );
+  if (serv == null) return;
 
   for (const el of document.getElementsByClassName("settingsSelServContent")) {
     el.innerHTML = `
@@ -1528,11 +1540,16 @@ async function populateJavaExecDetails(execPath) {
     ConfigManager.getSelectedServer(),
   );
 
+  if (server == null) {
+    // No server selected/available yet — nothing to validate against.
+    settingsJavaExecDetails.innerHTML = "";
+    return;
+  }
+
   const details = await validateSelectedJvm(
     ensureJavaDirIsRoot(execPath),
     server.effectiveJavaOptions.supported,
   );
-
   if (details != null) {
     settingsJavaExecDetails.innerHTML = Lang.queryJS(
       "settings.java.selectedJava",
@@ -1592,6 +1609,8 @@ async function prepareJavaTab() {
   const server = (await DistroAPI.getDistribution()).getServerById(
     ConfigManager.getSelectedServer(),
   );
+  if (server == null) return;
+
   bindMinMaxRam(server);
   bindRangeSlider(server);
   populateMemoryStatus();

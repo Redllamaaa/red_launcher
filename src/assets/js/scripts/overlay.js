@@ -9,6 +9,7 @@ import Lang from "../langloader.js";
 import * as ConfigManager from "../configmanager.js";
 import { VIEWS } from "./views.js";
 import { getCurrentView, switchView } from "./viewstate.js";
+import { callUpdateSelectedServer } from "./serverStateHooks.js";
 
 /**
  * Check to see if the overlay is visible.
@@ -295,7 +296,7 @@ async function setServerListingHandlers() {
       const serv = (await DistroAPI.getDistribution()).getServerById(
         val.getAttribute("servid"),
       );
-      updateSelectedServer(serv);
+      callUpdateSelectedServer(serv);
       refreshServerStatus(true);
       toggleOverlay(false);
     };

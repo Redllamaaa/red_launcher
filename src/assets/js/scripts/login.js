@@ -6,6 +6,7 @@ await ready();
 
 import { VIEWS } from "./views.js";
 import { setOverlayContent } from "./overlay.js";
+import $ from "jquery";
 
 // Validation Regexes.
 const validUsername = /^[a-zA-Z0-9_]{1,16}$/;

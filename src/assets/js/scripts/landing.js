@@ -7,43 +7,33 @@ await ready();
 // Tauri
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getVersion } from "@tauri-apps/api/app";
-import { getCurrentView } from "./uibinder.js";
+import { getCurrentView } from "./viewstate.js";
 
 import Lang from "../langloader.js";
 import { LoggerUtil } from "./loggerutil.js";
 import * as ConfigManager from "../configmanager.js";
 import { VIEWS } from "./views.js";
 import { setOverlayContent } from "./overlay.js";
+import $ from "jquery";
+import { DistroAPI } from "../distromanager.js";
 
-// Requirements
-// TODO: port to Rust — Mojang API, downloads, and Java toolchain management
-const MojangRestAPI = {
-  status: async () => ({ responseStatus: "ERROR", data: [] }),
-  getDefaultStatuses: () => [],
-  statusToHex: () => "#808080",
-  // add more methods here as you hit further "X is not a function" errors
-};
-
-const getServerStatus = async () => ({
-  online: false,
-  players: { online: 0, max: 0 },
-});
-const RestResponseStatus = { SUCCESS: "SUCCESS", ERROR: "ERROR" };
-const isDisplayableError = () => false;
-const validateLocalFile = async () => true;
-const FullRepair = class {
-  async verifyFiles() {}
-  async download() {}
-};
-const DistributionIndexProcessor = class {};
-const MojangIndexProcessor = class {};
-const downloadFile = async () => {};
-const validateSelectedJvm = async () => false;
-const ensureJavaDirIsRoot = () => true;
-const javaExecFromRoot = (root) => root;
-const discoverBestJvmInstallation = async () => null;
-const latestOpenJDK = async () => null;
-const extractJdk = async () => {};
+import {
+  MojangRestAPI,
+  getServerStatus,
+  RestResponseStatus,
+  isDisplayableError,
+  validateLocalFile,
+  FullRepair,
+  DistributionIndexProcessor,
+  MojangIndexProcessor,
+  downloadFile,
+  validateSelectedJvm,
+  ensureJavaDirIsRoot,
+  javaExecFromRoot,
+  discoverBestJvmInstallation,
+  latestOpenJDK,
+  extractJdk,
+} from "../helios-core-stubs.js";
 
 // Internal Requirements
 // TODO: port to Rust
@@ -277,7 +267,7 @@ const refreshMojangStatuses = async function () {
     MojangRestAPI.statusToHex(status);
 };
 
-const refreshServerStatus = async (fade = false) => {
+export const refreshServerStatus = async (fade = false) => {
   loggerLanding.info("Refreshing Server Status");
   const serv = (await DistroAPI.getDistribution()).getServerById(
     ConfigManager.getSelectedServer(),
@@ -938,7 +928,7 @@ async function digestMessage(str) {
  * @returns {Promise.<void>} A promise which resolves when the news
  * content has finished loading and transitioning.
  */
-async function initNews() {
+export async function initNews() {
   setNewsLoading(true);
 
   const news = await loadNews();
@@ -1174,3 +1164,7 @@ async function loadNews() {
 
   return await promise;
 }
+
+import { setUpdateSelectedServerHandler } from "./serverStateHooks.js";
+
+setUpdateSelectedServerHandler(updateSelectedServer);

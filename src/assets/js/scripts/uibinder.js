@@ -21,6 +21,15 @@ import {
   toggleOverlay,
 } from "./overlay.js";
 import { DistroAPI } from "../distromanager.js";
+import { callUpdateSelectedServer } from "./serverStateHooks.js";
+import { refreshServerStatus, initNews } from "./landing.js";
+import { loginOptionsCancelEnabled } from "./loginOptions.js";
+import {
+  setLoginOptionsViewOnLoginSuccess,
+  setLoginOptionsViewOnLoginCancel,
+  setLoginOptionsViewOnCancel,
+  setLoginOptionsViewCancelHandler,
+} from "./loginOptionsState.js";
 
 import { Type } from "helios-distribution-types";
 
@@ -45,7 +54,9 @@ async function showMainUI(data) {
   }
 
   await prepareSettings(true);
-  updateSelectedServer(data.getServerById(ConfigManager.getSelectedServer()));
+  callUpdateSelectedServer(
+    data.getServerById(ConfigManager.getSelectedServer()),
+  );
   refreshServerStatus();
   setTimeout(() => {
     document.getElementById("frameBar").style.backgroundColor =
@@ -62,17 +73,17 @@ async function showMainUI(data) {
     }
 
     if (ConfigManager.isFirstLaunch()) {
-      currentView = VIEWS.welcome;
+      setCurrentView(VIEWS.welcome);
       $(VIEWS.welcome).fadeIn(1000);
     } else {
       if (isLoggedIn) {
-        currentView = VIEWS.landing;
+        setCurrentView(VIEWS.landing);
         $(VIEWS.landing).fadeIn(1000);
       } else {
         loginOptionsCancelEnabled(false);
-        loginOptionsViewOnLoginSuccess = VIEWS.landing;
-        loginOptionsViewOnLoginCancel = VIEWS.loginOptions;
-        currentView = VIEWS.loginOptions;
+        setLoginOptionsViewOnLoginSuccess(VIEWS.landing);
+        setLoginOptionsViewOnLoginCancel(VIEWS.loginOptions);
+        setCurrentView(VIEWS.loginOptions);
         $(VIEWS.loginOptions).fadeIn(1000);
       }
     }
@@ -113,7 +124,9 @@ function showFatalStartupError() {
  * @param {Object} data The distro index object.
  */
 function onDistroRefresh(data) {
-  updateSelectedServer(data.getServerById(ConfigManager.getSelectedServer()));
+  callUpdateSelectedServer(
+    data.getServerById(ConfigManager.getSelectedServer()),
+  );
   refreshServerStatus();
   initNews();
   syncModConfigurations(data);
@@ -358,12 +371,12 @@ async function validateSelectedAccount() {
           validateEmail(selectedAcc.username);
         }
 
-        loginOptionsViewOnLoginSuccess = getCurrentView();
-        loginOptionsViewOnLoginCancel = VIEWS.loginOptions;
+        setLoginOptionsViewOnLoginSuccess(getCurrentView());
+        setLoginOptionsViewOnLoginCancel(VIEWS.loginOptions);
 
         if (accLen > 0) {
-          loginOptionsViewOnCancel = getCurrentView();
-          loginOptionsViewCancelHandler = () => {
+          setLoginOptionsViewOnCancel(getCurrentView());
+          setLoginOptionsViewCancelHandler(() => {
             if (isMicrosoft) {
               ConfigManager.addMicrosoftAuthAccount(
                 selectedAcc.uuid,
@@ -384,7 +397,7 @@ async function validateSelectedAccount() {
             }
             ConfigManager.save();
             validateSelectedAccount();
-          };
+          });
           loginOptionsCancelEnabled(true);
         } else {
           loginOptionsCancelEnabled(false);
@@ -490,7 +503,7 @@ async function devModeToggle() {
   DistroAPI.toggleDevMode(true);
   const data = await DistroAPI.refreshDistributionOrFallback();
   ensureJavaSettings(data);
-  updateSelectedServer(data.servers[0]);
+  callUpdateSelectedServer(data.servers[0]);
   syncModConfigurations(data);
 }
 
