@@ -35,31 +35,31 @@ export function loginOptionsCancelEnabled(val) {
   }
 }
 
-loginOptionMicrosoft.onclick = async (e) => {
+lloginOptionMicrosoft.onclick = async () => {
   switchView(getCurrentView(), VIEWS.waiting, 500, 500, async () => {
     try {
-      const port = 8931; // must match your Azure app registration's redirect URI port
-      const redirectUri = `http://localhost:${port}/callback`;
-      const clientId = AZURE_CLIENT_ID; // check this is imported — see below
+      const dc = await invoke("start_microsoft_device_code", {
+        clientId: AZURE_CLIENT_ID,
+      });
+      alert(dc.message);
 
-      const authUrl =
-        `https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize` +
-        `?client_id=${clientId}` +
-        `&response_type=code` +
-        `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-        `&response_mode=query` +
-        `&scope=${encodeURIComponent("XboxLive.signin offline_access")}`;
+      const result = await invoke("poll_microsoft_device_code", {
+        clientId: AZURE_CLIENT_ID,
+        deviceCode: dc.device_code,
+        interval: dc.interval,
+      });
 
-      // Kick off the redirect listener in Rust FIRST, before opening the browser,
-      // so it's already waiting when the redirect comes back.
-      const codePromise = invoke("await_microsoft_auth_code", { port });
+      console.log("Microsoft auth result:", result);
 
-      await open(authUrl); // opens in the system's default browser
+      // TODO: Save account in ConfigManager using result.ms_* and result.mc_*
+      // ConfigManager.addMicrosoftAuthAccount(result);
 
-      const code = await codePromise;
-      console.log("Got Microsoft auth code:", code);
-
-      // Stage 2 (token exchange) goes here once this logs successfully.
+      switchView(
+        getCurrentView(),
+        getLoginOptionsViewOnLoginSuccess(), // or wherever you go after login
+        500,
+        500,
+      );
     } catch (err) {
       console.error("Microsoft login failed:", err);
       switchView(
