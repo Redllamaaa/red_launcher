@@ -13,9 +13,15 @@ function query(id, placeHolders) {
   const parts = id.split(".");
   let res = lang;
   for (const p of parts) {
+    if (res == null) {
+      console.warn(
+        `[langloader] Missing lang key: "${id}" (stopped at "${p}")`,
+      );
+      return "";
+    }
     res = res[p];
   }
-  let text = res === lang ? "" : res;
+  let text = res === lang || res == null ? "" : res;
   if (placeHolders) {
     Object.entries(placeHolders).forEach(([key, value]) => {
       text = text.replace(`{${key}}`, value);
