@@ -21,6 +21,7 @@ import { ready } from "./bootstrap.js";
 await ready();
 
 import { LoggerUtil } from "./loggerutil.js";
+import { setDismissHandler, toggleAccountSelection } from "./overlay.js";
 
 const loggerUICore = LoggerUtil.getLogger("UICore");
 const loggerAutoUpdater = LoggerUtil.getLogger("AutoUpdater");

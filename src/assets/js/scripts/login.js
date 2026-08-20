@@ -11,6 +11,7 @@ import {
   toggleOverlay,
 } from "./overlay.js";
 import $ from "jquery";
+import { updateSelectedAccount } from "./landing.js";
 
 // Login Elements
 const loginCancelContainer = document.getElementById("loginCancelContainer");

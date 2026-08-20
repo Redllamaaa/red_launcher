@@ -19,10 +19,16 @@ import {
   setOverlayContent,
   setOverlayHandler,
   toggleOverlay,
+  setDismissHandler,
+  toggleAccountSelection,
 } from "./overlay.js";
 import { DistroAPI } from "../distromanager.js";
 import { callUpdateSelectedServer } from "./serverStateHooks.js";
-import { refreshServerStatus, initNews } from "./landing.js";
+import {
+  refreshServerStatus,
+  initNews,
+  updateSelectedAccount,
+} from "./landing.js";
 import { loginOptionsCancelEnabled } from "./loginOptions.js";
 import {
   setLoginOptionsViewOnLoginSuccess,
@@ -338,7 +344,7 @@ function mergeModConfiguration(o, n, nReq = false) {
   return n;
 }
 
-async function validateSelectedAccount() {
+export async function validateSelectedAccount() {
   const selectedAcc = ConfigManager.getSelectedAccount();
   if (selectedAcc != null) {
     const val = await AuthManager.validateSelected();

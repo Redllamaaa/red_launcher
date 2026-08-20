@@ -10,6 +10,8 @@ import * as ConfigManager from "../configmanager.js";
 import { VIEWS } from "./views.js";
 import { getCurrentView, switchView } from "./viewstate.js";
 import { callUpdateSelectedServer } from "./serverStateHooks.js";
+import { updateSelectedAccount } from "./landing.js";
+import { validateSelectedAccount } from "./uibinder.js";
 
 /**
  * Check to see if the overlay is visible.
