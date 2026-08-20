@@ -4,15 +4,23 @@
 import { ready } from "./bootstrap.js";
 
 import { VIEWS } from "./views.js";
+import { getCurrentView, switchView } from "./viewstate.js";
 import {
   setOverlayContent,
   setOverlayHandler,
   toggleOverlay,
 } from "./overlay.js";
+import { prepareSettings } from "./settings.js";
 import $ from "jquery";
+import Lang from "../langloader.js";
+import { LoggerUtil } from "./loggerutil.js";
+import { isDisplayableError } from "../helios-core-stubs.js";
+import * as AuthManager from "../authmanager.js";
 import { updateSelectedAccount } from "./landing.js";
 
 await ready();
+
+const msftLoginLogger = LoggerUtil.getLogger("MicrosoftLogin");
 
 // Login Elements
 const loginCancelContainer = document.getElementById("loginCancelContainer");
@@ -103,8 +111,8 @@ loginButton.addEventListener("click", () => {
   loginLoading(true);
 
   AuthManager.addMicrosoftAccount()
-    .then((value) => {
-      updateSelectedAccount(value);
+    .then(({ account }) => {
+      updateSelectedAccount(account);
       loginButton.innerHTML = loginButton.innerHTML.replace(
         Lang.queryJS("login.loggingIn"),
         Lang.queryJS("login.success"),
