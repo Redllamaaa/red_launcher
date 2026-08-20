@@ -7,13 +7,14 @@ import * as ConfigManager from "../configmanager.js";
 // Requirements
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getVersion } from "@tauri-apps/api/app";
-import { getCurrentView } from "./viewstate.js";
+import { getCurrentView, switchView } from "./viewstate.js";
 import { LoggerUtil } from "./loggerutil.js";
 import { VIEWS } from "./views.js";
 import { setOverlayContent, toggleAccountSelection } from "./overlay.js";
 import $ from "jquery";
 import { DistroAPI } from "../distromanager.js";
 import Lang from "../langloader.js";
+import { prepareSettings } from "./settings.js";
 
 import {
   MojangRestAPI,
