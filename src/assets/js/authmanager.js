@@ -94,11 +94,19 @@ async function fullMicrosoftAuthFlow() {
 /**
  * Add a Microsoft account.
  *
+ * @param {(deviceCode: Object) => void} [onDeviceCode] Optional callback
+ * invoked as soon as the device code is available, so the caller can
+ * display deviceCode.user_code / verification_uri / message to the user
+ * while polling continues in the background.
  * @returns {Promise<Object>}
  */
-export async function addMicrosoftAccount() {
+export async function addMicrosoftAccount(onDeviceCode) {
   try {
     const { deviceCode, authPromise } = await fullMicrosoftAuthFlow();
+
+    if (typeof onDeviceCode === "function") {
+      onDeviceCode(deviceCode);
+    }
 
     const auth = await authPromise;
 
