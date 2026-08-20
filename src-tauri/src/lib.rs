@@ -15,7 +15,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             greet,
             microsoft_auth::start_microsoft_device_code,
-            microsoft_auth::poll_microsoft_device_code
+            microsoft_auth::poll_microsoft_device_code,
+            microsoft_auth::refresh_microsoft_account
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
