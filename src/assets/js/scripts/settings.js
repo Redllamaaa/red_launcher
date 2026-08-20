@@ -1658,31 +1658,41 @@ function populateAboutVersionInformation() {
  * Fetches the GitHub atom release feed and parses it for the release notes
  * of the current version. This value is displayed on the UI.
  */
-function populateReleaseNotes() {
-  $.ajax({
-    url: "https://github.com/Redllamaaa/tsmplauncher/releases.atom",
-    success: (data) => {
-      const version = "v" + getVersion();
-      const entries = $(data).find("entry");
+async function populateReleaseNotes() {
+  try {
+    const response = await fetch(
+      "https://github.com/Redllamaaa/tsmplauncher/releases.atom",
+    );
 
-      for (let i = 0; i < entries.length; i++) {
-        const entry = $(entries[i]);
-        let id = entry.find("id").text();
-        id = id.substring(id.lastIndexOf("/") + 1);
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
 
-        if (id === version) {
-          settingsAboutChangelogTitle.innerHTML = entry.find("title").text();
-          settingsAboutChangelogText.innerHTML = entry.find("content").text();
-          settingsAboutChangelogButton.href = entry.find("link").attr("href");
-        }
+    const text = await response.text();
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(text, "application/xml");
+
+    const version = "v" + getVersion();
+    const entries = $(xml).find("entry");
+
+    for (let i = 0; i < entries.length; i++) {
+      const entry = $(entries[i]);
+      let id = entry.find("id").text();
+      id = id.substring(id.lastIndexOf("/") + 1);
+
+      if (id === version) {
+        settingsAboutChangelogTitle.innerHTML = entry.find("title").text();
+        settingsAboutChangelogText.innerHTML = entry.find("content").text();
+        settingsAboutChangelogButton.href = entry.find("link").attr("href");
+        break;
       }
-    },
-    timeout: 2500,
-  }).catch((err) => {
+    }
+  } catch (err) {
+    console.error("Failed to load release notes:", err);
     settingsAboutChangelogText.innerHTML = Lang.queryJS(
       "settings.about.releaseNotesFailed",
     );
-  });
+  }
 }
 
 /**

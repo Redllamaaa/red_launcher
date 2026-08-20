@@ -2,9 +2,7 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "Capability for the main window",
-  "windows": [
-    "main"
-  ],
+  "windows": ["main"],
   "permissions": [
     "core:default",
     "opener:default",
@@ -16,11 +14,13 @@
     "fs:allow-rename",
     {
       "identifier": "fs:scope",
-      "allow": [
-        "$APPDATA",
-        "$APPDATA/**"
-      ]
+      "allow": ["$APPDATA", "$APPDATA/**"]
     },
-    "shell:default"
+    "shell:default",
+    "http:default",
+    {
+      "identifier": "http:allow-fetch",
+      "allow": [{ "url": "https://github.com/*" }]
+    }
   ]
 }
