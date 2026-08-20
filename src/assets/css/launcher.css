@@ -1419,6 +1419,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Auth account shared styles. */
 .settingsAuthAccount {
   display: flex;
+  min-height: 125px;
   background: rgba(0, 0, 0, 0.25);
   border-radius: 3px;
   border: 1px solid rgba(126, 126, 126, 0.57);
@@ -1446,7 +1447,8 @@ input:checked + .toggleSwitchSlider:before {
   flex-direction: column;
   justify-content: center;
   margin-left: 20px;
-  width: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 .settingsAuthAccountDetails > *:not(:last-child) {
   margin-bottom: 20px;
@@ -1466,6 +1468,10 @@ input:checked + .toggleSwitchSlider:before {
 .settingsAuthAccountDetailValue {
   font-size: 14px;
   -webkit-user-select: initial;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 /* Account actions container. */
@@ -1475,6 +1481,7 @@ input:checked + .toggleSwitchSlider:before {
   justify-content: space-between;
   align-items: flex-end;
   padding: 10px;
+  flex-shrink: 0;
 }
 
 /* Account select button shared styles. */
