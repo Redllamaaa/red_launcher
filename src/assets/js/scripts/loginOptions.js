@@ -7,6 +7,8 @@ import { getCurrentView, switchView } from "./viewstate.js";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-shell";
 import { AZURE_CLIENT_ID } from "../ipcconstants.js";
+import * as ConfigManager from "../configmanager.js";
+import { toggleAccountSelection } from "./overlay.js";
 
 const loginOptionsCancelContainer = document.getElementById(
   "loginOptionCancelContainer",
@@ -35,38 +37,53 @@ export function loginOptionsCancelEnabled(val) {
 }
 
 loginOptionMicrosoft.onclick = async () => {
-  switchView(getCurrentView(), VIEWS.waiting, 500, 500, async () => {
-    try {
-      const dc = await invoke("start_microsoft_device_code", {
-        clientId: AZURE_CLIENT_ID,
-      });
-      alert(dc.message);
+  switchView(
+    getCurrentView(),
+    VIEWS.waiting,
+    500,
+    500,
+    () => {},
+    async () => {
+      try {
+        const dc = await invoke("start_microsoft_device_code", {
+          clientId: AZURE_CLIENT_ID,
+        });
+        alert(dc.message);
 
-      const result = await invoke("poll_microsoft_device_code", {
-        clientId: AZURE_CLIENT_ID,
-        deviceCode: dc.device_code,
-        interval: dc.interval,
-      });
+        const result = await invoke("poll_microsoft_device_code", {
+          clientId: AZURE_CLIENT_ID,
+          deviceCode: dc.device_code,
+          interval: dc.interval,
+        });
 
-      // TODO: Save account in ConfigManager using result.ms_* and result.mc_*
-      // ConfigManager.addMicrosoftAuthAccount(result);
+        ConfigManager.addMicrosoftAuthAccount(
+          result.mc_uuid,
+          result.mc_access_token,
+          result.mc_username,
+          result.mc_expires_at,
+          result.ms_access_token,
+          result.ms_refresh_token,
+          result.ms_expires_at,
+        );
+        ConfigManager.save();
 
-      switchView(
-        getCurrentView(),
-        getLoginOptionsViewOnLoginSuccess(), // or wherever you go after login
-        500,
-        500,
-      );
-    } catch (err) {
-      console.error("Microsoft login failed:", err);
-      switchView(
-        getCurrentView(),
-        getLoginOptionsViewOnLoginCancel(),
-        500,
-        500,
-      );
-    }
-  });
+        switchView(
+          getCurrentView(),
+          getLoginOptionsViewOnLoginSuccess(),
+          500,
+          500,
+        );
+      } catch (err) {
+        console.error("Microsoft login failed:", err);
+        switchView(
+          getCurrentView(),
+          getLoginOptionsViewOnLoginCancel(),
+          500,
+          500,
+        );
+      }
+    },
+  );
 };
 
 loginOptionsCancelButton.onclick = (e) => {
