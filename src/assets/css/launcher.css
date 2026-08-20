@@ -2368,6 +2368,7 @@ input:checked + .toggleSwitchSlider:before {
 #landingContainer > #lower {
   height: 23%;
   display: flex;
+  justify-content: space-between;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
 }
 #landingContainer > #lower > #left {
@@ -2385,21 +2386,6 @@ input:checked + .toggleSwitchSlider:before {
   display: inline-flex;
   line-height: 24px;
   left: 50px;
-}
-#landingContainer > #lower > #center {
-  position: relative;
-  transition: top 2s ease;
-  top: 0px;
-  height: 100%;
-  width: 34%;
-  display: inline-flex;
-  justify-content: center;
-}
-#landingContainer > #lower > #center #content {
-  position: relative;
-  z-index: 500;
-  transition: top 2s ease;
-  top: 10px;
 }
 #landingContainer > #lower > #right {
   position: relative;
@@ -2550,7 +2536,7 @@ input:checked + .toggleSwitchSlider:before {
   position: relative;
   background-position: center;
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: 50px 50px;
 }
 
 /* Avatar edit overlay. */
@@ -2582,7 +2568,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* User profile name text. */
 #user_text {
-  font-size: 12px;
+  font-size: 14px;
   min-width: 135px;
   font-weight: 900;
   letter-spacing: 1px;
@@ -3024,12 +3010,12 @@ input:checked + .toggleSwitchSlider:before {
 #overlayContainer {
   position: absolute;
   z-index: 500;
-  top: 22px;
+  top: 0px;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: calc(100% - 22px);
+  height: 100%;
   background: rgba(0, 0, 0, 0.5);
 }
 
@@ -3438,7 +3424,7 @@ input:checked + .toggleSwitchSlider:before {
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: calc(100% - 22px);
+  height: 100%;
 }
 
 /* Loading content container. */

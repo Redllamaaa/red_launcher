@@ -163,19 +163,22 @@ document.getElementById("settingsMediaButton").onclick = async (e) => {
 // Bind selected account
 export function updateSelectedAccount(authUser) {
   let username = Lang.queryJS("landing.selectedAccount.noAccountSelected");
+
   if (authUser != null) {
     if (authUser.displayName != null) {
       username = authUser.displayName;
     }
+
     if (authUser.uuid != null) {
       document.getElementById("avatarContainer").style.backgroundImage =
-        `url('https://mc-heads.net/body/${authUser.uuid}/right')`;
+        `url('https://mc-heads.net/head/${authUser.uuid}/right')`;
     }
   }
+
   user_text.innerHTML = username;
 }
-// TODO: move into startup sequence after ConfigManager.load() resolves
-// updateSelectedAccount(ConfigManager.getSelectedAccount());
+
+updateSelectedAccount(ConfigManager.getSelectedAccount());
 
 // Bind selected server
 function updateSelectedServer(serv) {
