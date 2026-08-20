@@ -619,72 +619,50 @@ let msAccDomElementCache;
  * @param {Element} val The log out button element.
  * @param {boolean} isLastAccount If this logout is on the last added account.
  */
-function processLogOut(val, isLastAccount) {
+async function processLogOut(val, isLastAccount) {
   const parent = val.closest(".settingsAuthAccount");
   const uuid = parent.getAttribute("uuid");
   const prevSelAcc = ConfigManager.getSelectedAccount();
 
-  // Microsoft logout through Tauri.
-  // invoke("logout_microsoft", { uuid, isLastAccount });
-}
-
-// Bind reply for Microsoft Logout.
-// TODO: Replace with Tauri IPC once the Rust command/event exists.
-/**
-ipcRenderer.on(MSFT_OPCODE.REPLY_LOGOUT, (_, ...arguments_) => {
-  if (arguments_[0] === MSFT_REPLY_TYPE.ERROR) {
-    switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
-      if (arguments_.length > 1 && arguments_[1] === MSFT_ERROR.NOT_FINISHED) {
-        // User cancelled.
-        msftLogoutLogger.info("Logout cancelled by user.");
-        return;
-      }
-
-      // Unexpected error.
-      setOverlayContent(
-        Lang.queryJS("settings.msftLogout.errorTitle"),
-        Lang.queryJS("settings.msftLogout.errorMessage"),
-        Lang.queryJS("settings.msftLogout.okButton"),
-      );
-      setOverlayHandler(() => {
-        toggleOverlay(false);
-      });
-      toggleOverlay(true);
-    });
-  } else if (arguments_[0] === MSFT_REPLY_TYPE.SUCCESS) {
-    const uuid = arguments_[1];
-    const isLastAccount = arguments_[2];
-    const prevSelAcc = ConfigManager.getSelectedAccount();
-
-    msftLogoutLogger.info("Logout Successful. uuid:", uuid);
-
-    AuthManager.removeMicrosoftAccount(uuid)
-      .then(() => {
-        if (!isLastAccount && uuid === prevSelAcc.uuid) {
-          const selAcc = ConfigManager.getSelectedAccount();
-          refreshAuthAccountSelected(selAcc.uuid);
-          updateSelectedAccount(selAcc);
-          validateSelectedAccount();
-        }
-        if (isLastAccount) {
-          loginOptionsCancelEnabled(false);
-          setLoginOptionsViewOnLoginSuccess(VIEWS.settings);
-          setLoginOptionsViewOnLoginCancel(VIEWS.loginOptions);
-          switchView(getCurrentView(), VIEWS.loginOptions);
-        }
-        if (msAccDomElementCache) {
-          msAccDomElementCache.remove();
-          msAccDomElementCache = null;
-        }
-      })
-      .finally(() => {
-        if (!isLastAccount) {
-          switchView(getCurrentView(), VIEWS.settings, 500, 500);
-        }
-      });
+  try {
+    await AuthManager.removeMicrosoftAccount(uuid);
+  } catch (err) {
+    msftLogoutLogger.error("Logout failed for uuid:", uuid, err);
+    setOverlayContent(
+      Lang.queryJS("settings.authAccountLogout.errorTitle"),
+      Lang.queryJS("settings.authAccountLogout.errorMessage"),
+      Lang.queryJS("settings.authAccountLogout.okButton"),
+    );
+    setOverlayHandler(() => toggleOverlay(false));
+    toggleOverlay(true);
+    return;
   }
-});
-*/
+
+  msftLogoutLogger.info("Logout Successful. uuid:", uuid);
+
+  try {
+    if (!isLastAccount && uuid === prevSelAcc.uuid) {
+      const selAcc = ConfigManager.getSelectedAccount();
+      refreshAuthAccountSelected(selAcc.uuid);
+      updateSelectedAccount(selAcc);
+      validateSelectedAccount();
+    }
+    if (isLastAccount) {
+      loginOptionsCancelEnabled(false);
+      setLoginOptionsViewOnLoginSuccess(VIEWS.settings);
+      setLoginOptionsViewOnLoginCancel(VIEWS.loginOptions);
+      switchView(getCurrentView(), VIEWS.loginOptions);
+    }
+    if (msAccDomElementCache) {
+      msAccDomElementCache.remove();
+      msAccDomElementCache = null;
+    }
+  } finally {
+    if (!isLastAccount) {
+      switchView(getCurrentView(), VIEWS.settings, 500, 500);
+    }
+  }
+}
 
 /**
  * Refreshes the status of the selected account on the auth account
@@ -1841,8 +1819,5 @@ async function prepareSettings(first = false) {
   await prepareJavaTab();
   prepareAboutTab();
 }
-
-// Prepare the settings UI on startup.
-//prepareSettings(true)
 
 export { prepareSettings, settingsNavItemListener, openSettingsAccountTab };

@@ -1,9 +1,10 @@
-pub mod microsoft_auth;
+mod token_store;
+mod account_auth;
+mod account_logout;
 
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
+use token_store::{store_account_tokens, get_account_tokens, remove_account_tokens};
+use account_auth::{start_microsoft_device_code, poll_microsoft_device_code, refresh_microsoft_account};
+use account_logout::logout_microsoft;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -13,10 +14,13 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_http::init())
         .invoke_handler(tauri::generate_handler![
-            greet,
-            microsoft_auth::start_microsoft_device_code,
-            microsoft_auth::poll_microsoft_device_code,
-            microsoft_auth::refresh_microsoft_account
+            start_microsoft_device_code,
+            poll_microsoft_device_code,
+            refresh_microsoft_account,
+            store_account_tokens,
+            get_account_tokens,
+            remove_account_tokens,
+            logout_microsoft,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -302,34 +302,6 @@ export function getAuthAccount(uuid) {
 }
 
 /**
- * Update the tokens of an authenticated microsoft account.
- *
- * @param {string} uuid The uuid of the authenticated account.
- * @param {string} accessToken The new Access Token.
- * @param {string} msAccessToken The new Microsoft Access Token
- * @param {string} msRefreshToken The new Microsoft Refresh Token
- * @param {date} msExpires The date when the microsoft access token expires
- * @param {date} mcExpires The date when the mojang access token expires
- *
- * @returns {Object} The authenticated account object created by this action.
- */
-export function updateMicrosoftAuthAccount(
-  uuid,
-  accessToken,
-  msAccessToken,
-  msRefreshToken,
-  msExpires,
-  mcExpires,
-) {
-  config.authenticationDatabase[uuid].accessToken = accessToken;
-  config.authenticationDatabase[uuid].expiresAt = mcExpires;
-  config.authenticationDatabase[uuid].microsoft.access_token = msAccessToken;
-  config.authenticationDatabase[uuid].microsoft.refresh_token = msRefreshToken;
-  config.authenticationDatabase[uuid].microsoft.expires_at = msExpires;
-  return config.authenticationDatabase[uuid];
-}
-
-/**
  * Adds an authenticated microsoft account to the database to be stored.
  *
  * @param {string} uuid The uuid of the authenticated account.
@@ -342,28 +314,14 @@ export function updateMicrosoftAuthAccount(
  *
  * @returns {Object} The authenticated account object created by this action.
  */
-export function addMicrosoftAuthAccount(
-  uuid,
-  accessToken,
-  name,
-  mcExpires,
-  msAccessToken,
-  msRefreshToken,
-  msExpires,
-) {
+export function addMicrosoftAuthAccount(uuid, name, mcExpires) {
   config.selectedAccount = uuid;
   config.authenticationDatabase[uuid] = {
     type: "microsoft",
-    accessToken,
     username: name.trim(),
     uuid: uuid.trim(),
     displayName: name.trim(),
     expiresAt: mcExpires,
-    microsoft: {
-      access_token: msAccessToken,
-      refresh_token: msRefreshToken,
-      expires_at: msExpires,
-    },
   };
   return config.authenticationDatabase[uuid];
 }

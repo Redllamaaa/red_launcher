@@ -34,21 +34,31 @@ function calculateExpiryDate(nowMs, expiresInS) {
  * @param {Object} auth
  * @returns {Object}
  */
-function storeMicrosoftAuth(auth) {
+async function storeMicrosoftAuth(auth) {
   const now = Date.now();
+  const msExpiresAt = calculateExpiryDate(now, auth.ms_expires_in);
+  const mcExpiresAt = calculateExpiryDate(now, auth.mc_expires_in);
 
+  // Sensitive tokens go to the OS keyring via Rust.
+  await invoke("store_account_tokens", {
+    uuid: auth.mc_uuid,
+    tokens: {
+      ms_access_token: auth.ms_access_token,
+      ms_refresh_token: auth.ms_refresh_token,
+      ms_expires_at: msExpiresAt.toISOString(),
+      mc_access_token: auth.mc_access_token,
+      mc_expires_at: mcExpiresAt.toISOString(),
+    },
+  });
+
+  // Non-sensitive metadata stays in the existing JS config as before.
   const account = ConfigManager.addMicrosoftAuthAccount(
     auth.mc_uuid,
-    auth.mc_access_token,
     auth.mc_username,
-    calculateExpiryDate(now, auth.mc_expires_in),
-    auth.ms_access_token,
-    auth.ms_refresh_token,
-    calculateExpiryDate(now, auth.ms_expires_in),
+    mcExpiresAt,
   );
 
   ConfigManager.save();
-
   return account;
 }
 
@@ -131,7 +141,8 @@ export async function addMicrosoftAccount(onDeviceCode) {
  * @returns {Promise<Object>}
  */
 async function refreshMicrosoftAccount(current) {
-  const refreshToken = current?.microsoft?.refresh_token;
+  const stored = await invoke("get_account_tokens", { uuid: current.uuid });
+  const refreshToken = stored?.ms_refresh_token;
 
   if (!refreshToken) {
     log.warn("Cannot refresh Microsoft account: no refresh token.");
@@ -165,11 +176,11 @@ async function refreshMicrosoftAccount(current) {
  */
 export async function removeMicrosoftAccount(uuid) {
   try {
-    ConfigManager.removeAuthAccount(uuid);
+    await invoke("logout_microsoft", { uuid }); // wipes keyring entry
+    ConfigManager.removeAuthAccount(uuid); // wipes JS metadata
     ConfigManager.save();
   } catch (err) {
     log.error("Error while removing account.", err);
-
     throw err;
   }
 }

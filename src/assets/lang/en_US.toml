@@ -236,6 +236,9 @@ lastAccountWarningTitle = "Warning<br>This is Your Last Account"
 lastAccountWarningMessage = "In order to use the launcher you must be logged into at least one account. You will need to login again after.<br><br>Are you sure you want to log out?"
 confirmButton = "I'm Sure"
 cancelButton = "Cancel"
+errorTitle = "Logout Failed"
+errorMessage = "Something went wrong while logging out of this account.<br><br>Please try again."
+okButton = "Okay"
 
 [js.settings.authAccountPopulate]
 username = "Username"
