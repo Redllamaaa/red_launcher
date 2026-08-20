@@ -12,7 +12,6 @@ const loginOptionsCancelContainer = document.getElementById(
   "loginOptionCancelContainer",
 );
 const loginOptionMicrosoft = document.getElementById("loginOptionMicrosoft");
-const loginOptionMojang = document.getElementById("loginOptionMojang");
 const loginOptionsCancelButton = document.getElementById(
   "loginOptionCancelButton",
 );
@@ -35,7 +34,7 @@ export function loginOptionsCancelEnabled(val) {
   }
 }
 
-lloginOptionMicrosoft.onclick = async () => {
+loginOptionMicrosoft.onclick = async () => {
   switchView(getCurrentView(), VIEWS.waiting, 500, 500, async () => {
     try {
       const dc = await invoke("start_microsoft_device_code", {
@@ -48,8 +47,6 @@ lloginOptionMicrosoft.onclick = async () => {
         deviceCode: dc.device_code,
         interval: dc.interval,
       });
-
-      console.log("Microsoft auth result:", result);
 
       // TODO: Save account in ConfigManager using result.ms_* and result.mc_*
       // ConfigManager.addMicrosoftAuthAccount(result);
@@ -72,22 +69,11 @@ lloginOptionMicrosoft.onclick = async () => {
   });
 };
 
-loginOptionMojang.onclick = (e) => {
-  switchView(getCurrentView(), VIEWS.login, 500, 500, () => {
-    loginViewOnSuccess = getLoginOptionsViewOnLoginSuccess();
-    loginViewOnCancel = getLoginOptionsViewOnLoginCancel();
-    loginCancelEnabled(true);
-  });
-};
-
 loginOptionsCancelButton.onclick = (e) => {
   switchView(getCurrentView(), getLoginOptionsViewOnCancel(), 500, 500, () => {
-    // Clear login values (Mojang login)
-    // No cleanup needed for Microsoft.
-    loginUsername.value = "";
-    loginPassword.value = "";
-    if (getLoginOptionsViewCancelHandler() != null) {
-      getLoginOptionsViewCancelHandler()();
+    const cancelHandler = getLoginOptionsViewCancelHandler();
+    if (cancelHandler) {
+      cancelHandler();
       setLoginOptionsViewCancelHandler(null);
     }
   });

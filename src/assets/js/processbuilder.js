@@ -588,7 +588,7 @@ class ProcessBuilder {
               val = this.authUser.accessToken;
               break;
             case "user_type":
-              val = this.authUser.type === "microsoft" ? "msa" : "mojang";
+              val = "msa";
               break;
             case "version_type":
               val = this.vanillaManifest.type;

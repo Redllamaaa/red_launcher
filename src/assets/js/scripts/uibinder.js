@@ -360,41 +360,21 @@ async function validateSelectedAccount() {
         Lang.queryJS("uibinder.validateAccount.selectAnotherAccountButton"),
       );
       setOverlayHandler(() => {
-        const isMicrosoft = selectedAcc.type === "microsoft";
-
-        if (isMicrosoft) {
-          // Empty for now
-        } else {
-          // Mojang
-          // For convenience, pre-populate the username of the account.
-          document.getElementById("loginUsername").value = selectedAcc.username;
-          validateEmail(selectedAcc.username);
-        }
-
         setLoginOptionsViewOnLoginSuccess(getCurrentView());
         setLoginOptionsViewOnLoginCancel(VIEWS.loginOptions);
 
         if (accLen > 0) {
           setLoginOptionsViewOnCancel(getCurrentView());
           setLoginOptionsViewCancelHandler(() => {
-            if (isMicrosoft) {
-              ConfigManager.addMicrosoftAuthAccount(
-                selectedAcc.uuid,
-                selectedAcc.accessToken,
-                selectedAcc.username,
-                selectedAcc.expiresAt,
-                selectedAcc.microsoft.access_token,
-                selectedAcc.microsoft.refresh_token,
-                selectedAcc.microsoft.expires_at,
-              );
-            } else {
-              ConfigManager.addMojangAuthAccount(
-                selectedAcc.uuid,
-                selectedAcc.accessToken,
-                selectedAcc.username,
-                selectedAcc.displayName,
-              );
-            }
+            ConfigManager.addMicrosoftAuthAccount(
+              selectedAcc.uuid,
+              selectedAcc.accessToken,
+              selectedAcc.username,
+              selectedAcc.expiresAt,
+              selectedAcc.microsoft.access_token,
+              selectedAcc.microsoft.refresh_token,
+              selectedAcc.microsoft.expires_at,
+            );
             ConfigManager.save();
             validateSelectedAccount();
           });
