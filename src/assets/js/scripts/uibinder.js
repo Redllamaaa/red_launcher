@@ -66,15 +66,12 @@ async function showMainUI(data) {
   );
   refreshServerStatus();
   setTimeout(() => {
-    document.getElementById("frameBar").style.backgroundColor =
-      "rgba(0, 0, 0, 0.5)";
     document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute("bkid")}.jpg')`;
+
     $("#main").show();
 
     const isLoggedIn = Object.keys(ConfigManager.getAuthAccounts()).length > 0;
 
-    // If this is enabled in a development environment we'll get ratelimited.
-    // The relaunch frequency is usually far too high.
     if (!isDev && isLoggedIn) {
       validateSelectedAccount();
     }

@@ -5,7 +5,6 @@
  * modules, excluding dependencies.
  */
 // Tauri
-import { getCurrentWindow } from "@tauri-apps/api/window";
 import { open } from "@tauri-apps/plugin-shell";
 import { platform, arch } from "@tauri-apps/plugin-os";
 
@@ -165,52 +164,8 @@ document.addEventListener(
   function () {
     if (document.readyState === "interactive") {
       loggerUICore.info("UICore Initializing..");
-
-      // Bind close button.
-      Array.from(document.getElementsByClassName("fCb")).map((val) => {
-        val.addEventListener("click", (e) => {
-          const window = remote.getCurrentWindow();
-          window.close();
-        });
-      });
-
-      // Bind restore down button.
-      Array.from(document.getElementsByClassName("fRb")).map((val) => {
-        val.addEventListener("click", (e) => {
-          const window = remote.getCurrentWindow();
-          if (window.isMaximized()) {
-            window.unmaximize();
-          } else {
-            window.maximize();
-          }
-          document.activeElement.blur();
-        });
-      });
-
-      // Bind minimize button.
-      Array.from(document.getElementsByClassName("fMb")).map((val) => {
-        val.addEventListener("click", (e) => {
-          const window = remote.getCurrentWindow();
-          window.minimize();
-          document.activeElement.blur();
-        });
-      });
-
-      // Remove focus from social media buttons once they're clicked.
-      Array.from(document.getElementsByClassName("mediaURL")).map((val) => {
-        val.addEventListener("click", (e) => {
-          document.activeElement.blur();
-        });
-      });
     } else if (document.readyState === "complete") {
-      //266.01
-      //170.8
-      //53.21
       // Bind progress bar length to length of bot wrapper
-      //const targetWidth = document.getElementById("launch_content").getBoundingClientRect().width
-      //const targetWidth2 = document.getElementById("server_selection").getBoundingClientRect().width
-      //const targetWidth3 = document.getElementById("launch_button").getBoundingClientRect().width
-
       document.getElementById("launch_details").style.maxWidth = 266.01;
       document.getElementById("launch_progress").style.width = 170.8;
       document.getElementById("launch_details_right").style.maxWidth = 170.8;
