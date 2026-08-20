@@ -13,7 +13,7 @@ const SERVICE_NAME: &str = "red-launcher-msft-auth";
 pub struct AccountTokens {
     pub ms_access_token: String,
     pub ms_refresh_token: String,
-    pub ms_expires_at: String, // ISO date string, mirrors ConfigManager's calculateExpiryDate output
+    pub ms_expires_at: String,
 
     pub mc_access_token: String,
     pub mc_expires_at: String,

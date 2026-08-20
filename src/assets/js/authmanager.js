@@ -22,10 +22,10 @@ const log = LoggerUtil.getLogger("AuthManager");
  *
  * @param {number} nowMs
  * @param {number} expiresInS
- * @returns {number}
+ * @returns {Date}
  */
 function calculateExpiryDate(nowMs, expiresInS) {
-  return nowMs + Math.max(0, Number(expiresInS) - 10) * 1000;
+  return new Date(nowMs + Math.max(0, Number(expiresInS) - 10) * 1000);
 }
 
 /**
@@ -36,10 +36,10 @@ function calculateExpiryDate(nowMs, expiresInS) {
  */
 async function storeMicrosoftAuth(auth) {
   const now = Date.now();
+
   const msExpiresAt = calculateExpiryDate(now, auth.ms_expires_in);
   const mcExpiresAt = calculateExpiryDate(now, auth.mc_expires_in);
 
-  // Sensitive tokens go to the OS keyring via Rust.
   await invoke("store_account_tokens", {
     uuid: auth.mc_uuid,
     tokens: {
@@ -59,6 +59,7 @@ async function storeMicrosoftAuth(auth) {
   );
 
   ConfigManager.save();
+
   return account;
 }
 
