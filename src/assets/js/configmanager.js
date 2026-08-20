@@ -107,11 +107,6 @@ const DEFAULT_CONFIG = {
       dataDirectory: launcherDir,
     },
   },
-  newsCache: {
-    date: null,
-    content: null,
-    dismissed: false,
-  },
   clientToken: null,
   selectedServer: null, // Resolved
   selectedAccount: null,
@@ -227,34 +222,6 @@ export function getTempNativeFolder() {
 }
 
 // System Settings (Unconfigurable on UI)
-
-/**
- * Retrieve the news cache to determine
- * whether or not there is newer news.
- *
- * @returns {Object} The news cache object.
- */
-export function getNewsCache() {
-  return config.newsCache;
-}
-
-/**
- * Set the new news cache object.
- *
- * @param {Object} newsCache The new news cache object.
- */
-export function setNewsCache(newsCache) {
-  config.newsCache = newsCache;
-}
-
-/**
- * Set whether or not the news has been dismissed (checked)
- *
- * @param {boolean} dismissed Whether or not the news has been dismissed (checked).
- */
-export function setNewsCacheDismissed(dismissed) {
-  config.newsCache.dismissed = dismissed;
-}
 
 /**
  * Retrieve the common directory for shared
