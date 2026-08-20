@@ -4,15 +4,15 @@
  */
 // Tauri
 import { ready } from "./bootstrap.js";
-await ready();
 
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getCurrentView, setCurrentView, switchView } from "./viewstate.js";
 
 // Requirements
+import * as ConfigManager from "../configmanager.js";
+import Lang from "../langloader.js";
 import $ from "jquery";
 import isDev from "../isdev.js";
-import Lang from "../langloader.js";
 import { loggerAutoUpdater } from "./uicore.js";
 import { prepareSettings } from "./settings.js";
 import {
@@ -39,8 +39,9 @@ import {
 
 import { Type } from "helios-distribution-types";
 
-const AuthManager = { validateSelected: async () => false };
-import * as ConfigManager from "../configmanager.js";
+import * as AuthManager from "../authmanager.js";
+
+await ready();
 
 let rscShouldLoad = false;
 let fatalStartupError = false;

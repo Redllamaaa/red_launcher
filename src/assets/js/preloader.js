@@ -7,7 +7,7 @@ import ConfigManager from "./configmanager";
 import { DistroAPI } from "./distromanager";
 import LangLoader from "./langloader";
 import { LoggerUtil } from "./loggerutil.js";
-import { HeliosDistribution } from "helios-core/common";
+import { HeliosDistribution } from "./helios-core-stubs.js";
 
 const logger = LoggerUtil.getLogger("Preloader");
 

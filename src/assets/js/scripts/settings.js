@@ -1,7 +1,7 @@
 import { ready } from "./bootstrap.js";
-await ready();
 
 import { open } from "@tauri-apps/plugin-dialog";
+import { fetch } from "@tauri-apps/plugin-http";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getVersion } from "@tauri-apps/api/app";
 import { platform } from "@tauri-apps/plugin-os";
@@ -33,6 +33,8 @@ import {
   setLoginOptionsViewOnLoginSuccess,
   setLoginOptionsViewOnLoginCancel,
 } from "./loginOptionsState.js";
+
+await ready();
 
 // TODO: replace with Tauri command using the `sysinfo` Rust crate
 const os = {

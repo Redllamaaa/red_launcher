@@ -2,9 +2,9 @@
  * Script for welcome.ejs
  */
 import { ready } from "./bootstrap.js";
-await ready();
-
 import { VIEWS } from "./views.js";
+
+await ready();
 
 document.getElementById("welcomeButton").addEventListener("click", (e) => {
   loginOptionsCancelEnabled(false); // False by default, be explicit.

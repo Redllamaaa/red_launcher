@@ -3,7 +3,7 @@ import {
   getLibraryDir,
   MavenUtil,
   getVersionJarPath,
-} from "helios-core/common";
+} from "./helios-core-stubs.js";
 
 import ConfigManager from "./configmanager";
 import { join } from "path";

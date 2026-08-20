@@ -18,10 +18,11 @@ import Lang from "../langloader.js";
 import * as ConfigManager from "../configmanager.js";
 
 import { ready } from "./bootstrap.js";
-await ready();
 
 import { LoggerUtil } from "./loggerutil.js";
 import { setDismissHandler, toggleAccountSelection } from "./overlay.js";
+
+await ready();
 
 const loggerUICore = LoggerUtil.getLogger("UICore");
 const loggerAutoUpdater = LoggerUtil.getLogger("AutoUpdater");

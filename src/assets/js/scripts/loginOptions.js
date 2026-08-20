@@ -1,6 +1,4 @@
 import { ready } from "./bootstrap.js";
-await ready();
-
 import { VIEWS } from "./views.js";
 import $ from "jquery";
 import { getCurrentView, switchView } from "./viewstate.js";
@@ -9,6 +7,8 @@ import { open } from "@tauri-apps/plugin-shell";
 import { AZURE_CLIENT_ID } from "../ipcconstants.js";
 import * as ConfigManager from "../configmanager.js";
 import { toggleAccountSelection } from "./overlay.js";
+
+await ready();
 
 const loginOptionsCancelContainer = document.getElementById(
   "loginOptionCancelContainer",

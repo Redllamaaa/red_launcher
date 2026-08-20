@@ -9,7 +9,7 @@ import {
   mcVersionAtLeast,
   getLibraryDir,
   MavenUtil,
-} from "helios-core/common";
+} from "./helios-core-stubs.js";
 import { Type } from "helios-distribution-types";
 import os from "os";
 import path from "path";

@@ -2,20 +2,18 @@
  * Script for landing.ejs
  */
 import { ready } from "./bootstrap.js";
-await ready();
 
-// Tauri
+import * as ConfigManager from "../configmanager.js";
+// Requirements
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getVersion } from "@tauri-apps/api/app";
 import { getCurrentView } from "./viewstate.js";
-
-import Lang from "../langloader.js";
 import { LoggerUtil } from "./loggerutil.js";
-import * as ConfigManager from "../configmanager.js";
 import { VIEWS } from "./views.js";
 import { setOverlayContent, toggleAccountSelection } from "./overlay.js";
 import $ from "jquery";
 import { DistroAPI } from "../distromanager.js";
+import Lang from "../langloader.js";
 
 import {
   MojangRestAPI,
@@ -34,6 +32,8 @@ import {
   latestOpenJDK,
   extractJdk,
 } from "../helios-core-stubs.js";
+
+await ready();
 
 // Internal Requirements
 // TODO: port to Rust

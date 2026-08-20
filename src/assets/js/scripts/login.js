@@ -2,7 +2,6 @@
  * Script for login.ejs
  */
 import { ready } from "./bootstrap.js";
-await ready();
 
 import { VIEWS } from "./views.js";
 import {
@@ -12,6 +11,8 @@ import {
 } from "./overlay.js";
 import $ from "jquery";
 import { updateSelectedAccount } from "./landing.js";
+
+await ready();
 
 // Login Elements
 const loginCancelContainer = document.getElementById("loginCancelContainer");
