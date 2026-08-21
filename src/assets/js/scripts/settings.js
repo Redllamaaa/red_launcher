@@ -23,6 +23,7 @@ import {
   toggleOverlay,
   setDismissHandler,
   toggleAccountSelection,
+  toggleServerSelection,
 } from "./overlay.js";
 import { VIEWS } from "./views.js";
 import semver from "semver";
