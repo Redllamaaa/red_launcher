@@ -2,6 +2,7 @@ mod account_auth;
 mod account_logout;
 mod token_store;
 mod sysinfo;
+mod javaguard;
 
 use account_auth::{
     poll_microsoft_device_code,
@@ -11,6 +12,7 @@ use account_auth::{
 use account_logout::logout_microsoft;
 use token_store::{ get_account_tokens, remove_account_tokens, store_account_tokens };
 use sysinfo::get_memory_info;
+use javaguard::{ discover_java_candidates, run_java_version, extract_jdk_archive };
 
 use tauri_plugin_log::{ Target, TargetKind };
 
@@ -41,7 +43,10 @@ pub fn run() {
                 get_account_tokens,
                 remove_account_tokens,
                 logout_microsoft,
-                get_memory_info
+                get_memory_info,
+                discover_java_candidates,
+                run_java_version,
+                extract_jdk_archive
             ]
         )
         .run(tauri::generate_context!())

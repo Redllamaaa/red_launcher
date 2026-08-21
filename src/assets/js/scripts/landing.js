@@ -18,7 +18,7 @@ import {
 import $ from "jquery";
 import { DistroAPI } from "../distromanager.js";
 import Lang from "../langloader.js";
-import { prepareSettings } from "./settings.js";
+import { prepareSettings, syncJavaExecutableSelection } from "./settings.js";
 
 import {
   MojangRestAPI,
@@ -30,13 +30,16 @@ import {
   DistributionIndexProcessor,
   MojangIndexProcessor,
   downloadFile,
-  validateSelectedJvm,
-  ensureJavaDirIsRoot,
-  javaExecFromRoot,
-  discoverBestJvmInstallation,
-  latestOpenJDK,
-  extractJdk,
 } from "../helios-core-stubs.js";
+
+import {
+  extractJdk,
+  latestOpenJDK,
+  discoverBestJvmInstallation,
+  javaExecFromRoot,
+  ensureJavaDirIsRoot,
+  validateSelectedJvm,
+} from "../javaguard.js";
 
 await ready();
 
@@ -408,8 +411,7 @@ async function asyncSystemScan(effectiveJavaOptions, launchAfter = true) {
 
     // We need to make sure that the updated value is on the settings UI.
     // Just incase the settings UI is already open.
-    settingsJavaExecVal.value = javaExec;
-    await populateJavaExecDetails(settingsJavaExecVal.value);
+    await syncJavaExecutableSelection(javaExec);
 
     // TODO Callback hell, refactor
     // TODO Move this out, separate concerns.

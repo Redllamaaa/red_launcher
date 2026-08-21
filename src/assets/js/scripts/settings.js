@@ -29,10 +29,7 @@ import { VIEWS } from "./views.js";
 import semver from "semver";
 import $ from "jquery";
 
-import {
-  validateSelectedJvm,
-  ensureJavaDirIsRoot,
-} from "../helios-core-stubs.js";
+import { validateSelectedJvm, ensureJavaDirIsRoot } from "../javaguard.js";
 import {
   setLoginOptionsViewOnLoginSuccess,
   setLoginOptionsViewOnLoginCancel,
@@ -1295,6 +1292,7 @@ const settingsJavaExecDetails = document.getElementById(
 );
 const settingsJavaReqDesc = document.getElementById("settingsJavaReqDesc");
 const settingsJvmOptsLink = document.getElementById("settingsJvmOptsLink");
+const settingsJavaExecVal = document.getElementById("settingsJavaExecVal");
 
 // Bind on change event for min memory container.
 settingsMinRAMRange.onchange = (e) => {
@@ -1494,6 +1492,19 @@ async function populateJavaExecDetails(execPath) {
       "settings.java.invalidSelection",
     );
   }
+}
+
+/**
+ * Update the Java executable input and validation details on the Settings UI.
+ * Safe to call even if the Settings view isn't currently rendered.
+ *
+ * @param {string} execPath The new Java executable path.
+ */
+export async function syncJavaExecutableSelection(execPath) {
+  if (settingsJavaExecVal != null) {
+    settingsJavaExecVal.value = execPath;
+  }
+  await populateJavaExecDetails(execPath);
 }
 
 function populateJavaReqDesc(server) {

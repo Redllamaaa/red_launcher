@@ -18,9 +18,3 @@ export const FullRepair = class {
 export const DistributionIndexProcessor = class {};
 export const MojangIndexProcessor = class {};
 export const downloadFile = async () => {};
-export const validateSelectedJvm = async () => false;
-export const ensureJavaDirIsRoot = () => true;
-export const javaExecFromRoot = (root) => root;
-export const discoverBestJvmInstallation = async () => null;
-export const latestOpenJDK = async () => null;
-export const extractJdk = async () => {};

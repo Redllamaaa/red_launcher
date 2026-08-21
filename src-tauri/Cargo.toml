@@ -32,6 +32,9 @@ keyring = "3"
 tauri-plugin-log = "2"
 log = "0.4"
 sysinfo = "0.39.6"
+zip = "2"
+flate2 = "1"
+tar = "0.4"
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
 [profile.release]
