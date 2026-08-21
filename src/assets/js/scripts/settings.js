@@ -903,7 +903,10 @@ function bindModsToggleSwitch() {
  */
 function saveModConfiguration() {
   const serv = ConfigManager.getSelectedServer();
-  const modConf = ConfigManager.getModConfiguration(serv);
+  let modConf = ConfigManager.getModConfiguration(serv);
+  if (!modConf) {
+    modConf = { id: serv, mods: {} };
+  }
   modConf.mods = _saveModConfiguration(modConf.mods);
   ConfigManager.setModConfiguration(serv, modConf);
 }
@@ -961,7 +964,7 @@ async function resolveDropinModsForUI() {
 
   let dropinMods = "";
 
-  for (dropin of CACHE_DROPIN_MODS) {
+  for (const dropin of CACHE_DROPIN_MODS) {
     dropinMods += `<div id="${dropin.fullName}" class="settingsBaseMod settingsDropinMod" ${!dropin.disabled ? "enabled" : ""}>
                     <div class="settingsModContent">
                         <div class="settingsModMainWrapper">
@@ -1047,7 +1050,8 @@ function bindDropinModFileSystemButton() {
  * of adding/removing the .disabled extension.
  */
 function saveDropinModConfiguration() {
-  for (dropin of CACHE_DROPIN_MODS) {
+  if (CACHE_SETTINGS_MODS_DIR == null || CACHE_DROPIN_MODS == null) return;
+  for (const dropin of CACHE_DROPIN_MODS) {
     const dropinUI = document.getElementById(dropin.fullName);
     if (dropinUI != null) {
       const dropinUIEnabled = dropinUI.hasAttribute("enabled");
@@ -1149,6 +1153,7 @@ function setShadersOptions(arr, selected) {
 }
 
 function saveShaderpackSettings() {
+  if (CACHE_SETTINGS_INSTANCE_DIR == null) return;
   let sel = "OFF";
   for (let opt of document.getElementById("settingsShadersOptions").children) {
     if (opt.hasAttribute("selected")) {
@@ -1161,6 +1166,7 @@ function saveShaderpackSettings() {
 function bindShaderpackButton() {
   const spBtn = document.getElementById("settingsShaderpackButton");
   spBtn.onclick = () => {
+    if (CACHE_SETTINGS_INSTANCE_DIR == null) return;
     const p = path.join(CACHE_SETTINGS_INSTANCE_DIR, "shaderpacks");
     DropinModUtil.validateDir(p);
     shell.openPath(p);
@@ -1181,6 +1187,7 @@ function bindShaderpackButton() {
     spBtn.removeAttribute("drag");
     e.preventDefault();
 
+    if (CACHE_SETTINGS_INSTANCE_DIR == null) return;
     DropinModUtil.addShaderpacks(
       e.dataTransfer.files,
       CACHE_SETTINGS_INSTANCE_DIR,
