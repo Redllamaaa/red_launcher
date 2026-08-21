@@ -1458,7 +1458,7 @@ function updateRangedSlider(element, value, notch) {
  */
 function populateMemoryStatus(totalMem, freeMem) {
   settingsMemoryTotal.innerHTML =
-    Number((totalMem - 1073741824) / 1073741824).toFixed(1) + "G";
+    Number(totalMem / 1073741824).toFixed(1) + "G";
   settingsMemoryAvail.innerHTML = Number(freeMem / 1073741824).toFixed(1) + "G";
 }
 
@@ -1519,14 +1519,12 @@ function populateJvmOptsLink(server) {
   }
 }
 
-function bindMinMaxRam(server, totalMem) {
+function bindMinMaxRam(server) {
   const SETTINGS_MAX_MEMORY = ConfigManager.getAbsoluteMaxRAM(
     server.rawServer.javaOptions?.ram,
-    totalMem,
   );
   const SETTINGS_MIN_MEMORY = ConfigManager.getAbsoluteMinRAM(
     server.rawServer.javaOptions?.ram,
-    totalMem,
   );
   settingsMaxRAMRange.setAttribute("max", SETTINGS_MAX_MEMORY);
   settingsMaxRAMRange.setAttribute("min", SETTINGS_MIN_MEMORY);
@@ -1538,16 +1536,16 @@ function bindMinMaxRam(server, totalMem) {
  * Prepare the Java tab for display.
  */
 async function prepareJavaTab() {
+  const { total_mem, free_mem } = await getMemoryInfo();
+  populateMemoryStatus(total_mem, free_mem);
+
   const server = (await DistroAPI.getDistribution()).getServerById(
     ConfigManager.getSelectedServer(),
   );
   if (server == null) return;
 
-  const { total_mem, free_mem } = await getMemoryInfo();
-
-  bindMinMaxRam(server, total_mem);
+  bindMinMaxRam(server);
   bindRangeSlider(server, total_mem);
-  populateMemoryStatus(total_mem, free_mem);
   populateJavaReqDesc(server);
   populateJvmOptsLink(server);
 }

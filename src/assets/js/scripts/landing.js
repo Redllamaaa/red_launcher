@@ -10,7 +10,11 @@ import { getVersion } from "@tauri-apps/api/app";
 import { getCurrentView, switchView } from "./viewstate.js";
 import { LoggerUtil } from "./loggerutil.js";
 import { VIEWS } from "./views.js";
-import { setOverlayContent, toggleAccountSelection } from "./overlay.js";
+import {
+  setOverlayContent,
+  toggleAccountSelection,
+  toggleServerSelection,
+} from "./overlay.js";
 import $ from "jquery";
 import { DistroAPI } from "../distromanager.js";
 import Lang from "../langloader.js";

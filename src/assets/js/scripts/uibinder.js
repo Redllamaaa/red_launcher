@@ -119,13 +119,13 @@ function showFatalStartupError() {
  *
  * @param {Object} data The distro index object.
  */
-function onDistroRefresh(data) {
+async function onDistroRefresh(data) {
   callUpdateSelectedServer(
     data.getServerById(ConfigManager.getSelectedServer()),
   );
   refreshServerStatus();
   syncModConfigurations(data);
-  ensureJavaSettings(data);
+  await ensureJavaSettings(data);
 }
 
 /**
@@ -228,13 +228,12 @@ function syncModConfigurations(data) {
  *
  * @param {Object} data The distro index object.
  */
-function ensureJavaSettings(data) {
+async function ensureJavaSettings(data) {
   for (const serv of data.servers) {
-    ConfigManager.ensureJavaConfig(
+    await ConfigManager.ensureJavaConfig(
       serv.rawServer.id,
       serv.effectiveJavaOptions,
       serv.rawServer.javaOptions?.ram,
-      serv.rawServer.javaOptions?.totalMem,
     );
   }
 
@@ -449,7 +448,7 @@ document.addEventListener(
   try {
     const data = await DistroAPI.getDistribution();
     syncModConfigurations(data);
-    ensureJavaSettings(data);
+    await ensureJavaSettings(data);
     if (
       document.readyState === "interactive" ||
       document.readyState === "complete"
@@ -477,7 +476,7 @@ document.addEventListener(
 async function devModeToggle() {
   DistroAPI.toggleDevMode(true);
   const data = await DistroAPI.refreshDistributionOrFallback();
-  ensureJavaSettings(data);
+  await ensureJavaSettings(data);
   callUpdateSelectedServer(data.servers[0]);
   syncModConfigurations(data);
 }
