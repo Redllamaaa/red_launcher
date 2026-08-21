@@ -62,7 +62,7 @@ async function showMainUI(data) {
   );
   refreshServerStatus();
   setTimeout(() => {
-    document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute("bkid")}.jpg')`;
+    document.body.style.backgroundImage = `url('/images/backgrounds/${document.body.getAttribute("bkid")}.jpg')`;
 
     $("#main").show();
 
