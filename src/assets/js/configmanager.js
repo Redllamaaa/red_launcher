@@ -49,40 +49,35 @@ export function setDataDirectory(dataDirectory) {
 const configPath = pathJoin(getLauncherDirectory(), "config.json");
 const firstLaunch = !(await exists(configPath));
 
-export function getAbsoluteMinRAM(ram) {
+export function getAbsoluteMinRAM(ram, totalMem) {
   if (ram?.minimum != null) {
     return ram.minimum / 1024;
   } else {
     // Legacy behavior
-    // TODO: replace with real Tauri command (sysinfo crate) - shared with settings.js RAM display
-    const os = { totalmem: () => 8 * 1073741824 };
-    const mem = os.totalmem();
-    return mem >= 6 * 1073741824 ? 3 : 2;
+    return totalMem >= 6 * 1073741824 ? 3 : 2;
   }
 }
 
-export function getAbsoluteMaxRAM(_ram) {
-  // TODO: replace with real Tauri command (sysinfo crate) - shared with settings.js RAM display
-  const os = { totalmem: () => 8 * 1073741824 };
-  const mem = os.totalmem();
-  const gT16 = mem - 16 * 1073741824;
+export function getAbsoluteMaxRAM(_ram, totalMem) {
+  const gT16 = totalMem - 16 * 1073741824;
   return Math.floor(
-    (mem -
+    (totalMem -
       (gT16 > 0
         ? Number.parseInt(gT16 / 8) + (16 * 1073741824) / 4
-        : mem / 4)) /
+        : totalMem / 4)) /
       1073741824,
   );
 }
 
-function resolveSelectedRAM(ram) {
+function resolveSelectedRAM(ram, totalMem) {
   if (ram?.recommended != null) {
     return `${ram.recommended}M`;
   } else {
-    // Legacy behavior
-    // TODO: replace with real Tauri command (sysinfo crate) - shared with settings.js RAM display
-    const os = { totalmem: () => 8 * 1073741824 };
-    return mem >= 8 * 1073741824 ? "4G" : mem >= 6 * 1073741824 ? "3G" : "2G";
+    return totalMem >= 8 * 1073741824
+      ? "4G"
+      : totalMem >= 6 * 1073741824
+        ? "3G"
+        : "2G";
   }
 }
 
@@ -434,21 +429,20 @@ export function setModConfiguration(serverid, configuration) {
 // User Configurable Settings
 
 // Java Settings
-
-function defaultJavaConfig(effectiveJavaOptions, ram) {
+function defaultJavaConfig(effectiveJavaOptions, ram, totalMem) {
   if (effectiveJavaOptions.suggestedMajor > 17) {
-    return defaultJavaConfig25(ram);
+    return defaultJavaConfig25(ram, totalMem);
   } else if (effectiveJavaOptions.suggestedMajor > 8) {
-    return defaultJavaConfig17(ram);
+    return defaultJavaConfig17(ram, totalMem);
   } else {
-    return defaultJavaConfig8(ram);
+    return defaultJavaConfig8(ram, totalMem);
   }
 }
 
-function defaultJavaConfig8(ram) {
+function defaultJavaConfig8(ram, totalMem) {
   return {
-    minRAM: resolveSelectedRAM(ram),
-    maxRAM: resolveSelectedRAM(ram),
+    minRAM: resolveSelectedRAM(ram, totalMem),
+    maxRAM: resolveSelectedRAM(ram, totalMem),
     executable: null,
     jvmOptions: [
       "-XX:+UseConcMarkSweepGC",
@@ -459,10 +453,10 @@ function defaultJavaConfig8(ram) {
   };
 }
 
-function defaultJavaConfig17(ram) {
+function defaultJavaConfig17(ram, totalMem) {
   return {
-    minRAM: resolveSelectedRAM(ram),
-    maxRAM: resolveSelectedRAM(ram),
+    minRAM: resolveSelectedRAM(ram, totalMem),
+    maxRAM: resolveSelectedRAM(ram, totalMem),
     executable: null,
     jvmOptions: [
       "-XX:+UnlockExperimentalVMOptions",
@@ -475,10 +469,10 @@ function defaultJavaConfig17(ram) {
   };
 }
 
-function defaultJavaConfig25(ram) {
+function defaultJavaConfig25(ram, totalMem) {
   return {
-    minRAM: resolveSelectedRAM(ram),
-    maxRAM: resolveSelectedRAM(ram),
+    minRAM: resolveSelectedRAM(ram, totalMem),
+    maxRAM: resolveSelectedRAM(ram, totalMem),
     executable: null,
     jvmOptions: [
       "-XX:+UseCompactObjectHeaders",
@@ -495,9 +489,18 @@ function defaultJavaConfig25(ram) {
  * @param {string} serverid The server id.
  * @param {*} mcVersion The minecraft version of the server.
  */
-export function ensureJavaConfig(serverid, effectiveJavaOptions, ram) {
+export function ensureJavaConfig(
+  serverid,
+  effectiveJavaOptions,
+  ram,
+  totalMem,
+) {
   if (!Object.prototype.hasOwnProperty.call(config.javaConfig, serverid)) {
-    config.javaConfig[serverid] = defaultJavaConfig(effectiveJavaOptions, ram);
+    config.javaConfig[serverid] = defaultJavaConfig(
+      effectiveJavaOptions,
+      ram,
+      totalMem,
+    );
   }
 }
 

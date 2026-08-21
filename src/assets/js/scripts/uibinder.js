@@ -229,12 +229,12 @@ function syncModConfigurations(data) {
  * @param {Object} data The distro index object.
  */
 function ensureJavaSettings(data) {
-  // Nothing too fancy for now.
   for (const serv of data.servers) {
     ConfigManager.ensureJavaConfig(
       serv.rawServer.id,
       serv.effectiveJavaOptions,
       serv.rawServer.javaOptions?.ram,
+      serv.rawServer.javaOptions?.totalMem,
     );
   }
 

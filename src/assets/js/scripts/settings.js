@@ -1,5 +1,6 @@
 import { ready } from "./bootstrap.js";
 
+import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import { fetch } from "@tauri-apps/plugin-http";
 import { getCurrentWindow } from "@tauri-apps/api/window";
@@ -12,6 +13,7 @@ import * as AuthManager from "../authmanager.js";
 import { DistroAPI } from "../distromanager.js";
 import { updateSelectedAccount } from "./landing.js";
 import { validateSelectedAccount } from "./uibinder.js";
+import { getMemoryInfo, getCachedMemoryInfo } from "./sysinfo.js";
 
 // Requirements
 import { getCurrentView, switchView } from "./viewstate.js";
@@ -37,12 +39,6 @@ import {
 import { loginOptionsCancelEnabled } from "./loginOptions.js";
 
 await ready();
-
-// TODO: replace with Tauri command using the `sysinfo` Rust crate
-const os = {
-  totalmem: () => 17179869184, // fake 16GB placeholder
-  freemem: () => 8589934592, // fake 8GB placeholder
-};
 
 // TODO: port to Rust — real filesystem scanning of mods/shaderpacks dirs
 const DropinModUtil = {
@@ -1301,14 +1297,10 @@ const settingsJvmOptsLink = document.getElementById("settingsJvmOptsLink");
 
 // Bind on change event for min memory container.
 settingsMinRAMRange.onchange = (e) => {
-  // Current range values
   const sMaxV = Number(settingsMaxRAMRange.getAttribute("value"));
   const sMinV = Number(settingsMinRAMRange.getAttribute("value"));
-
-  // Get reference to range bar.
   const bar = e.target.getElementsByClassName("rangeSliderBar")[0];
-  // Calculate effective total memory.
-  const max = os.totalmem() / 1073741824;
+  const max = getCachedMemoryInfo().total_mem / 1073741824;
 
   // Change range bar color based on the selected value.
   if (sMinV >= max / 2) {
@@ -1342,8 +1334,9 @@ settingsMaxRAMRange.onchange = (e) => {
 
   // Get reference to range bar.
   const bar = e.target.getElementsByClassName("rangeSliderBar")[0];
+
   // Calculate effective total memory.
-  const max = os.totalmem() / 1073741824;
+  const max = getCachedMemoryInfo().total_mem / 1073741824;
 
   // Change range bar color based on the selected value.
   if (sMaxV >= max / 2) {
@@ -1357,13 +1350,16 @@ settingsMaxRAMRange.onchange = (e) => {
   // Decrease the minimum memory if the maximum value is less.
   if (sMaxV < sMinV) {
     const sliderMeta = calculateRangeSliderMeta(settingsMaxRAMRange);
+
     updateRangedSlider(
       settingsMinRAMRange,
       sMaxV,
       ((sMaxV - sliderMeta.min) / sliderMeta.step) * sliderMeta.inc,
     );
+
     settingsMinRAMLabel.innerHTML = sMaxV.toFixed(1) + "G";
   }
+
   settingsMaxRAMLabel.innerHTML = sMaxV.toFixed(1) + "G";
 };
 
@@ -1385,57 +1381,39 @@ function calculateRangeSliderMeta(v) {
 }
 
 /**
- * Binds functionality to the ranged sliders. They're more than
- * just divs now :').
+ * Binds functionality to the ranged sliders.
  */
-function bindRangeSlider() {
-  Array.from(document.getElementsByClassName("rangeSlider")).map((v) => {
-    // Reference the track (thumb).
-    const track = v.getElementsByClassName("rangeSliderTrack")[0];
+function bindRangeSlider(server, totalMem) {
+  settingsMaxRAMRange.onchange = (e) => {
+    const sMaxV = Number(settingsMaxRAMRange.getAttribute("value"));
+    const sMinV = Number(settingsMinRAMRange.getAttribute("value"));
 
-    // Set the initial slider value.
-    const value = v.getAttribute("value");
-    const sliderMeta = calculateRangeSliderMeta(v);
+    const bar = e.target.getElementsByClassName("rangeSliderBar")[0];
 
-    updateRangedSlider(
-      v,
-      value,
-      ((value - sliderMeta.min) / sliderMeta.step) * sliderMeta.inc,
-    );
+    const max = totalMem / 1073741824;
 
-    // The magic happens when we click on the track.
-    track.onmousedown = (e) => {
-      // Stop moving the track on mouse up.
-      document.onmouseup = (e) => {
-        document.onmousemove = null;
-        document.onmouseup = null;
-      };
+    if (sMaxV >= max / 2) {
+      bar.style.background = "#e86060";
+    } else if (sMaxV >= max / 4) {
+      bar.style.background = "#e8e18b";
+    } else {
+      bar.style.background = null;
+    }
 
-      // Move slider according to the mouse position.
-      document.onmousemove = (e) => {
-        // Distance from the beginning of the bar in pixels.
-        const diff = e.pageX - v.offsetLeft - track.offsetWidth / 2;
+    if (sMaxV < sMinV) {
+      const sliderMeta = calculateRangeSliderMeta(settingsMaxRAMRange);
 
-        // Don't move the track off the bar.
-        if (diff >= 0 && diff <= v.offsetWidth - track.offsetWidth / 2) {
-          // Convert the difference to a percentage.
-          const perc = (diff / v.offsetWidth) * 100;
-          // Calculate the percentage of the closest notch.
-          const notch =
-            Number(perc / sliderMeta.inc).toFixed(0) * sliderMeta.inc;
+      updateRangedSlider(
+        settingsMinRAMRange,
+        sMaxV,
+        ((sMaxV - sliderMeta.min) / sliderMeta.step) * sliderMeta.inc,
+      );
 
-          // If we're close to that notch, stick to it.
-          if (Math.abs(perc - notch) < sliderMeta.inc / 2) {
-            updateRangedSlider(
-              v,
-              sliderMeta.min + sliderMeta.step * (notch / sliderMeta.inc),
-              notch,
-            );
-          }
-        }
-      };
-    };
-  });
+      settingsMinRAMLabel.innerHTML = sMaxV.toFixed(1) + "G";
+    }
+
+    settingsMaxRAMLabel.innerHTML = sMaxV.toFixed(1) + "G";
+  };
 }
 
 /**
@@ -1478,11 +1456,10 @@ function updateRangedSlider(element, value, notch) {
 /**
  * Display the total and available RAM.
  */
-function populateMemoryStatus() {
+function populateMemoryStatus(totalMem, freeMem) {
   settingsMemoryTotal.innerHTML =
-    Number((os.totalmem() - 1073741824) / 1073741824).toFixed(1) + "G";
-  settingsMemoryAvail.innerHTML =
-    Number(os.freemem() / 1073741824).toFixed(1) + "G";
+    Number((totalMem - 1073741824) / 1073741824).toFixed(1) + "G";
+  settingsMemoryAvail.innerHTML = Number(freeMem / 1073741824).toFixed(1) + "G";
 }
 
 /**
@@ -1542,16 +1519,15 @@ function populateJvmOptsLink(server) {
   }
 }
 
-function bindMinMaxRam(server) {
-  // Store maximum memory values.
+function bindMinMaxRam(server, totalMem) {
   const SETTINGS_MAX_MEMORY = ConfigManager.getAbsoluteMaxRAM(
     server.rawServer.javaOptions?.ram,
+    totalMem,
   );
   const SETTINGS_MIN_MEMORY = ConfigManager.getAbsoluteMinRAM(
     server.rawServer.javaOptions?.ram,
+    totalMem,
   );
-
-  // Set the max and min values for the ranged sliders.
   settingsMaxRAMRange.setAttribute("max", SETTINGS_MAX_MEMORY);
   settingsMaxRAMRange.setAttribute("min", SETTINGS_MIN_MEMORY);
   settingsMinRAMRange.setAttribute("max", SETTINGS_MAX_MEMORY);
@@ -1567,9 +1543,11 @@ async function prepareJavaTab() {
   );
   if (server == null) return;
 
-  bindMinMaxRam(server);
-  bindRangeSlider(server);
-  populateMemoryStatus();
+  const { total_mem, free_mem } = await getMemoryInfo();
+
+  bindMinMaxRam(server, total_mem);
+  bindRangeSlider(server, total_mem);
+  populateMemoryStatus(total_mem, free_mem);
   populateJavaReqDesc(server);
   populateJvmOptsLink(server);
 }

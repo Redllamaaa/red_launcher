@@ -1,6 +1,7 @@
 mod account_auth;
 mod account_logout;
 mod token_store;
+mod sysinfo;
 
 use account_auth::{
     poll_microsoft_device_code,
@@ -9,6 +10,7 @@ use account_auth::{
 };
 use account_logout::logout_microsoft;
 use token_store::{ get_account_tokens, remove_account_tokens, store_account_tokens };
+use sysinfo::get_memory_info;
 
 use tauri_plugin_log::{ Target, TargetKind };
 
@@ -38,7 +40,8 @@ pub fn run() {
                 store_account_tokens,
                 get_account_tokens,
                 remove_account_tokens,
-                logout_microsoft
+                logout_microsoft,
+                get_memory_info
             ]
         )
         .run(tauri::generate_context!())
