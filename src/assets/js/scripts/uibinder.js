@@ -32,13 +32,13 @@ import {
   setLoginOptionsViewOnCancel,
   setLoginOptionsViewCancelHandler,
 } from "./loginOptionsState.js";
-
 import { Type } from "helios-distribution-types";
-
 import * as AuthManager from "../authmanager.js";
+import { LoggerUtil } from "./loggerutil.js";
 
 await ready();
 
+const loggerUiBinder = LoggerUtil.getLogger("UIBinder");
 let rscShouldLoad = false;
 let fatalStartupError = false;
 
@@ -459,8 +459,8 @@ document.addEventListener(
       rscShouldLoad = true;
     }
   } catch (err) {
-    console.error("STARTUP ERROR:", err);
-    console.error("STACK:", err?.stack);
+    loggerUiBinder.error("STARTUP ERROR:", err);
+    loggerUiBinder.error("STACK:", err?.stack);
     fatalStartupError = true;
     if (
       document.readyState === "interactive" ||

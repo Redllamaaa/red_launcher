@@ -21,6 +21,7 @@
     {
       "identifier": "http:allow-fetch",
       "allow": [{ "url": "https://github.com/*" }]
-    }
+    },
+    "log:default"
   ]
 }

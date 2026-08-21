@@ -2,6 +2,9 @@ import fs from "fs-extra";
 import path from "path";
 import { ipcRenderer, shell } from "electron";
 import { SHELL_OPCODE } from "./ipcconstants";
+import { LoggerUtil } from "./scripts/loggerutil.js";
+
+const logger = LoggerUtil.getLogger("LoginOptions");
 
 // Group #1: File Name (without .disabled, if any)
 // Group #2: File Extension (jar, zip, or litemod)
@@ -102,7 +105,7 @@ exports.deleteDropinMod = async function (modsDir, fullName) {
 
   if (!res.result) {
     shell.beep();
-    console.error("Error deleting drop-in mod.", res.error);
+    logger.error("Error deleting drop-in mod.", res.error);
     return false;
   }
 
@@ -199,7 +202,7 @@ exports.getEnabledShaderpack = function (instanceDir) {
     if (match != null) {
       return match[1];
     } else {
-      console.warn("WARNING: Shaderpack regex failed.");
+      logger.warn("WARNING: Shaderpack regex failed.");
     }
   }
   return "OFF";

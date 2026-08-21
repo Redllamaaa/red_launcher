@@ -4,13 +4,15 @@ import {
   MavenUtil,
   getVersionJarPath,
 } from "./helios-core-stubs.js";
-
 import ConfigManager from "./configmanager";
 import { join } from "path";
 import AdmZip from "adm-zip";
 import { getClasspathSeparator } from "./processbuilder";
 import { exists } from "fs-extra";
 import { existsSync } from "fs";
+import { LoggerUtil } from "./loggerutil.js";
+
+const loggerPatcher = LoggerUtil.getLogger("Patcher");
 
 /**
  * A class used to patch the Minecraft JAR for ForgeGradle3 modloader support, and possibly Neoforge in the future.
@@ -153,14 +155,14 @@ class ForgePatcher {
             .toString("utf-8")
             .trim()
             .split("\n")
-            .forEach((x) => console.log(`\x1b[33m[Patcher]\x1b[0m ${x}`));
+            .forEach((x) => loggerPatcher.info(x));
         });
         child.stderr.on("data", (data) => {
           data
             .toString("utf-8")
             .trim()
             .split("\n")
-            .forEach((x) => console.log(`\x1b[33m[Patcher]\x1b[0m ${x}`));
+            .forEach((x) => loggerPatcher.error(x));
         });
         child.on("error", (err) => {
           reject(err);

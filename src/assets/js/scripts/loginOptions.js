@@ -6,9 +6,11 @@ import { open } from "@tauri-apps/plugin-shell";
 import { toggleAccountSelection } from "./overlay.js";
 import { updateSelectedAccount } from "./landing.js";
 import * as AuthManager from "../authmanager.js";
+import { LoggerUtil } from "./loggerutil.js";
 
 await ready();
 
+const logger = LoggerUtil.getLogger("LoginOptions");
 const loginOptionsCancelContainer = document.getElementById(
   "loginOptionCancelContainer",
 );
@@ -57,7 +59,7 @@ loginOptionMicrosoft.onclick = async () => {
           500,
         );
       } catch (err) {
-        console.error("Microsoft login failed:", err);
+        logger.error("Microsoft login failed:", err);
         switchView(
           getCurrentView(),
           getLoginOptionsViewOnLoginCancel(),

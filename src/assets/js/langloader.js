@@ -1,6 +1,8 @@
 import toml from "toml";
 import merge from "lodash.merge";
+import { LoggerUtil } from "./scripts/loggerutil.js";
 
+const logger = LoggerUtil.getLogger("LangLoader");
 let lang;
 
 async function loadLanguage(id) {
@@ -14,9 +16,7 @@ function query(id, placeHolders) {
   let res = lang;
   for (const p of parts) {
     if (res == null) {
-      console.warn(
-        `[langloader] Missing lang key: "${id}" (stopped at "${p}")`,
-      );
+      logger.warn(`Missing lang key: "${id}" (stopped at "${p}")`);
       return "";
     }
     res = res[p];

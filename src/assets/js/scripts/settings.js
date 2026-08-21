@@ -439,6 +439,7 @@ settingsNavDone.onclick = () => {
 
 const msftLoginLogger = LoggerUtil.getLogger("Microsoft Login");
 const msftLogoutLogger = LoggerUtil.getLogger("Microsoft Logout");
+const releaseNotesLogger = LoggerUtil.getLogger("Release Notes");
 
 // Bind the add microsoft account button.
 document.getElementById("settingsAddMicrosoftAccount").onclick = (e) => {
@@ -1678,7 +1679,7 @@ async function populateReleaseNotes() {
       }
     }
   } catch (err) {
-    console.error("Failed to load release notes:", err);
+    releaseNotesLogger.error("Failed to load release notes:", err);
     settingsAboutChangelogText.innerHTML = Lang.queryJS(
       "settings.about.releaseNotesFailed",
     );
