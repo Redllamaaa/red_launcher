@@ -396,7 +396,8 @@ export function setModConfigurations(configurations) {
 }
 
 /**
- * Get the mod configuration for a specific server.
+ * Get the mod configuration for a specific server. If one does not
+ * exist, a default configuration will be created, set, and returned.
  *
  * @param {string} serverid The id of the server.
  * @returns {Object} The mod configuration for the given server.
@@ -408,7 +409,9 @@ export function getModConfiguration(serverid) {
       return cfgs[i];
     }
   }
-  return null;
+  const defaultCfg = { id: serverid, mods: {} };
+  cfgs.push(defaultCfg);
+  return defaultCfg;
 }
 
 /**

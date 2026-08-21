@@ -8,6 +8,7 @@ import { platform } from "@tauri-apps/plugin-os";
 import Lang from "../langloader.js";
 import { LoggerUtil } from "./loggerutil.js";
 import * as ConfigManager from "../configmanager.js";
+import * as AuthManager from "../authmanager.js";
 import { DistroAPI } from "../distromanager.js";
 import { updateSelectedAccount } from "./landing.js";
 import { validateSelectedAccount } from "./uibinder.js";
@@ -33,6 +34,7 @@ import {
   setLoginOptionsViewOnLoginSuccess,
   setLoginOptionsViewOnLoginCancel,
 } from "./loginOptionsState.js";
+import { loginOptionsCancelEnabled } from "./loginOptions.js";
 
 await ready();
 
@@ -289,7 +291,7 @@ function saveSettingsValues() {
           sFn.apply(null, sFnOpts);
           // Special Conditions
           if (cVal === "AllowPrerelease") {
-            changeAllowPrerelease(v.checked);
+            ConfigManager.setAllowPrerelease(v.checked);
           }
         }
       } else if (v.tagName === "DIV") {
@@ -568,9 +570,11 @@ function bindAuthAccountSelect() {
         val.innerHTML = Lang.queryJS(
           "settings.authAccountSelect.selectedButton",
         );
-        setSelectedAccount(
+        const newlySelected = ConfigManager.setSelectedAccount(
           val.closest(".settingsAuthAccount").getAttribute("uuid"),
         );
+        ConfigManager.save();
+        updateSelectedAccount(newlySelected);
       };
     },
   );

@@ -22,10 +22,10 @@ const log = LoggerUtil.getLogger("AuthManager");
  *
  * @param {number} nowMs
  * @param {number} expiresInS
- * @returns {Date}
+ * @returns {number}
  */
 function calculateExpiryDate(nowMs, expiresInS) {
-  return new Date(nowMs + Math.max(0, Number(expiresInS) - 10) * 1000);
+  return nowMs + Math.max(0, Number(expiresInS) - 10) * 1000;
 }
 
 /**
@@ -36,18 +36,18 @@ function calculateExpiryDate(nowMs, expiresInS) {
  */
 async function storeMicrosoftAuth(auth) {
   const now = Date.now();
-
   const msExpiresAt = calculateExpiryDate(now, auth.ms_expires_in);
   const mcExpiresAt = calculateExpiryDate(now, auth.mc_expires_in);
 
+  // Sensitive tokens go to the OS keyring via Rust.
   await invoke("store_account_tokens", {
     uuid: auth.mc_uuid,
     tokens: {
       ms_access_token: auth.ms_access_token,
       ms_refresh_token: auth.ms_refresh_token,
-      ms_expires_at: msExpiresAt.toISOString(),
+      ms_expires_at: new Date(msExpiresAt).toISOString(),
       mc_access_token: auth.mc_access_token,
-      mc_expires_at: mcExpiresAt.toISOString(),
+      mc_expires_at: new Date(mcExpiresAt).toISOString(),
     },
   });
 
@@ -59,7 +59,6 @@ async function storeMicrosoftAuth(auth) {
   );
 
   ConfigManager.save();
-
   return account;
 }
 
@@ -142,7 +141,14 @@ export async function addMicrosoftAccount(onDeviceCode) {
  * @returns {Promise<Object>}
  */
 async function refreshMicrosoftAccount(current) {
-  const stored = await invoke("get_account_tokens", { uuid: current.uuid });
+  let stored;
+  try {
+    stored = await invoke("get_account_tokens", { uuid: current.uuid });
+  } catch (err) {
+    log.error("Failed to read stored tokens for account.", err);
+    return false;
+  }
+
   const refreshToken = stored?.ms_refresh_token;
 
   if (!refreshToken) {

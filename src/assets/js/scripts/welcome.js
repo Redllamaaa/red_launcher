@@ -3,6 +3,12 @@
  */
 import { ready } from "./bootstrap.js";
 import { VIEWS } from "./views.js";
+import {
+  LoginOptionsViewOnLoginCancel,
+  loginOptionsCancelEnabled,
+  loginOptionsViewOnLoginSuccess,
+  switchView,
+} from "./loginOptions.js";
 
 await ready();
 
