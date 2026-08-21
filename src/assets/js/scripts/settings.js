@@ -1150,8 +1150,7 @@ function setShadersOptions(arr, selected) {
 
 function saveShaderpackSettings() {
   let sel = "OFF";
-  for (let opt of document.getElementById("settingsShadersOptions")
-    .childNodes) {
+  for (let opt of document.getElementById("settingsShadersOptions").children) {
     if (opt.hasAttribute("selected")) {
       sel = opt.getAttribute("value");
     }
