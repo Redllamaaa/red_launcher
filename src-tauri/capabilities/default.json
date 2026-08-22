@@ -6,6 +6,8 @@
   "permissions": [
     "core:default",
     "opener:default",
+    "os:default",
+    "dialog:default",
     "fs:default",
     "fs:allow-write-text-file",
     "fs:allow-read-text-file",
@@ -20,7 +22,10 @@
     "http:default",
     {
       "identifier": "http:allow-fetch",
-      "allow": [{ "url": "https://github.com/*" }]
+      "allow": [
+        { "url": "https://raw.githubusercontent.com/*" },
+        { "url": "https://github.com/*" }
+      ]
     },
     "log:default"
   ]
