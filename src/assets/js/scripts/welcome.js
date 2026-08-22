@@ -3,18 +3,18 @@
  */
 import { ready } from "./bootstrap.js";
 import { VIEWS } from "./views.js";
+import { switchView } from "./viewstate.js";
+import { loginOptionsCancelEnabled } from "./loginOptions.js";
 import {
-  LoginOptionsViewOnLoginCancel,
-  loginOptionsCancelEnabled,
-  loginOptionsViewOnLoginSuccess,
-  switchView,
-} from "./loginOptions.js";
+  setLoginOptionsViewOnLoginSuccess,
+  setLoginOptionsViewOnLoginCancel,
+} from "./loginOptionsState.js";
 
 await ready();
 
 document.getElementById("welcomeButton").addEventListener("click", (e) => {
   loginOptionsCancelEnabled(false); // False by default, be explicit.
-  loginOptionsViewOnLoginSuccess = VIEWS.landing;
-  loginOptionsViewOnLoginCancel = VIEWS.loginOptions;
+  setLoginOptionsViewOnLoginSuccess(VIEWS.landing);
+  setLoginOptionsViewOnLoginCancel(VIEWS.loginOptions);
   switchView(VIEWS.welcome, VIEWS.loginOptions);
 });

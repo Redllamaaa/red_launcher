@@ -10,7 +10,7 @@ import {
   getLibraryDir,
   MavenUtil,
 } from "./helios-core-stubs.js";
-import { Type } from "helios-distribution-types";
+import { Type } from "./distromanager.js";
 import os from "os";
 import path from "path";
 

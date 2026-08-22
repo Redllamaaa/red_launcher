@@ -9,10 +9,11 @@ import Lang from "../langloader.js";
 import { LoggerUtil } from "./loggerutil.js";
 import * as ConfigManager from "../configmanager.js";
 import * as AuthManager from "../authmanager.js";
-import { DistroAPI } from "../distromanager.js";
+import { DistroAPI, Type } from "../distromanager.js";
 import { updateSelectedAccount } from "./landing.js";
 import { validateSelectedAccount } from "./uibinder.js";
 import { getMemoryInfo, getCachedMemoryInfo } from "./sysinfo.js";
+import { join } from "@tauri-apps/api/path";
 
 // Requirements
 import { getCurrentView, switchView } from "./viewstate.js";
@@ -935,7 +936,7 @@ async function resolveDropinModsForUI() {
   );
   if (serv == null) return;
 
-  CACHE_SETTINGS_MODS_DIR = path.join(
+  CACHE_SETTINGS_MODS_DIR = await join(
     ConfigManager.getInstanceDirectory(),
     serv.rawServer.id,
     "mods",
@@ -1098,7 +1099,7 @@ async function resolveShaderpacksForUI() {
   );
   if (serv == null) return;
 
-  CACHE_SETTINGS_INSTANCE_DIR = path.join(
+  CACHE_SETTINGS_INSTANCE_DIR = await join(
     ConfigManager.getInstanceDirectory(),
     serv.rawServer.id,
   );
@@ -1148,9 +1149,9 @@ function saveShaderpackSettings() {
 
 function bindShaderpackButton() {
   const spBtn = document.getElementById("settingsShaderpackButton");
-  spBtn.onclick = () => {
+  spBtn.onclick = async () => {
     if (CACHE_SETTINGS_INSTANCE_DIR == null) return;
-    const p = path.join(CACHE_SETTINGS_INSTANCE_DIR, "shaderpacks");
+    const p = await join(CACHE_SETTINGS_INSTANCE_DIR, "shaderpacks");
     DropinModUtil.validateDir(p);
     shell.openPath(p);
   };
@@ -1807,4 +1808,10 @@ async function prepareSettings(first = false) {
   prepareAboutTab();
 }
 
-export { prepareSettings, settingsNavItemListener, openSettingsAccountTab };
+export {
+  prepareSettings,
+  settingsNavItemListener,
+  openSettingsAccountTab,
+  fullSettingsSave,
+  animateSettingsTabRefresh,
+};

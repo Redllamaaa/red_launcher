@@ -18,7 +18,11 @@ import {
 import $ from "jquery";
 import { DistroAPI } from "../distromanager.js";
 import Lang from "../langloader.js";
-import { prepareSettings, syncJavaExecutableSelection } from "./settings.js";
+import {
+  prepareSettings,
+  fullSettingsSave,
+  animateSettingsTabRefresh,
+} from "./settings.js";
 
 import {
   MojangRestAPI,
@@ -203,6 +207,7 @@ function updateSelectedServer(serv) {
   }
   setLaunchEnabled(serv != null);
 }
+
 // Real text is set in uibinder.js on distributionIndexDone.
 server_selection_button.innerHTML =
   "&#8226; " + Lang.queryJS("landing.selectedServer.loading");

@@ -10,7 +10,7 @@ import * as ConfigManager from "../configmanager.js";
 import { VIEWS } from "./views.js";
 import { getCurrentView, switchView } from "./viewstate.js";
 import { callUpdateSelectedServer } from "./serverStateHooks.js";
-import { updateSelectedAccount } from "./landing.js";
+import { updateSelectedAccount, refreshServerStatus } from "./landing.js";
 import { validateSelectedAccount } from "./uibinder.js";
 import { DistroAPI } from "../distromanager.js";
 import { prepareSettings, openSettingsAccountTab } from "./settings.js";

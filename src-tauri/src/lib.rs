@@ -5,6 +5,7 @@ mod sysinfo;
 mod javaguard;
 mod mcstatus;
 mod auth_error;
+mod distromanager;
 
 use account_auth::{
     cancel_microsoft_device_code,
@@ -18,6 +19,13 @@ use token_store::{ get_account_tokens, remove_account_tokens, store_account_toke
 use sysinfo::get_memory_info;
 use javaguard::{ discover_java_candidates, run_java_version, extract_jdk_archive };
 use mcstatus::get_server_status;
+use distromanager::{
+    get_distribution,
+    refresh_distribution_or_fallback,
+    toggle_dev_mode,
+    is_dev_mode,
+    DistroState,
+};
 
 use tauri_plugin_log::{ Target, TargetKind };
 
@@ -32,6 +40,7 @@ pub fn run() {
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_dialog::init())
         .manage(CancelledDeviceCodes::default())
+        .manage(DistroState::default())
         .plugin(
             tauri_plugin_log::Builder
                 ::new()
@@ -56,7 +65,11 @@ pub fn run() {
                 discover_java_candidates,
                 run_java_version,
                 extract_jdk_archive,
-                get_server_status
+                get_server_status,
+                get_distribution,
+                refresh_distribution_or_fallback,
+                toggle_dev_mode,
+                is_dev_mode
             ]
         )
         .run(tauri::generate_context!())

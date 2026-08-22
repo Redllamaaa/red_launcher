@@ -22,7 +22,7 @@ import {
   setDismissHandler,
   toggleAccountSelection,
 } from "./overlay.js";
-import { DistroAPI } from "../distromanager.js";
+import { DistroAPI, Type } from "../distromanager.js";
 import { callUpdateSelectedServer } from "./serverStateHooks.js";
 import { refreshServerStatus, updateSelectedAccount } from "./landing.js";
 import { loginOptionsCancelEnabled } from "./loginOptions.js";
@@ -32,7 +32,6 @@ import {
   setLoginOptionsViewOnCancel,
   setLoginOptionsViewCancelHandler,
 } from "./loginOptionsState.js";
-import { Type } from "helios-distribution-types";
 import * as AuthManager from "../authmanager.js";
 import { LoggerUtil } from "./loggerutil.js";
 
