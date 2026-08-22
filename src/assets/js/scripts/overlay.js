@@ -13,7 +13,7 @@ import { callUpdateSelectedServer } from "./serverStateHooks.js";
 import { updateSelectedAccount } from "./landing.js";
 import { validateSelectedAccount } from "./uibinder.js";
 import { DistroAPI } from "../distromanager.js";
-import { prepareSettings } from "./settings.js";
+import { prepareSettings, openSettingsAccountTab } from "./settings.js";
 
 /**
  * Check to see if the overlay is visible.
@@ -281,6 +281,7 @@ document.getElementById("accountSelectCancel").addEventListener("click", () => {
 // Bind account select manage button.
 document.getElementById("accountSelectManage").addEventListener("click", () => {
   toggleOverlay(false);
+  openSettingsAccountTab();
 });
 
 // Make the Server Selection background clickable to close the overlay.
