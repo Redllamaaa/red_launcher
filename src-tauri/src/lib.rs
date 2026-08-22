@@ -3,6 +3,8 @@ mod account_logout;
 mod token_store;
 mod sysinfo;
 mod javaguard;
+mod mcstatus;
+mod auth_error;
 
 use account_auth::{
     poll_microsoft_device_code,
@@ -13,6 +15,7 @@ use account_logout::logout_microsoft;
 use token_store::{ get_account_tokens, remove_account_tokens, store_account_tokens };
 use sysinfo::get_memory_info;
 use javaguard::{ discover_java_candidates, run_java_version, extract_jdk_archive };
+use mcstatus::get_server_status;
 
 use tauri_plugin_log::{ Target, TargetKind };
 
@@ -24,6 +27,8 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_http::init())
+        .plugin(tauri_plugin_os::init())
+        .plugin(tauri_plugin_dialog::init())
         .plugin(
             tauri_plugin_log::Builder
                 ::new()
@@ -46,7 +51,8 @@ pub fn run() {
                 get_memory_info,
                 discover_java_candidates,
                 run_java_version,
-                extract_jdk_archive
+                extract_jdk_archive,
+                get_server_status
             ]
         )
         .run(tauri::generate_context!())

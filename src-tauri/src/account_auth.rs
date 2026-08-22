@@ -1,29 +1,22 @@
-// TODO: Refactor file
-
 use reqwest::Client;
-use serde::{Deserialize, Serialize};
+use serde::{ Deserialize, Serialize };
 use std::time::Duration;
 
-const MS_DEVICE_CODE: &str =
-    "https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode";
+use crate::auth_error::AuthError;
 
-const MS_OAUTH_TOKEN: &str =
-    "https://login.microsoftonline.com/consumers/oauth2/v2.0/token";
+const MS_DEVICE_CODE: &str = "https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode";
 
-const XBL_AUTH: &str =
-    "https://user.auth.xboxlive.com/user/authenticate";
+const MS_OAUTH_TOKEN: &str = "https://login.microsoftonline.com/consumers/oauth2/v2.0/token";
 
-const XSTS_AUTH: &str =
-    "https://xsts.auth.xboxlive.com/xsts/authorize";
+const XBL_AUTH: &str = "https://user.auth.xboxlive.com/user/authenticate";
 
-const MC_LOGIN: &str =
-    "https://api.minecraftservices.com/authentication/login_with_xbox";
+const XSTS_AUTH: &str = "https://xsts.auth.xboxlive.com/xsts/authorize";
 
-const MC_ENTITLEMENTS: &str =
-    "https://api.minecraftservices.com/entitlements/mcstore";
+const MC_LOGIN: &str = "https://api.minecraftservices.com/authentication/login_with_xbox";
 
-const MC_PROFILE: &str =
-    "https://api.minecraftservices.com/minecraft/profile";
+const MC_ENTITLEMENTS: &str = "https://api.minecraftservices.com/entitlements/mcstore";
+
+const MC_PROFILE: &str = "https://api.minecraftservices.com/minecraft/profile";
 
 #[derive(Debug, Deserialize)]
 struct DeviceCodeResponse {
@@ -116,43 +109,33 @@ struct OAuthErrorResponse {
  * Start the Microsoft device-code authentication flow.
  */
 #[tauri::command]
-pub async fn start_microsoft_device_code(
-    client_id: String,
-) -> Result<DeviceCodeInfo, String> {
+pub async fn start_microsoft_device_code(client_id: String) -> Result<DeviceCodeInfo, AuthError> {
     let client = Client::new();
 
     let response = client
         .post(MS_DEVICE_CODE)
-        .form(&[
-            ("client_id", client_id.as_str()),
-            ("scope", "XboxLive.signin offline_access"),
-        ])
-        .send()
-        .await
-        .map_err(|e| format!("Device code request failed: {}", e))?;
+        .form(
+            &[
+                ("client_id", client_id.as_str()),
+                ("scope", "XboxLive.signin offline_access"),
+            ]
+        )
+        .send().await?;
 
     let status = response.status();
 
-    let text = response
-        .text()
-        .await
-        .map_err(|e| format!("Device code response read failed: {}", e))?;
+    let text = response.text().await.map_err(|e| AuthError::Network(e.to_string()))?;
 
     if !status.is_success() {
-        return Err(format!(
-            "Device code request failed with HTTP {}: {}",
-            status, text
-        ));
+        return Err(AuthError::Http {
+            status: status.as_u16(),
+            body: text,
+        });
     }
 
-    let device_code: DeviceCodeResponse =
-        serde_json::from_str(&text)
-            .map_err(|e| {
-                format!(
-                    "Device code response parse failed: {} — {}",
-                    e, text
-                )
-            })?;
+    let device_code: DeviceCodeResponse = serde_json
+        ::from_str(&text)
+        .map_err(|e| AuthError::Parse(format!("{e} — {text}")))?;
 
     Ok(DeviceCodeInfo {
         device_code: device_code.device_code,
@@ -180,8 +163,8 @@ pub async fn start_microsoft_device_code(
 pub async fn poll_microsoft_device_code(
     client_id: String,
     device_code: String,
-    interval: u64,
-) -> Result<MicrosoftAuthResult, String> {
+    interval: u64
+) -> Result<MicrosoftAuthResult, AuthError> {
     let client = Client::new();
 
     let wait_secs = interval.max(5);
@@ -189,58 +172,37 @@ pub async fn poll_microsoft_device_code(
     loop {
         let response = client
             .post(MS_OAUTH_TOKEN)
-            .form(&[
-                (
-                    "grant_type",
-                    "urn:ietf:params:oauth:grant-type:device_code",
-                ),
-                ("client_id", client_id.as_str()),
-                ("device_code", device_code.as_str()),
-            ])
-            .send()
-            .await
-            .map_err(|e| format!("Token poll request failed: {}", e))?;
+            .form(
+                &[
+                    ("grant_type", "urn:ietf:params:oauth:grant-type:device_code"),
+                    ("client_id", client_id.as_str()),
+                    ("device_code", device_code.as_str()),
+                ]
+            )
+            .send().await?;
 
         let status = response.status();
 
-        let text = response
-            .text()
-            .await
-            .map_err(|e| format!("Token poll response read failed: {}", e))?;
+        let text = response.text().await.map_err(|e| AuthError::Network(e.to_string()))?;
 
         if status.is_success() {
-            let ms_token: MsTokenResponse =
-                serde_json::from_str(&text)
-                    .map_err(|e| {
-                        format!(
-                            "Microsoft token response parse failed: {} — {}",
-                            e, text
-                        )
-                    })?;
+            let ms_token: MsTokenResponse = serde_json
+                ::from_str(&text)
+                .map_err(|e| AuthError::Parse(format!("{e} — {text}")))?;
 
-            let refresh_token = ms_token
-                .refresh_token
-                .ok_or_else(|| {
-                    "Microsoft did not return a refresh token.".to_string()
-                })?;
+            let refresh_token = ms_token.refresh_token.ok_or(AuthError::NoRefreshToken)?;
 
             return complete_minecraft_chain(
                 client,
                 ms_token.access_token,
                 refresh_token,
-                ms_token.expires_in,
-            )
-            .await;
+                ms_token.expires_in
+            ).await;
         }
 
-        let error: OAuthErrorResponse =
-            serde_json::from_str(&text)
-                .map_err(|e| {
-                    format!(
-                        "Microsoft OAuth error response parse failed: {} — {}",
-                        e, text
-                    )
-                })?;
+        let error: OAuthErrorResponse = serde_json
+            ::from_str(&text)
+            .map_err(|e| AuthError::Parse(format!("{e} — {text}")))?;
 
         match error.error.as_str() {
             "authorization_pending" => {
@@ -252,30 +214,19 @@ pub async fn poll_microsoft_device_code(
             }
 
             "authorization_declined" => {
-                return Err(
-                    "Sign-in was cancelled or declined.".to_string()
-                );
+                return Err(AuthError::Declined);
             }
 
             "expired_token" => {
-                return Err(
-                    "The sign-in code expired before completion. Please try again."
-                        .to_string(),
-                );
+                return Err(AuthError::Expired);
             }
 
             "bad_verification_code" => {
-                return Err(
-                    "Invalid device code. Please try again.".to_string()
-                );
+                return Err(AuthError::InvalidDeviceCode);
             }
 
-            _ => {
-                return Err(format!(
-                    "Microsoft device-code authentication failed: {} — {:?}",
-                    error.error,
-                    error.error_description
-                ));
+            other => {
+                return Err(AuthError::Other(format!("{} — {:?}", other, error.error_description)));
             }
         }
     }
@@ -291,55 +242,48 @@ pub async fn poll_microsoft_device_code(
 #[tauri::command]
 pub async fn refresh_microsoft_account(
     client_id: String,
-    refresh_token: String,
-) -> Result<MicrosoftAuthResult, String> {
+    refresh_token: String
+) -> Result<MicrosoftAuthResult, AuthError> {
     let client = Client::new();
 
     let response = client
         .post(MS_OAUTH_TOKEN)
-        .form(&[
-            ("client_id", client_id.as_str()),
-            ("grant_type", "refresh_token"),
-            ("refresh_token", refresh_token.as_str()),
-            ("scope", "XboxLive.signin offline_access"),
-        ])
-        .send()
-        .await
-        .map_err(|e| format!("Microsoft refresh request failed: {}", e))?;
+        .form(
+            &[
+                ("client_id", client_id.as_str()),
+                ("grant_type", "refresh_token"),
+                ("refresh_token", refresh_token.as_str()),
+                ("scope", "XboxLive.signin offline_access"),
+            ]
+        )
+        .send().await?;
 
     let status = response.status();
 
-    let text = response
-        .text()
-        .await
-        .map_err(|e| format!("Microsoft refresh response read failed: {}", e))?;
+    let text = response.text().await.map_err(|e| AuthError::Network(e.to_string()))?;
 
     if !status.is_success() {
-        let error = serde_json::from_str::<OAuthErrorResponse>(&text)
-            .ok();
-
-        if let Some(error) = error {
-            return Err(format!(
-                "Microsoft refresh failed: {} — {:?}",
-                error.error,
-                error.error_description
-            ));
+        if let Ok(error) = serde_json::from_str::<OAuthErrorResponse>(&text) {
+            return Err(
+                AuthError::Other(
+                    format!(
+                        "Microsoft refresh failed: {} — {:?}",
+                        error.error,
+                        error.error_description
+                    )
+                )
+            );
         }
 
-        return Err(format!(
-            "Microsoft refresh failed with HTTP {}: {}",
-            status, text
-        ));
+        return Err(AuthError::Http {
+            status: status.as_u16(),
+            body: text,
+        });
     }
 
-    let ms_token: MsTokenResponse =
-        serde_json::from_str(&text)
-            .map_err(|e| {
-                format!(
-                    "Microsoft refresh response parse failed: {} — {}",
-                    e, text
-                )
-            })?;
+    let ms_token: MsTokenResponse = serde_json
+        ::from_str(&text)
+        .map_err(|e| AuthError::Parse(format!("{e} — {text}")))?;
 
     /*
      * Microsoft may rotate the refresh token.
@@ -347,17 +291,14 @@ pub async fn refresh_microsoft_account(
      * If a new one is supplied, use it.
      * Otherwise retain the existing refresh token.
      */
-    let new_refresh_token = ms_token
-        .refresh_token
-        .unwrap_or(refresh_token);
+    let new_refresh_token = ms_token.refresh_token.unwrap_or(refresh_token);
 
     complete_minecraft_chain(
         client,
         ms_token.access_token,
         new_refresh_token,
-        ms_token.expires_in,
-    )
-    .await
+        ms_token.expires_in
+    ).await
 }
 
 /**
@@ -367,12 +308,13 @@ async fn complete_minecraft_chain(
     client: Client,
     ms_access_token: String,
     ms_refresh_token: String,
-    ms_expires_in: u64,
-) -> Result<MicrosoftAuthResult, String> {
+    ms_expires_in: u64
+) -> Result<MicrosoftAuthResult, AuthError> {
     /*
      * Xbox Live authentication.
      */
-    let xbl_body = serde_json::json!({
+    let xbl_body =
+        serde_json::json!({
         "Properties": {
             "AuthMethod": "RPS",
             "SiteName": "user.auth.xboxlive.com",
@@ -382,48 +324,30 @@ async fn complete_minecraft_chain(
         "TokenType": "JWT"
     });
 
-    let xbl_response = client
-        .post(XBL_AUTH)
-        .json(&xbl_body)
-        .send()
-        .await
-        .map_err(|e| format!("Xbox Live request failed: {}", e))?;
+    let xbl_response = client.post(XBL_AUTH).json(&xbl_body).send().await?;
 
     let xbl_status = xbl_response.status();
 
-    let xbl_text = xbl_response
-        .text()
-        .await
-        .map_err(|e| format!("Xbox Live response read failed: {}", e))?;
+    let xbl_text = xbl_response.text().await.map_err(|e| AuthError::Network(e.to_string()))?;
 
     if !xbl_status.is_success() {
-        return Err(format!(
-            "Xbox Live request failed with HTTP {}: {}",
-            xbl_status, xbl_text
-        ));
+        return Err(AuthError::Http {
+            status: xbl_status.as_u16(),
+            body: xbl_text,
+        });
     }
 
-    let xbl: XblResponse =
-        serde_json::from_str(&xbl_text)
-            .map_err(|e| {
-                format!(
-                    "Xbox Live response parse failed: {} — {}",
-                    e, xbl_text
-                )
-            })?;
+    let xbl: XblResponse = serde_json
+        ::from_str(&xbl_text)
+        .map_err(|e| AuthError::Parse(format!("{e} — {xbl_text}")))?;
 
-    let uhs = xbl
-        .display_claims
-        .xui
-        .first()
-        .ok_or_else(|| "No user hash in Xbox Live response.".to_string())?
-        .uhs
-        .clone();
+    let uhs = xbl.display_claims.xui.first().ok_or(AuthError::NoUserHash)?.uhs.clone();
 
     /*
      * XSTS authentication.
      */
-    let xsts_body = serde_json::json!({
+    let xsts_body =
+        serde_json::json!({
         "Properties": {
             "SandboxId": "RETAIL",
             "UserTokens": [xbl.token]
@@ -432,40 +356,28 @@ async fn complete_minecraft_chain(
         "TokenType": "JWT"
     });
 
-    let xsts_response = client
-        .post(XSTS_AUTH)
-        .json(&xsts_body)
-        .send()
-        .await
-        .map_err(|e| format!("XSTS request failed: {}", e))?;
+    let xsts_response = client.post(XSTS_AUTH).json(&xsts_body).send().await?;
 
     let xsts_status = xsts_response.status();
 
-    let xsts_text = xsts_response
-        .text()
-        .await
-        .map_err(|e| format!("XSTS response read failed: {}", e))?;
+    let xsts_text = xsts_response.text().await.map_err(|e| AuthError::Network(e.to_string()))?;
 
     if !xsts_status.is_success() {
-        return Err(format!(
-            "XSTS request failed with HTTP {}: {}",
-            xsts_status, xsts_text
-        ));
+        return Err(AuthError::Http {
+            status: xsts_status.as_u16(),
+            body: xsts_text,
+        });
     }
 
-    let xsts: XblResponse =
-        serde_json::from_str(&xsts_text)
-            .map_err(|e| {
-                format!(
-                    "XSTS response parse failed: {} — {}",
-                    e, xsts_text
-                )
-            })?;
+    let xsts: XblResponse = serde_json
+        ::from_str(&xsts_text)
+        .map_err(|e| AuthError::Parse(format!("{e} — {xsts_text}")))?;
 
     /*
      * Minecraft authentication.
      */
-    let minecraft_login_body = serde_json::json!({
+    let minecraft_login_body =
+        serde_json::json!({
         "identityToken": format!(
             "XBL3.0 x={};{}",
             uhs,
@@ -473,40 +385,24 @@ async fn complete_minecraft_chain(
         )
     });
 
-    let mc_token_response = client
-        .post(MC_LOGIN)
-        .json(&minecraft_login_body)
-        .send()
-        .await
-        .map_err(|e| format!("Minecraft login request failed: {}", e))?;
+    let mc_token_response = client.post(MC_LOGIN).json(&minecraft_login_body).send().await?;
 
     let mc_status = mc_token_response.status();
 
     let mc_token_text = mc_token_response
-        .text()
-        .await
-        .map_err(|e| {
-            format!(
-                "Minecraft token response read failed: {}",
-                e
-            )
-        })?;
+        .text().await
+        .map_err(|e| AuthError::Network(e.to_string()))?;
 
     if !mc_status.is_success() {
-        return Err(format!(
-            "Minecraft login failed with HTTP {}: {}",
-            mc_status, mc_token_text
-        ));
+        return Err(AuthError::Http {
+            status: mc_status.as_u16(),
+            body: mc_token_text,
+        });
     }
 
-    let mc_token: McTokenResponse =
-        serde_json::from_str(&mc_token_text)
-            .map_err(|e| {
-                format!(
-                    "Minecraft token response parse failed: {} — {}",
-                    e, mc_token_text
-                )
-            })?;
+    let mc_token: McTokenResponse = serde_json
+        ::from_str(&mc_token_text)
+        .map_err(|e| AuthError::Parse(format!("{e} — {mc_token_text}")))?;
 
     /*
      * Minecraft ownership.
@@ -514,81 +410,50 @@ async fn complete_minecraft_chain(
     let entitlements_response = client
         .get(MC_ENTITLEMENTS)
         .bearer_auth(&mc_token.access_token)
-        .send()
-        .await
-        .map_err(|e| format!("Minecraft entitlement request failed: {}", e))?;
+        .send().await?;
 
     let entitlements_status = entitlements_response.status();
 
     let entitlements_text = entitlements_response
-        .text()
-        .await
-        .map_err(|e| {
-            format!(
-                "Minecraft entitlement response read failed: {}",
-                e
-            )
-        })?;
+        .text().await
+        .map_err(|e| AuthError::Network(e.to_string()))?;
 
     if !entitlements_status.is_success() {
-        return Err(format!(
-            "Minecraft entitlement check failed with HTTP {}: {}",
-            entitlements_status, entitlements_text
-        ));
+        return Err(AuthError::Http {
+            status: entitlements_status.as_u16(),
+            body: entitlements_text,
+        });
     }
 
-    let entitlements: McEntitlementsResponse =
-        serde_json::from_str(&entitlements_text)
-            .map_err(|e| {
-                format!(
-                    "Minecraft entitlement response parse failed: {} — {}",
-                    e, entitlements_text
-                )
-            })?;
+    let entitlements: McEntitlementsResponse = serde_json
+        ::from_str(&entitlements_text)
+        .map_err(|e| AuthError::Parse(format!("{e} — {entitlements_text}")))?;
 
     if entitlements.items.is_empty() {
-        return Err(
-            "This Microsoft account does not own Minecraft.".to_string()
-        );
+        return Err(AuthError::NotEntitled);
     }
 
     /*
      * Minecraft profile.
      */
-    let profile_response = client
-        .get(MC_PROFILE)
-        .bearer_auth(&mc_token.access_token)
-        .send()
-        .await
-        .map_err(|e| format!("Minecraft profile request failed: {}", e))?;
+    let profile_response = client.get(MC_PROFILE).bearer_auth(&mc_token.access_token).send().await?;
 
     let profile_status = profile_response.status();
 
     let profile_text = profile_response
-        .text()
-        .await
-        .map_err(|e| {
-            format!(
-                "Minecraft profile response read failed: {}",
-                e
-            )
-        })?;
+        .text().await
+        .map_err(|e| AuthError::Network(e.to_string()))?;
 
     if !profile_status.is_success() {
-        return Err(format!(
-            "Minecraft profile request failed with HTTP {}: {}",
-            profile_status, profile_text
-        ));
+        return Err(AuthError::Http {
+            status: profile_status.as_u16(),
+            body: profile_text,
+        });
     }
 
-    let mc_profile: McProfileResponse =
-        serde_json::from_str(&profile_text)
-            .map_err(|e| {
-                format!(
-                    "Minecraft profile parse failed: {} — {}",
-                    e, profile_text
-                )
-            })?;
+    let mc_profile: McProfileResponse = serde_json
+        ::from_str(&profile_text)
+        .map_err(|e| AuthError::Parse(format!("{e} — {profile_text}")))?;
 
     Ok(MicrosoftAuthResult {
         ms_access_token,
