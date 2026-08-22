@@ -120,7 +120,7 @@ export async function addMicrosoftAccount(onDeviceCode) {
 
     const auth = await authPromise;
 
-    const account = storeMicrosoftAuth(auth);
+    const account = await storeMicrosoftAuth(auth);
 
     return {
       account,
@@ -162,7 +162,7 @@ async function refreshMicrosoftAccount(current) {
       refreshToken,
     });
 
-    const account = storeMicrosoftAuth(auth);
+    const account = await storeMicrosoftAuth(auth);
 
     log.info(
       `Successfully refreshed Microsoft account ${account.uuid ?? current.uuid}.`,
