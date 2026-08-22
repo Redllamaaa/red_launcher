@@ -1,8 +1,73 @@
 use reqwest::Client;
 use serde::{ Deserialize, Serialize };
+use std::collections::HashSet;
+use std::sync::Mutex;
 use std::time::Duration;
 
 use crate::auth_error::AuthError;
+
+/// Tracks device codes the frontend has asked us to abandon.
+///
+/// A device_code is only ever inserted here when the user cancels —
+/// successful/expired/declined flows never touch this set, so there's
+/// nothing to clean up in the common case. `take_cancelled` removes the
+/// entry on read since a device_code is single-use.
+///
+/// Registered as managed state in `lib.rs` via `.manage(CancelledDeviceCodes::default())`.
+#[derive(Default)]
+pub struct CancelledDeviceCodes(Mutex<HashSet<String>>);
+
+impl CancelledDeviceCodes {
+    fn cancel(&self, device_code: &str) {
+        self.0.lock().unwrap().insert(device_code.to_string());
+    }
+
+    fn take_cancelled(&self, device_code: &str) -> bool {
+        self.0.lock().unwrap().remove(device_code)
+    }
+}
+
+/// Ask an in-progress `poll_microsoft_device_code` call to stop.
+///
+/// This doesn't interrupt an in-flight HTTP request to Microsoft, but the
+/// poll loop checks for cancellation before every request and at ~1s
+/// granularity while it would otherwise be sleeping, so the caller sees
+/// `AuthError::Cancelled` shortly after this is called.
+#[tauri::command]
+pub fn cancel_microsoft_device_code(
+    state: tauri::State<CancelledDeviceCodes>,
+    device_code: String
+) {
+    state.cancel(&device_code);
+}
+
+/// Sleep for `duration`, but wake early (and return early) if `device_code`
+/// is cancelled. Checked in ~1s steps rather than once at the end so a
+/// cancellation lands quickly even when the poll interval is long.
+async fn sleep_or_cancel(
+    duration: Duration,
+    device_code: &str,
+    cancel_state: &CancelledDeviceCodes
+) -> Result<(), AuthError> {
+    let step = Duration::from_secs(1);
+    let mut remaining = duration;
+
+    while remaining > Duration::ZERO {
+        if cancel_state.take_cancelled(device_code) {
+            return Err(AuthError::Cancelled);
+        }
+
+        let sleep_for = remaining.min(step);
+        tokio::time::sleep(sleep_for).await;
+        remaining = remaining.saturating_sub(sleep_for);
+    }
+
+    if cancel_state.take_cancelled(device_code) {
+        return Err(AuthError::Cancelled);
+    }
+
+    Ok(())
+}
 
 const MS_DEVICE_CODE: &str = "https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode";
 
@@ -163,13 +228,18 @@ pub async fn start_microsoft_device_code(client_id: String) -> Result<DeviceCode
 pub async fn poll_microsoft_device_code(
     client_id: String,
     device_code: String,
-    interval: u64
+    interval: u64,
+    cancel_state: tauri::State<'_, CancelledDeviceCodes>
 ) -> Result<MicrosoftAuthResult, AuthError> {
     let client = Client::new();
 
     let wait_secs = interval.max(5);
 
     loop {
+        if cancel_state.take_cancelled(&device_code) {
+            return Err(AuthError::Cancelled);
+        }
+
         let response = client
             .post(MS_OAUTH_TOKEN)
             .form(
@@ -206,11 +276,15 @@ pub async fn poll_microsoft_device_code(
 
         match error.error.as_str() {
             "authorization_pending" => {
-                tokio::time::sleep(Duration::from_secs(wait_secs)).await;
+                sleep_or_cancel(Duration::from_secs(wait_secs), &device_code, &cancel_state).await?;
             }
 
             "slow_down" => {
-                tokio::time::sleep(Duration::from_secs(wait_secs + 5)).await;
+                sleep_or_cancel(
+                    Duration::from_secs(wait_secs + 5),
+                    &device_code,
+                    &cancel_state
+                ).await?;
             }
 
             "authorization_declined" => {

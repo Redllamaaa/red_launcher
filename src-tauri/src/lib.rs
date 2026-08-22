@@ -7,9 +7,11 @@ mod mcstatus;
 mod auth_error;
 
 use account_auth::{
+    cancel_microsoft_device_code,
     poll_microsoft_device_code,
     refresh_microsoft_account,
     start_microsoft_device_code,
+    CancelledDeviceCodes,
 };
 use account_logout::logout_microsoft;
 use token_store::{ get_account_tokens, remove_account_tokens, store_account_tokens };
@@ -29,6 +31,7 @@ pub fn run() {
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_dialog::init())
+        .manage(CancelledDeviceCodes::default())
         .plugin(
             tauri_plugin_log::Builder
                 ::new()
@@ -43,6 +46,7 @@ pub fn run() {
             tauri::generate_handler![
                 start_microsoft_device_code,
                 poll_microsoft_device_code,
+                cancel_microsoft_device_code,
                 refresh_microsoft_account,
                 store_account_tokens,
                 get_account_tokens,

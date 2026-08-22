@@ -538,6 +538,32 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
   }
 });
 */
+}
+
+/**
+ * Map a serialized AuthError (`{ kind, detail? }`, per auth_error.rs's
+ * `#[serde(tag = "kind", content = "detail")]`) onto the overlay UI.
+ *
+ * @param {{kind: string, detail?: any}} err The rejected error value.
+ */
+function showMsftLoginError(err) {
+  if (err?.kind === "Declined") {
+    // User explicitly declined at the Microsoft sign-in prompt — no error overlay needed.
+    return;
+  }
+
+  console.log("Microsoft login error:", err);
+
+  setOverlayContent(
+    Lang.queryJS("settings.msftLogin.errorTitle"),
+    Lang.queryJS("settings.msftLogin.errorMessage"),
+    Lang.queryJS("settings.msftLogin.okButton"),
+  );
+  setOverlayHandler(() => {
+    toggleOverlay(false);
+  });
+  toggleOverlay(true);
+}
 
 /**
  * Bind functionality for the account selection buttons. If another account

@@ -18,6 +18,9 @@ pub enum AuthError {
     /// Device-code flow: user declined the sign-in prompt
     Declined,
 
+    /// Device-code flow: cancelled from the frontend before Microsoft replied
+    Cancelled,
+
     /// Device-code flow: code expired before the user finished
     Expired,
 

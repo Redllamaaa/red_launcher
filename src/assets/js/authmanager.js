@@ -102,6 +102,19 @@ async function fullMicrosoftAuthFlow() {
 }
 
 /**
+ * Cancel an in-progress device-code login. Safe to call even if the
+ * poll has already resolved/rejected on its own — the Rust side just
+ * ignores a cancellation for a device_code it's no longer polling.
+ *
+ * @param {string} deviceCode The `device_code` from the deviceCode object
+ * passed to addMicrosoftAccount's onDeviceCode callback.
+ * @returns {Promise<void>}
+ */
+export async function cancelMicrosoftDeviceCode(deviceCode) {
+  await invoke("cancel_microsoft_device_code", { deviceCode });
+}
+
+/**
  * Add a Microsoft account.
  *
  * @param {(deviceCode: Object) => void} [onDeviceCode] Optional callback
