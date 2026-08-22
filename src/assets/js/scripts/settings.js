@@ -1,6 +1,5 @@
 import { ready } from "./bootstrap.js";
 
-import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import { fetch } from "@tauri-apps/plugin-http";
 import { getCurrentWindow } from "@tauri-apps/api/window";
@@ -52,7 +51,7 @@ const DropinModUtil = {
   addShaderpacks: async () => {},
 };
 
-import { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } from "../ipcconstants.js";
+import { open as openPath } from "@tauri-apps/plugin-shell";
 
 const settingsState = {
   invalid: new Set(),
@@ -438,106 +437,69 @@ const releaseNotesLogger = LoggerUtil.getLogger("Release Notes");
 // Bind the add microsoft account button.
 document.getElementById("settingsAddMicrosoftAccount").onclick = (e) => {
   switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
-    // TODO: Replace with Tauri IPC once the Rust command/event exists.
-    // ipcRenderer.send(MSFT_OPCODE.OPEN_LOGIN, VIEWS.settings, VIEWS.settings);
+    beginMicrosoftDeviceLogin(VIEWS.settings);
   });
 };
 
-// Bind reply for Microsoft Login.
-// TODO: Replace with Tauri IPC once the Rust command/event exists.
 /**
-ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
-  if (arguments_[0] === MSFT_REPLY_TYPE.ERROR) {
-    const viewOnClose = arguments_[2];
-    console.log(arguments_);
-    switchView(getCurrentView(), viewOnClose, 500, 500, () => {
-      if (arguments_[1] === MSFT_ERROR.NOT_FINISHED) {
-        // User cancelled.
-        msftLoginLogger.info("Login cancelled by user.");
-        return;
-      }
+ * Drive the Microsoft device-code login flow. AuthManager owns the
+ * actual invoke() calls (start_microsoft_device_code, then
+ * poll_microsoft_device_code) and token storage — this just supplies
+ * the UI: show the code once it's available, open the verification
+ * page, and react once the account is fully persisted.
+ *
+ * @param {string} viewOnClose The view to return to once the flow ends.
+ */
+async function beginMicrosoftDeviceLogin(viewOnClose) {
+  // AuthManager keeps polling internally with no cancellation channel,
+  // so dismissing the overlay here just tells us to ignore whatever
+  // addMicrosoftAccount() eventually resolves/rejects with.
+  let userCancelled = false;
 
-      // Unexpected error.
+  try {
+    const { account } = await AuthManager.addMicrosoftAccount((deviceCode) => {
       setOverlayContent(
-        Lang.queryJS("settings.msftLogin.errorTitle"),
-        Lang.queryJS("settings.msftLogin.errorMessage"),
-        Lang.queryJS("settings.msftLogin.okButton"),
+        Lang.queryJS("settings.msftLogin.deviceCodeTitle"),
+        deviceCode.message,
+        Lang.queryJS("settings.msftLogin.cancelButton"),
       );
       setOverlayHandler(() => {
+        userCancelled = true;
         toggleOverlay(false);
+        switchView(getCurrentView(), viewOnClose, 500, 500);
+
+        AuthManager.cancelMicrosoftDeviceCode(deviceCode.device_code).catch(
+          (err) => {
+            msftLoginLogger.warn(
+              "Failed to send login cancellation to Rust.",
+              err,
+            );
+          },
+        );
       });
       toggleOverlay(true);
-    });
-  } else if (arguments_[0] === MSFT_REPLY_TYPE.SUCCESS) {
-    const queryMap = arguments_[1];
-    const viewOnClose = arguments_[2];
 
-    // Error from request to Microsoft.
-    if (Object.prototype.hasOwnProperty.call(queryMap, "error")) {
-      switchView(getCurrentView(), viewOnClose, 500, 500, () => {
-        // TODO Dont know what these errors are. Just show them I guess.
-        // This is probably if you messed up the app registration with Azure.
-        let error = queryMap.error; // Error might be 'access_denied' ?
-        let errorDesc = queryMap.error_description;
-        console.log(
-          "Error getting authCode, is Azure application registered correctly?",
-        );
-        console.log(error);
-        console.log(errorDesc);
-        console.log("Full query map: ", queryMap);
-        setOverlayContent(
-          error,
-          errorDesc,
-          Lang.queryJS("settings.msftLogin.okButton"),
-        );
-        setOverlayHandler(() => {
-          toggleOverlay(false);
-        });
-        toggleOverlay(true);
+      openPath(deviceCode.verification_uri).catch((err) => {
+        msftLoginLogger.warn("Could not auto-open verification page.", err);
       });
-    } else {
-      msftLoginLogger.info(
-        "Acquired authCode, proceeding with authentication.",
-      );
+    });
 
-      const authCode = queryMap.code;
-      AuthManager.addMicrosoftAccount(authCode)
-        .then((value) => {
-          updateSelectedAccount(value);
-          switchView(getCurrentView(), viewOnClose, 500, 500, async () => {
-            await prepareSettings();
-          });
-        })
-        .catch((displayableError) => {
-          let actualDisplayableError;
-          if (isDisplayableError(displayableError)) {
-            msftLoginLogger.error("Error while logging in.", displayableError);
-            actualDisplayableError = displayableError;
-          } else {
-            // Uh oh.
-            msftLoginLogger.error(
-              "Unhandled error during login.",
-              displayableError,
-            );
-            actualDisplayableError = Lang.queryJS("login.error.unknown");
-          }
+    if (userCancelled) return;
 
-          switchView(getCurrentView(), viewOnClose, 500, 500, () => {
-            setOverlayContent(
-              actualDisplayableError.title,
-              actualDisplayableError.desc,
-              Lang.queryJS("login.tryAgain"),
-            );
-            setOverlayHandler(() => {
-              toggleOverlay(false);
-            });
-            toggleOverlay(true);
-          });
-        });
-    }
+    toggleOverlay(false);
+    msftLoginLogger.info(`Added Microsoft account ${account.uuid}.`);
+    updateSelectedAccount(account);
+    switchView(getCurrentView(), viewOnClose, 500, 500, async () => {
+      await prepareSettings();
+    });
+  } catch (err) {
+    if (userCancelled) return;
+    msftLoginLogger.error("Microsoft login failed.", err);
+    toggleOverlay(false);
+    switchView(getCurrentView(), viewOnClose, 500, 500, () => {
+      showMsftLoginError(err);
+    });
   }
-});
-*/
 }
 
 /**
