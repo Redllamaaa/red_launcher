@@ -1434,7 +1434,7 @@ function updateRangedSlider(element, value, notch) {
   let cancelled = !element.dispatchEvent(event);
 
   if (!cancelled) {
-    track.style.left = notch + "%";
+    track.style.left = `calc(${notch}% - 3.5px)`;
     bar.style.width = notch + "%";
   } else {
     element.setAttribute("value", oldVal);
@@ -1534,6 +1534,87 @@ function bindMinMaxRam(server) {
 }
 
 /**
+ * Position a ranged slider's track/bar and update its label based on
+ * its current value/min/max/step attributes, without dispatching a
+ * change event. Needed because setting the "value" attribute
+ * (initSettingsValues) does not by itself move the visual track/bar
+ * or refresh the label — those are normally only updated by the
+ * onchange handlers when the user drags the slider.
+ *
+ * @param {Element} element The range slider div (must have min/max/step/value attrs).
+ * @param {Element} label The label element to update with the "#.#G" text.
+ */
+function syncRangeSliderPosition(element, label) {
+  const sliderMeta = calculateRangeSliderMeta(element);
+  const value = Number(element.getAttribute("value"));
+  const rawNotch =
+    ((value - sliderMeta.min) / sliderMeta.step) * sliderMeta.inc;
+  const notch = Math.min(100, Math.max(0, rawNotch));
+
+  const bar = element.getElementsByClassName("rangeSliderBar")[0];
+  const track = element.getElementsByClassName("rangeSliderTrack")[0];
+  track.style.left = notch + "%";
+  bar.style.width = notch + "%";
+
+  label.innerHTML = value.toFixed(1) + "G";
+}
+
+// DOM Cache section — add alongside the other Java tab consts
+const rangeSliderDragBound = new WeakSet();
+
+/**
+ * Bind pointer-drag interaction to a custom (div-based) range slider.
+ * Uses setPointerCapture so the browser keeps routing pointermove/up
+ * to this element for the duration of the drag, regardless of what's
+ * under the cursor — without capture, fast drags or moving over a
+ * child element can cause the webview to stop delivering pointermove,
+ * which looks like the slider "jumping once then freezing."
+ *
+ * @param {Element} element The rangeSlider div (must have min/max/step/value attrs).
+ */
+function bindRangeSliderDrag(element) {
+  if (rangeSliderDragBound.has(element)) return;
+  rangeSliderDragBound.add(element);
+
+  function valueFromPointer(clientX) {
+    const rect = element.getBoundingClientRect();
+    const pct = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+    const meta = calculateRangeSliderMeta(element);
+    const raw = meta.min + pct * (meta.max - meta.min);
+    const stepped = Math.round(raw / meta.step) * meta.step;
+    return Math.min(meta.max, Math.max(meta.min, stepped));
+  }
+
+  function applyPointer(e) {
+    const meta = calculateRangeSliderMeta(element);
+    const value = valueFromPointer(e.clientX);
+    const notch = ((value - meta.min) / meta.step) * meta.inc;
+    updateRangedSlider(element, value, notch);
+  }
+
+  function onPointerMove(e) {
+    const events = e.getCoalescedEvents?.() ?? [e];
+    for (const ev of events) applyPointer(ev);
+  }
+
+  function onPointerUp(e) {
+    element.removeEventListener("pointermove", onPointerMove);
+    element.removeEventListener("pointerup", onPointerUp);
+    if (element.hasPointerCapture(e.pointerId)) {
+      element.releasePointerCapture(e.pointerId);
+    }
+  }
+
+  element.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    element.setPointerCapture(e.pointerId);
+    applyPointer(e); // jump to click position immediately
+    element.addEventListener("pointermove", onPointerMove);
+    element.addEventListener("pointerup", onPointerUp);
+  });
+}
+
+/**
  * Prepare the Java tab for display.
  */
 async function prepareJavaTab() {
@@ -1547,6 +1628,10 @@ async function prepareJavaTab() {
 
   bindMinMaxRam(server);
   bindRangeSlider(server, total_mem);
+  bindRangeSliderDrag(settingsMinRAMRange);
+  bindRangeSliderDrag(settingsMaxRAMRange);
+  syncRangeSliderPosition(settingsMinRAMRange, settingsMinRAMLabel);
+  syncRangeSliderPosition(settingsMaxRAMRange, settingsMaxRAMLabel);
   populateJavaReqDesc(server);
   populateJvmOptsLink(server);
 }
