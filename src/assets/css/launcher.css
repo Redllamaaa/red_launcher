@@ -3239,6 +3239,123 @@ input:checked + .toggleSwitchSlider:before {
   padding-left: 10px;
 }
 
+/* * *
+* Overlay View (Java Selection Content)
+* * */
+
+/* Java selection content container. */
+#javaSelectContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 75%;
+}
+
+/* Java selection header. */
+#javaSelectHeader {
+  font-family: "Avenir Medium";
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 25px;
+}
+
+/* Wrapper div for the list of detected Java installations. */
+#javaSelectList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-height: 65%;
+  min-height: 40%;
+}
+
+/* Scrollable div which lists the detected Java installations. */
+#javaSelectListScrollable {
+  padding: 0px 5px;
+  overflow-y: scroll;
+}
+#javaSelectListScrollable::-webkit-scrollbar {
+  width: 2px;
+}
+#javaSelectListScrollable::-webkit-scrollbar-track {
+  display: none;
+}
+#javaSelectListScrollable::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Content container for a detected Java listing. */
+.javaListing {
+  color: white;
+  border: 1px solid rgba(126, 126, 126, 0.57);
+  border-radius: 3px;
+  padding: 8px 15px;
+  width: 400px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  opacity: 0.6;
+  transition: 0.25s ease;
+  cursor: pointer;
+  position: relative;
+  background: rgba(0, 0, 0, 0.25);
+}
+.javaListing:hover,
+.javaListing:focus {
+  outline: none;
+  opacity: 1;
+}
+
+/* Add spacing between Java listings. */
+#javaSelectListScrollable > .javaListing:not(:first-child):not(:last-child) {
+  margin: 5px 0px;
+}
+#javaSelectListScrollable > .javaListing:first-child {
+  margin-bottom: 5px;
+}
+#javaSelectListScrollable > .javaListing:last-child {
+  margin-top: 5px;
+}
+
+.javaListingDetails {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  text-align: left;
+}
+
+.javaListingVersion {
+  font-family: "Avenir Medium";
+  font-weight: bold;
+  font-size: 14px;
+  color: #fff;
+}
+
+.javaListingVendor {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 2px;
+}
+
+.javaListingPath {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.javaListingEmpty {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  text-align: center;
+  padding: 20px;
+}
+
 /* Add spacing between server listings. */
 #serverSelectListScrollable > .serverListing:not(:first-child):not(:last-child),
 #accountSelectListScrollable

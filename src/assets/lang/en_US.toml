@@ -39,6 +39,7 @@ accountSelectHeader = "Select an Account"
 accountSelectConfirm = "Select"
 accountSelectCancel = "Cancel"
 accountSelectManage = "Manage Accounts"
+javaSelectHeader = "Detected Java Installations"
 
 [ejs.settings]
 closeLauncherOnLaunch = "Close the launcher when the game is launched."
@@ -84,6 +85,7 @@ memoryAvailableTitle = "Available"
 javaExecutableTitle = "Java Executable"
 javaExecSelDialogTitle = "Select Java Executable"
 javaExecSelButtonText = "Choose File"
+javaDetectButtonText = "Detect"
 javaExecDesc = "The Java executable is validated before game launch."
 javaPathDesc = "The path should end with <strong>{pathSuffix}</strong>."
 jvmOptsTitle = "Additional JVM Options"
@@ -262,6 +264,7 @@ selectedJava = "Selected: Java {version} ({vendor})"
 invalidSelection = "Invalid Selection"
 requiresJava = "Requires Java {major} x64."
 availableOptions = "Available Options for Java {major} (HotSpot VM)"
+detecting = "Detecting.."
 
 [js.settings.about]
 preReleaseTitle = "Pre-release"

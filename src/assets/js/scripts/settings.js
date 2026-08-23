@@ -24,12 +24,19 @@ import {
   setDismissHandler,
   toggleAccountSelection,
   toggleServerSelection,
+  toggleJavaSelection,
 } from "./overlay.js";
 import { VIEWS } from "./views.js";
 import semver from "semver";
 import $ from "jquery";
 
-import { validateSelectedJvm, ensureJavaDirIsRoot } from "../javaguard.js";
+import {
+  validateSelectedJvm,
+  ensureJavaDirIsRoot,
+  discoverBestJvmInstallation,
+  discoverAllJvmInstallations,
+  javaExecFromRoot,
+} from "../javaguard.js";
 import {
   setLoginOptionsViewOnLoginSuccess,
   setLoginOptionsViewOnLoginCancel,
@@ -1451,6 +1458,71 @@ function populateMemoryStatus(totalMem, freeMem) {
 }
 
 /**
+ * If no Java executable is set for the selected server, scan the
+ * system for a compatible JVM and select the best match automatically.
+ * A no-op if the user (or a previous scan) already has one set — this
+ * never overrides an explicit selection.
+ *
+ * @param {Object} server The distro server object (needs effectiveJavaOptions).
+ */
+async function autoDiscoverJavaExecutable(server) {
+  const serverId = ConfigManager.getSelectedServer();
+
+  if (ConfigManager.getJavaExecutable(serverId) != null) {
+    return;
+  }
+
+  const jvmDetails = await discoverBestJvmInstallation(
+    ConfigManager.getDataDirectory(),
+    server.effectiveJavaOptions.supported,
+  );
+
+  if (jvmDetails == null) {
+    // Nothing compatible found on the system — leave it as
+    // "Invalid Selection" so the user knows to pick manually.
+    return;
+  }
+
+  const javaExec = javaExecFromRoot(jvmDetails.path);
+  ConfigManager.setJavaExecutable(serverId, javaExec);
+  ConfigManager.save();
+
+  await syncJavaExecutableSelection(javaExec);
+}
+
+function bindJavaDetectButton() {
+  const btn = document.getElementById("settingsJavaDetectButton");
+  btn.onclick = async () => {
+    const server = (await DistroAPI.getDistribution()).getServerById(
+      ConfigManager.getSelectedServer(),
+    );
+    if (server == null) return;
+
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = Lang.queryJS("settings.java.detecting");
+
+    const installations = await discoverAllJvmInstallations(
+      ConfigManager.getDataDirectory(),
+      server.effectiveJavaOptions.supported,
+    );
+
+    btn.disabled = false;
+    btn.innerHTML = original;
+
+    await toggleJavaSelection(true, installations, async (path) => {
+      const javaExec = javaExecFromRoot(path);
+      ConfigManager.setJavaExecutable(
+        ConfigManager.getSelectedServer(),
+        javaExec,
+      );
+      ConfigManager.save();
+      await syncJavaExecutableSelection(javaExec);
+    });
+  };
+}
+
+/**
  * Validate the provided executable path and display the data on
  * the UI.
  *
@@ -1634,6 +1706,8 @@ async function prepareJavaTab() {
   syncRangeSliderPosition(settingsMaxRAMRange, settingsMaxRAMLabel);
   populateJavaReqDesc(server);
   populateJvmOptsLink(server);
+  bindJavaDetectButton();
+  await autoDiscoverJavaExecutable(server);
 }
 
 /**

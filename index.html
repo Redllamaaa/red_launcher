@@ -587,6 +587,12 @@
                   />
                   <button
                     class="settingsFileSelButton"
+                    id="settingsJavaDetectButton"
+                  >
+                    Detect
+                  </button>
+                  <button
+                    class="settingsFileSelButton"
                     id="settingsJavaExecSel"
                     dialogTitle="Select Java Executable"
                     dialogDirectory="false"
@@ -1079,6 +1085,14 @@
         <div id="serverSelectList">
           <div id="serverSelectListScrollable">
             <!-- Server listings populated here. -->
+          </div>
+        </div>
+      </div>
+      <div id="javaSelectContent" style="display: none">
+        <span id="javaSelectHeader">Detected Java Installations</span>
+        <div id="javaSelectList">
+          <div id="javaSelectListScrollable">
+            <!-- Discovered JVMs populated here. -->
           </div>
         </div>
       </div>

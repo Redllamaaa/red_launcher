@@ -3,6 +3,9 @@ import { fetch } from "@tauri-apps/plugin-http";
 import { platform, arch } from "@tauri-apps/plugin-os";
 import { mkdir, exists } from "@tauri-apps/plugin-fs";
 import semver from "semver";
+import { LoggerUtil } from "./scripts/loggerutil.js";
+
+const log = LoggerUtil.getLogger("JavaGuard");
 
 /**
  * Normalize a user- or system-selected path so it points to the ROOT of a
@@ -76,19 +79,51 @@ export async function validateSelectedJvm(rootDir, supported) {
   let raw;
   try {
     raw = await invoke("run_java_version", { execPath });
-  } catch {
+  } catch (err) {
+    log.warn(`run_java_version failed for ${execPath}:`, err);
     return null;
   }
 
   const parsed = raw ? parseJavaVersionOutput(raw) : null;
-  if (parsed == null) return null;
+  if (parsed == null) {
+    log.warn(`Could not parse java -version output for ${execPath}:`, raw);
+    return null;
+  }
   if (
     supported &&
     !semver.satisfies(parsed.semverStr, supported, { includePrerelease: true })
   ) {
+    log.warn(
+      `${execPath} is ${parsed.semverStr}, doesn't satisfy ${supported}`,
+    );
     return null;
   }
   return parsed;
+}
+
+/**
+ * Ask Rust for JVM candidates, validate each, and return every one that
+ * satisfies `supported` — sorted newest first. Used to power a manual
+ * "Detect" picker (as opposed to discoverBestJvmInstallation, which is
+ * for silent auto-selection of a single best match).
+ */
+export async function discoverAllJvmInstallations(dataDir, supported) {
+  let candidates = [];
+  try {
+    candidates = await invoke("discover_java_candidates", { dataDir });
+  } catch {
+    candidates = [];
+  }
+
+  const results = [];
+  for (const root of candidates) {
+    const details = await validateSelectedJvm(root, supported);
+    if (details == null) continue;
+    results.push({ path: root, ...details });
+  }
+
+  results.sort((a, b) => (semver.gt(a.semverStr, b.semverStr) ? -1 : 1));
+  return results;
 }
 
 /**
@@ -100,14 +135,22 @@ export async function discoverBestJvmInstallation(dataDir, supported) {
   let candidates = [];
   try {
     candidates = await invoke("discover_java_candidates", { dataDir });
-  } catch {
+    log.info(`Discovered ${candidates.length} JVM candidate(s):`, candidates);
+  } catch (err) {
+    log.error("discover_java_candidates failed:", err);
     candidates = [];
   }
 
   let best = null;
   for (const root of candidates) {
     const details = await validateSelectedJvm(root, supported);
-    if (details == null) continue;
+    if (details == null) {
+      log.warn(`Candidate rejected (invalid or unsupported): ${root}`);
+      continue;
+    }
+    log.info(
+      `Candidate valid: ${root} -> ${details.semverStr} (${details.vendor})`,
+    );
     if (best == null || semver.gt(details.semverStr, best.semverStr)) {
       best = { path: root, ...details };
     }

@@ -379,6 +379,55 @@ async function populateServerListings() {
   document.getElementById("serverSelectListScrollable").innerHTML = htmlString;
 }
 
+let javaSelectHandler = null;
+
+/**
+ * Show the Java version picker. `installations` is the array returned by
+ * discoverAllJvmInstallations. `onSelect(installation)` fires when the
+ * user picks a row.
+ */
+async function toggleJavaSelection(
+  toggleState,
+  installations = [],
+  onSelect = null,
+) {
+  javaSelectHandler = onSelect;
+  if (toggleState) {
+    populateJavaSelectListings(installations);
+    setJavaListingHandlers();
+  }
+  toggleOverlay(toggleState, false, "javaSelectContent", true);
+}
+
+function populateJavaSelectListings(installations) {
+  let htmlString = "";
+  for (const inst of installations) {
+    htmlString += `<button class="javaListing" path="${inst.path}">
+            <div class="javaListingDetails">
+                <span class="javaListingVersion">${inst.semverStr}</span>
+                <span class="javaListingVendor">${inst.vendor}</span>
+                <span class="javaListingPath">${inst.path}</span>
+            </div>
+        </button>`;
+  }
+  document.getElementById("javaSelectListScrollable").innerHTML =
+    htmlString ||
+    `<span class="javaListingEmpty">No compatible Java installations found.</span>`;
+}
+
+function setJavaListingHandlers() {
+  const listings = Array.from(document.getElementsByClassName("javaListing"));
+  listings.map((val) => {
+    val.onclick = () => {
+      const path = val.getAttribute("path");
+      toggleOverlay(false);
+      if (javaSelectHandler) {
+        javaSelectHandler(path);
+      }
+    };
+  });
+}
+
 function populateAccountListings() {
   const accountsObj = ConfigManager.getAuthAccounts();
   const accounts = Array.from(Object.keys(accountsObj), (v) => accountsObj[v]);
@@ -415,4 +464,5 @@ export {
   populateAccountListings,
   prepareServerSelectionList,
   prepareAccountSelectionList,
+  toggleJavaSelection,
 };
