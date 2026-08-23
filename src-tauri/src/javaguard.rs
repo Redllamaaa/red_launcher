@@ -39,7 +39,17 @@ pub fn discover_java_candidates(data_dir: String) -> Vec<String> {
             if candidate.is_file() {
                 if let Some(bin_dir) = candidate.parent() {
                     if let Some(root) = bin_dir.parent() {
-                        candidates.push(root.to_string_lossy().to_string());
+                        // Guard against malformed PATH entries resolving to a
+                        // non-directory root (e.g. a project source file that
+                        // happens to have a sibling/child literally named "java").
+                        if root.is_dir() {
+                            candidates.push(root.to_string_lossy().to_string());
+                        } else {
+                            eprintln!(
+                                "Skipping bogus java candidate root (not a directory): {}",
+                                root.display()
+                            );
+                        }
                     }
                 }
             }
