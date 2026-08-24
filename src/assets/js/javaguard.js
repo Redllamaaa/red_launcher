@@ -76,6 +76,10 @@ export async function validateSelectedJvm(rootDir, supported) {
   if (!rootDir) return null;
   const execPath = javaExecFromRoot(rootDir);
 
+  if (!(await exists(execPath))) {
+    return null;
+  }
+
   let raw;
   try {
     raw = await invoke("run_java_version", { execPath });
