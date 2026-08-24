@@ -12,11 +12,21 @@
     "fs:allow-write-text-file",
     "fs:allow-read-text-file",
     "fs:allow-mkdir",
-    "fs:allow-exists",
     "fs:allow-rename",
     {
       "identifier": "fs:scope",
       "allow": ["$APPDATA", "$APPDATA/**"]
+    },
+    {
+      "identifier": "fs:allow-exists",
+      "allow": [
+        { "path": "$APPDATA/**" },
+        { "path": "/usr/**" },
+        { "path": "/opt/**" },
+        { "path": "/Library/Java/**" },
+        { "path": "$HOME/**" },
+        { "path": "C:\\**" }
+      ]
     },
     "shell:default",
     "http:default",
