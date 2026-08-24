@@ -26,8 +26,16 @@ use distromanager::{
     is_dev_mode,
     DistroState,
 };
-
 use tauri_plugin_log::{ Target, TargetKind };
+
+#[tauri::command]
+fn toggle_devtools(window: tauri::WebviewWindow) {
+    if window.is_devtools_open() {
+        window.close_devtools();
+    } else {
+        window.open_devtools();
+    }
+}
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -67,6 +75,7 @@ pub fn run() {
                 extract_jdk_archive,
                 get_server_status,
                 get_distribution,
+                toggle_devtools,
                 refresh_distribution_or_fallback,
                 toggle_dev_mode,
                 is_dev_mode

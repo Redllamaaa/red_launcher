@@ -7,6 +7,7 @@
 // Tauri
 import { open } from "@tauri-apps/plugin-shell";
 import { platform, arch } from "@tauri-apps/plugin-os";
+import { invoke } from "@tauri-apps/api/core";
 
 // Requirements
 import $ from "jquery";
@@ -185,13 +186,10 @@ $(document).on("click", 'a[href^="http"]', function (event) {
 
 /**
  * Opens DevTools window if you hold (ctrl + shift + i).
- * This will crash the program if you are using multiple
- * DevTools, for example the chrome debugger in VS Code.
  */
-document.addEventListener("keydown", function (e) {
+document.addEventListener("keydown", async function (e) {
   if ((e.key === "I" || e.key === "i") && e.ctrlKey && e.shiftKey) {
-    let window = remote.getCurrentWindow();
-    window.toggleDevTools();
+    await invoke("toggle_devtools");
   }
 });
 

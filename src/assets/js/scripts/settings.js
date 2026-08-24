@@ -14,6 +14,7 @@ import { updateSelectedAccount } from "./landing.js";
 import { validateSelectedAccount } from "./uibinder.js";
 import { getMemoryInfo, getCachedMemoryInfo } from "./sysinfo.js";
 import { join } from "@tauri-apps/api/path";
+import { invoke } from "@tauri-apps/api/core";
 
 // Requirements
 import { getCurrentView, switchView } from "./viewstate.js";
@@ -1726,9 +1727,8 @@ const settingsAboutChangelogButton = settingsTabAbout.getElementsByClassName(
 )[0];
 
 // Bind the devtools toggle button.
-document.getElementById("settingsAboutDevToolsButton").onclick = (e) => {
-  let window = getCurrentWindow();
-  window.toggleDevTools();
+document.getElementById("settingsAboutDevToolsButton").onclick = async (e) => {
+  await invoke("toggle_devtools");
 };
 
 /**
