@@ -25,7 +25,7 @@
         { "path": "/opt/**" },
         { "path": "/Library/Java/**" },
         { "path": "$HOME/**" },
-        { "path": "C:\\**" }
+        { "path": "C:/**" }
       ]
     },
     "shell:default",
