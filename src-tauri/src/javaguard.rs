@@ -1,6 +1,7 @@
 use std::fs;
 use std::path::{ Path, PathBuf };
 use std::process::Command;
+use std::collections::HashSet;
 
 #[tauri::command]
 pub fn run_java_version(exec_path: String) -> Result<String, String> {
@@ -22,13 +23,40 @@ pub fn run_java_version(exec_path: String) -> Result<String, String> {
     Ok(text)
 }
 
+fn push_candidate(root: PathBuf, candidates: &mut Vec<String>, seen: &mut HashSet<PathBuf>) {
+    if !root.is_dir() {
+        return;
+    }
+    let exe_name = if cfg!(windows) { "javaw.exe" } else { "java" };
+    let exe = root.join("bin").join(exe_name);
+    // Resolve symlinks so multiple aliases (common under /usr/lib/jvm on
+    // Fedora/RHEL, which has many names pointing at the same underlying
+    // install) collapse to a single entry instead of one per alias.
+    let canonical = fs::canonicalize(&exe).unwrap_or(exe);
+    if seen.insert(canonical) {
+        candidates.push(root.to_string_lossy().to_string());
+    }
+}
+
 #[tauri::command]
 pub fn discover_java_candidates(data_dir: String) -> Vec<String> {
     let mut candidates: Vec<String> = Vec::new();
+    let mut seen: HashSet<PathBuf> = HashSet::new();
+
+    // /usr/lib/jvm first — these are the most descriptive root names, so
+    // they "win" the dedupe over generic PATH-derived roots like /usr.
+    #[cfg(target_os = "linux")]
+    {
+        if let Ok(entries) = fs::read_dir("/usr/lib/jvm") {
+            for entry in entries.flatten() {
+                push_candidate(entry.path(), &mut candidates, &mut seen);
+            }
+        }
+    }
 
     if let Ok(home) = std::env::var("JAVA_HOME") {
         if !home.is_empty() {
-            candidates.push(home);
+            push_candidate(PathBuf::from(home), &mut candidates, &mut seen);
         }
     }
 
@@ -39,17 +67,7 @@ pub fn discover_java_candidates(data_dir: String) -> Vec<String> {
             if candidate.is_file() {
                 if let Some(bin_dir) = candidate.parent() {
                     if let Some(root) = bin_dir.parent() {
-                        // Guard against malformed PATH entries resolving to a
-                        // non-directory root (e.g. a project source file that
-                        // happens to have a sibling/child literally named "java").
-                        if root.is_dir() {
-                            candidates.push(root.to_string_lossy().to_string());
-                        } else {
-                            eprintln!(
-                                "Skipping bogus java candidate root (not a directory): {}",
-                                root.display()
-                            );
-                        }
+                        push_candidate(root.to_path_buf(), &mut candidates, &mut seen);
                     }
                 }
             }
@@ -59,9 +77,7 @@ pub fn discover_java_candidates(data_dir: String) -> Vec<String> {
     let runtime_dir = Path::new(&data_dir).join("runtime");
     if let Ok(entries) = fs::read_dir(&runtime_dir) {
         for entry in entries.flatten() {
-            if entry.path().is_dir() {
-                candidates.push(entry.path().to_string_lossy().to_string());
-            }
+            push_candidate(entry.path(), &mut candidates, &mut seen);
         }
     }
 
@@ -70,9 +86,7 @@ pub fn discover_java_candidates(data_dir: String) -> Vec<String> {
         for base in ["C:\\Program Files\\Java", "C:\\Program Files\\Eclipse Adoptium"] {
             if let Ok(entries) = fs::read_dir(base) {
                 for entry in entries.flatten() {
-                    if entry.path().is_dir() {
-                        candidates.push(entry.path().to_string_lossy().to_string());
-                    }
+                    push_candidate(entry.path(), &mut candidates, &mut seen);
                 }
             }
         }
@@ -81,26 +95,11 @@ pub fn discover_java_candidates(data_dir: String) -> Vec<String> {
     {
         if let Ok(entries) = fs::read_dir("/Library/Java/JavaVirtualMachines") {
             for entry in entries.flatten() {
-                let home = entry.path().join("Contents/Home");
-                if home.is_dir() {
-                    candidates.push(home.to_string_lossy().to_string());
-                }
-            }
-        }
-    }
-    #[cfg(target_os = "linux")]
-    {
-        if let Ok(entries) = fs::read_dir("/usr/lib/jvm") {
-            for entry in entries.flatten() {
-                if entry.path().is_dir() {
-                    candidates.push(entry.path().to_string_lossy().to_string());
-                }
+                push_candidate(entry.path().join("Contents/Home"), &mut candidates, &mut seen);
             }
         }
     }
 
-    candidates.sort();
-    candidates.dedup();
     candidates
 }
 
