@@ -1,6 +1,7 @@
 import { ready } from "./bootstrap.js";
 
 import { open } from "@tauri-apps/plugin-dialog";
+import { open as openPath } from "@tauri-apps/plugin-shell";
 import { fetch } from "@tauri-apps/plugin-http";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getVersion } from "@tauri-apps/api/app";
@@ -15,6 +16,7 @@ import { validateSelectedAccount } from "./uibinder.js";
 import { getMemoryInfo, getCachedMemoryInfo } from "./sysinfo.js";
 import { join } from "@tauri-apps/api/path";
 import { invoke } from "@tauri-apps/api/core";
+import * as DropinModUtil from "../dropinmodutil.js";
 
 // Requirements
 import { getCurrentView, switchView } from "./viewstate.js";
@@ -45,22 +47,6 @@ import {
 import { loginOptionsCancelEnabled } from "./loginOptions.js";
 
 await ready();
-
-// TODO: port to Rust — real filesystem scanning of mods/shaderpacks dirs
-const DropinModUtil = {
-  validateDir: () => false,
-  scanForDropinMods: () => [],
-  addDropinMods: async () => {},
-  deleteDropinMod: async () => {},
-  toggleDropinMod: () => {},
-  isDropinModEnabled: () => false,
-  scanForShaderpacks: () => [],
-  getEnabledShaderpack: () => null,
-  setEnabledShaderpack: () => {},
-  addShaderpacks: async () => {},
-};
-
-import { open as openPath } from "@tauri-apps/plugin-shell";
 
 const settingsState = {
   invalid: new Set(),
@@ -421,17 +407,17 @@ function settingsSaveDisabled(v) {
   settingsNavDone.disabled = v;
 }
 
-function fullSettingsSave() {
+async function fullSettingsSave() {
   saveSettingsValues();
   saveModConfiguration();
   ConfigManager.save();
   saveDropinModConfiguration();
-  saveShaderpackSettings();
+  await saveShaderpackSettings();
 }
 
 /* Closes the settings view and saves all data. */
-settingsNavDone.onclick = () => {
-  fullSettingsSave();
+settingsNavDone.onclick = async () => {
+  await fullSettingsSave();
   switchView(getCurrentView(), VIEWS.landing);
 };
 
@@ -949,7 +935,7 @@ async function resolveDropinModsForUI() {
     serv.rawServer.id,
     "mods",
   );
-  CACHE_DROPIN_MODS = DropinModUtil.scanForDropinMods(
+  CACHE_DROPIN_MODS = await DropinModUtil.scanForDropinMods(
     CACHE_SETTINGS_MODS_DIR,
     serv.rawServer.minecraftVersion,
   );
@@ -1012,9 +998,9 @@ function bindDropinModsRemoveButton() {
  */
 function bindDropinModFileSystemButton() {
   const fsBtn = document.getElementById("settingsDropinFileSystemButton");
-  fsBtn.onclick = () => {
-    DropinModUtil.validateDir(CACHE_SETTINGS_MODS_DIR);
-    shell.openPath(CACHE_SETTINGS_MODS_DIR);
+  fsBtn.onclick = async () => {
+    await DropinModUtil.validateDir(CACHE_SETTINGS_MODS_DIR);
+    await openPath(CACHE_SETTINGS_MODS_DIR);
   };
   fsBtn.ondragenter = (e) => {
     e.dataTransfer.dropEffect = "move";
@@ -1032,7 +1018,10 @@ function bindDropinModFileSystemButton() {
     fsBtn.removeAttribute("drag");
     e.preventDefault();
 
-    DropinModUtil.addDropinMods(e.dataTransfer.files, CACHE_SETTINGS_MODS_DIR);
+    await DropinModUtil.addDropinMods(
+      e.dataTransfer.files,
+      CACHE_SETTINGS_MODS_DIR,
+    );
     await reloadDropinMods();
   };
 }
@@ -1079,7 +1068,7 @@ document.addEventListener("keydown", async (e) => {
   ) {
     if (e.key === "F5") {
       await reloadDropinMods();
-      saveShaderpackSettings();
+      await saveShaderpackSettings();
       await resolveShaderpacksForUI();
     }
   }
@@ -1111,10 +1100,10 @@ async function resolveShaderpacksForUI() {
     ConfigManager.getInstanceDirectory(),
     serv.rawServer.id,
   );
-  CACHE_SHADERPACKS = DropinModUtil.scanForShaderpacks(
+  CACHE_SHADERPACKS = await DropinModUtil.scanForShaderpacks(
     CACHE_SETTINGS_INSTANCE_DIR,
   );
-  CACHE_SELECTED_SHADERPACK = DropinModUtil.getEnabledShaderpack(
+  CACHE_SELECTED_SHADERPACK = await DropinModUtil.getEnabledShaderpack(
     CACHE_SETTINGS_INSTANCE_DIR,
   );
 
@@ -1144,7 +1133,7 @@ function setShadersOptions(arr, selected) {
   }
 }
 
-function saveShaderpackSettings() {
+async function saveShaderpackSettings() {
   if (CACHE_SETTINGS_INSTANCE_DIR == null) return;
   let sel = "OFF";
   for (let opt of document.getElementById("settingsShadersOptions").children) {
@@ -1152,7 +1141,7 @@ function saveShaderpackSettings() {
       sel = opt.getAttribute("value");
     }
   }
-  DropinModUtil.setEnabledShaderpack(CACHE_SETTINGS_INSTANCE_DIR, sel);
+  await DropinModUtil.setEnabledShaderpack(CACHE_SETTINGS_INSTANCE_DIR, sel);
 }
 
 function bindShaderpackButton() {
@@ -1160,8 +1149,8 @@ function bindShaderpackButton() {
   spBtn.onclick = async () => {
     if (CACHE_SETTINGS_INSTANCE_DIR == null) return;
     const p = await join(CACHE_SETTINGS_INSTANCE_DIR, "shaderpacks");
-    DropinModUtil.validateDir(p);
-    shell.openPath(p);
+    await DropinModUtil.validateDir(p);
+    await openPath(p);
   };
   spBtn.ondragenter = (e) => {
     e.dataTransfer.dropEffect = "move";
@@ -1180,11 +1169,11 @@ function bindShaderpackButton() {
     e.preventDefault();
 
     if (CACHE_SETTINGS_INSTANCE_DIR == null) return;
-    DropinModUtil.addShaderpacks(
+    await DropinModUtil.addShaderpacks(
       e.dataTransfer.files,
       CACHE_SETTINGS_INSTANCE_DIR,
     );
-    saveShaderpackSettings();
+    await saveShaderpackSettings();
     await resolveShaderpacksForUI();
   };
 }
