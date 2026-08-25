@@ -56,7 +56,7 @@ async function showMainUI(data) {
   }
 
   await prepareSettings(true);
-  callUpdateSelectedServer(
+  await callUpdateSelectedServer(
     data.getServerById(ConfigManager.getSelectedServer()),
   );
   refreshServerStatus();
@@ -119,7 +119,7 @@ function showFatalStartupError() {
  * @param {Object} data The distro index object.
  */
 async function onDistroRefresh(data) {
-  callUpdateSelectedServer(
+  await callUpdateSelectedServer(
     data.getServerById(ConfigManager.getSelectedServer()),
   );
   refreshServerStatus();
@@ -476,7 +476,7 @@ async function devModeToggle() {
   DistroAPI.toggleDevMode(true);
   const data = await DistroAPI.refreshDistributionOrFallback();
   await ensureJavaSettings(data);
-  callUpdateSelectedServer(data.servers[0]);
+  await callUpdateSelectedServer(data.servers[0]);
   syncModConfigurations(data);
 }
 

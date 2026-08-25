@@ -301,7 +301,7 @@ async function setServerListingHandlers() {
       const serv = (await DistroAPI.getDistribution()).getServerById(
         val.getAttribute("servid"),
       );
-      callUpdateSelectedServer(serv);
+      await callUpdateSelectedServer(serv);
       refreshServerStatus(true);
       toggleOverlay(false);
     };

@@ -193,9 +193,9 @@ export function updateSelectedAccount(authUser) {
 updateSelectedAccount(ConfigManager.getSelectedAccount());
 
 // Bind selected server
-function updateSelectedServer(serv) {
+async function updateSelectedServer(serv) {
   if (getCurrentView() === VIEWS.settings) {
-    fullSettingsSave();
+    await fullSettingsSave();
   }
   ConfigManager.setSelectedServer(serv != null ? serv.rawServer.id : null);
   ConfigManager.save();
