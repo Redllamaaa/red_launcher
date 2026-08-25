@@ -1,10 +1,29 @@
-import fs from "fs-extra";
-import path from "path";
-import { ipcRenderer, shell } from "electron";
-import { SHELL_OPCODE } from "./ipcconstants";
+/**
+ * DropinModUtil
+ *
+ * Scans for, adds, removes, and toggles drop-in mods and shaderpacks on
+ * the local filesystem. Ported from the Electron/fs-extra version — all
+ * filesystem access now goes through @tauri-apps/plugin-fs instead of
+ * Node's fs/fs-extra/electron, so every exported function is now async.
+ *
+ * TODO(Red): deleteDropinMod does a permanent delete via the fs plugin's
+ * remove(). The old Electron build moved the file to the OS trash instead
+ * (see SHELL_OPCODE.TRASH_ITEM in ipcconstants.js). Tauri's fs/shell
+ * plugins don't expose a trash API — if you want that behavior back it
+ * needs a Rust command, same pattern as javaguard.rs.
+ */
+import {
+  exists,
+  mkdir,
+  readDir,
+  remove,
+  rename,
+  readTextFile,
+  writeTextFile,
+} from "@tauri-apps/plugin-fs";
 import { LoggerUtil } from "./scripts/loggerutil.js";
 
-const logger = LoggerUtil.getLogger("LoginOptions");
+const logger = LoggerUtil.getLogger("DropinModUtil");
 
 // Group #1: File Name (without .disabled, if any)
 // Group #2: File Extension (jar, zip, or litemod)
@@ -17,37 +36,41 @@ const SHADER_OPTION = /shaderPack=(.+)/;
 const SHADER_DIR = "shaderpacks";
 const SHADER_CONFIG = "optionsshaders.txt";
 
-/**
- * Validate that the given directory exists. If not, it is
- * created.
- *
- * @param {string} modsDir The path to the mods directory.
- */
-exports.validateDir = function (dir) {
-  fs.ensureDirSync(dir);
-};
+// Tauri's fs plugin wants forward slashes regardless of platform — same
+// helper as configmanager.js/distromanager.js, kept local to avoid a
+// circular import back into configmanager.js.
+function pathJoin(...parts) {
+  return parts.join("/").replace(/\/+/g, "/");
+}
 
 /**
- * Scan for drop-in mods in both the mods folder and version
- * safe mods folder.
+ * Validate that the given directory exists. If not, it is created.
+ *
+ * @param {string} dir The path to the directory.
+ */
+export async function validateDir(dir) {
+  if (!(await exists(dir))) {
+    await mkdir(dir, { recursive: true });
+  }
+}
+
+/**
+ * Scan for drop-in mods in both the mods folder and version-safe
+ * mods folder.
  *
  * @param {string} modsDir The path to the mods directory.
  * @param {string} version The minecraft version of the server configuration.
  *
- * @returns {{fullName: string, name: string, ext: string, disabled: boolean}[]}
+ * @returns {Promise<{fullName: string, name: string, ext: string, disabled: boolean}[]>}
  * An array of objects storing metadata about each discovered mod.
  */
-exports.scanForDropinMods = function (modsDir, version) {
+export async function scanForDropinMods(modsDir, version) {
   const modsDiscovered = [];
-  if (fs.existsSync(modsDir)) {
-    let modCandidates = fs.readdirSync(modsDir);
-    let verCandidates = [];
-    const versionDir = path.join(modsDir, version);
-    if (fs.existsSync(versionDir)) {
-      verCandidates = fs.readdirSync(versionDir);
-    }
-    for (let file of modCandidates) {
-      const match = MOD_REGEX.exec(file);
+
+  if (await exists(modsDir)) {
+    for (const entry of await readDir(modsDir)) {
+      if (entry.isDirectory) continue;
+      const match = MOD_REGEX.exec(entry.name);
       if (match != null) {
         modsDiscovered.push({
           fullName: match[0],
@@ -57,36 +80,43 @@ exports.scanForDropinMods = function (modsDir, version) {
         });
       }
     }
-    for (let file of verCandidates) {
-      const match = MOD_REGEX.exec(file);
-      if (match != null) {
-        modsDiscovered.push({
-          fullName: path.join(version, match[0]),
-          name: match[1],
-          ext: match[2],
-          disabled: match[3] != null,
-        });
+
+    const versionDir = pathJoin(modsDir, version);
+    if (await exists(versionDir)) {
+      for (const entry of await readDir(versionDir)) {
+        if (entry.isDirectory) continue;
+        const match = MOD_REGEX.exec(entry.name);
+        if (match != null) {
+          modsDiscovered.push({
+            fullName: pathJoin(version, match[0]),
+            name: match[1],
+            ext: match[2],
+            disabled: match[3] != null,
+          });
+        }
       }
     }
   }
+
   return modsDiscovered;
-};
+}
 
 /**
- * Add dropin mods.
+ * Add drop-in mods by moving them into the mods directory.
  *
- * @param {FileList} files The files to add.
+ * @param {{name: string, path: string}[]} files The files to add
+ * (as returned by the drag/drop or dialog plugin — needs `name` + `path`).
  * @param {string} modsDir The path to the mods directory.
  */
-exports.addDropinMods = function (files, modsdir) {
-  exports.validateDir(modsdir);
+export async function addDropinMods(files, modsDir) {
+  await validateDir(modsDir);
 
-  for (let f of files) {
+  for (const f of files) {
     if (MOD_REGEX.exec(f.name) != null) {
-      fs.moveSync(f.path, path.join(modsdir, f.name));
+      await rename(f.path, pathJoin(modsDir, f.name));
     }
   }
-};
+}
 
 /**
  * Delete a drop-in mod from the file system.
@@ -94,54 +124,38 @@ exports.addDropinMods = function (files, modsdir) {
  * @param {string} modsDir The path to the mods directory.
  * @param {string} fullName The fullName of the discovered mod to delete.
  *
- * @returns {Promise.<boolean>} True if the mod was deleted, otherwise false.
+ * @returns {Promise<boolean>} True if the mod was deleted, otherwise false.
  */
-exports.deleteDropinMod = async function (modsDir, fullName) {
-  // TODO: Replace Electron IPC once the Rust command/event exists.
-  //const res = await ipcRenderer.invoke(
-  //  SHELL_OPCODE.TRASH_ITEM,
-  //  path.join(modsDir, fullName),
-  //);
-
-  if (!res.result) {
-    shell.beep();
-    logger.error("Error deleting drop-in mod.", res.error);
+export async function deleteDropinMod(modsDir, fullName) {
+  try {
+    await remove(pathJoin(modsDir, fullName));
+    return true;
+  } catch (err) {
+    logger.error("Error deleting drop-in mod.", err);
     return false;
   }
-
-  return true;
-};
+}
 
 /**
- * Toggle a discovered mod on or off. This is achieved by either
- * adding or disabling the .disabled extension to the local file.
+ * Toggle a discovered mod on or off. This is achieved by adding or
+ * removing the .disabled extension on the local file.
  *
  * @param {string} modsDir The path to the mods directory.
  * @param {string} fullName The fullName of the discovered mod to toggle.
  * @param {boolean} enable Whether to toggle on or off the mod.
  *
- * @returns {Promise.<void>} A promise which resolves when the mod has
- * been toggled. If an IO error occurs the promise will be rejected.
+ * @returns {Promise<void>} Resolves when the mod has been toggled.
  */
-exports.toggleDropinMod = function (modsDir, fullName, enable) {
-  return new Promise((resolve, reject) => {
-    const oldPath = path.join(modsDir, fullName);
-    const newPath = path.join(
-      modsDir,
-      enable
-        ? fullName.substring(0, fullName.indexOf(DISABLED_EXT))
-        : fullName + DISABLED_EXT,
-    );
-
-    fs.rename(oldPath, newPath, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
-};
+export async function toggleDropinMod(modsDir, fullName, enable) {
+  const oldPath = pathJoin(modsDir, fullName);
+  const newPath = pathJoin(
+    modsDir,
+    enable
+      ? fullName.substring(0, fullName.indexOf(DISABLED_EXT))
+      : fullName + DISABLED_EXT,
+  );
+  await rename(oldPath, newPath);
+}
 
 /**
  * Check if a drop-in mod is enabled.
@@ -149,99 +163,91 @@ exports.toggleDropinMod = function (modsDir, fullName, enable) {
  * @param {string} fullName The fullName of the discovered mod to toggle.
  * @returns {boolean} True if the mod is enabled, otherwise false.
  */
-exports.isDropinModEnabled = function (fullName) {
+export function isDropinModEnabled(fullName) {
   return !fullName.endsWith(DISABLED_EXT);
-};
+}
 
 /**
  * Scan for shaderpacks inside the shaderpacks folder.
  *
  * @param {string} instanceDir The path to the server instance directory.
  *
- * @returns {{fullName: string, name: string}[]}
+ * @returns {Promise<{fullName: string, name: string}[]>}
  * An array of objects storing metadata about each discovered shaderpack.
  */
-exports.scanForShaderpacks = function (instanceDir) {
-  const shaderDir = path.join(instanceDir, SHADER_DIR);
-  const packsDiscovered = [
-    {
-      fullName: "OFF",
-      name: "Off (Default)",
-    },
-  ];
-  if (fs.existsSync(shaderDir)) {
-    let modCandidates = fs.readdirSync(shaderDir);
-    for (let file of modCandidates) {
-      const match = SHADER_REGEX.exec(file);
+export async function scanForShaderpacks(instanceDir) {
+  const shaderDir = pathJoin(instanceDir, SHADER_DIR);
+  const packsDiscovered = [{ fullName: "OFF", name: "Off (Default)" }];
+
+  if (await exists(shaderDir)) {
+    for (const entry of await readDir(shaderDir)) {
+      if (entry.isDirectory) continue;
+      const match = SHADER_REGEX.exec(entry.name);
       if (match != null) {
-        packsDiscovered.push({
-          fullName: match[0],
-          name: match[1],
-        });
+        packsDiscovered.push({ fullName: match[0], name: match[1] });
       }
     }
   }
+
   return packsDiscovered;
-};
+}
 
 /**
- * Read the optionsshaders.txt file to locate the current
- * enabled pack. If the file does not exist, OFF is returned.
+ * Read the optionsshaders.txt file to locate the current enabled pack.
+ * If the file does not exist, OFF is returned.
  *
  * @param {string} instanceDir The path to the server instance directory.
  *
- * @returns {string} The file name of the enabled shaderpack.
+ * @returns {Promise<string>} The file name of the enabled shaderpack.
  */
-exports.getEnabledShaderpack = function (instanceDir) {
-  exports.validateDir(instanceDir);
+export async function getEnabledShaderpack(instanceDir) {
+  await validateDir(instanceDir);
 
-  const optionsShaders = path.join(instanceDir, SHADER_CONFIG);
-  if (fs.existsSync(optionsShaders)) {
-    const buf = fs.readFileSync(optionsShaders, { encoding: "utf-8" });
+  const optionsShaders = pathJoin(instanceDir, SHADER_CONFIG);
+  if (await exists(optionsShaders)) {
+    const buf = await readTextFile(optionsShaders);
     const match = SHADER_OPTION.exec(buf);
     if (match != null) {
       return match[1];
-    } else {
-      logger.warn("WARNING: Shaderpack regex failed.");
     }
+    logger.warn("Shaderpack regex failed.");
   }
   return "OFF";
-};
+}
 
 /**
  * Set the enabled shaderpack.
  *
  * @param {string} instanceDir The path to the server instance directory.
- * @param {string} pack the file name of the shaderpack.
+ * @param {string} pack The file name of the shaderpack.
  */
-exports.setEnabledShaderpack = function (instanceDir, pack) {
-  exports.validateDir(instanceDir);
+export async function setEnabledShaderpack(instanceDir, pack) {
+  await validateDir(instanceDir);
 
-  const optionsShaders = path.join(instanceDir, SHADER_CONFIG);
+  const optionsShaders = pathJoin(instanceDir, SHADER_CONFIG);
   let buf;
-  if (fs.existsSync(optionsShaders)) {
-    buf = fs.readFileSync(optionsShaders, { encoding: "utf-8" });
+  if (await exists(optionsShaders)) {
+    buf = await readTextFile(optionsShaders);
     buf = buf.replace(SHADER_OPTION, `shaderPack=${pack}`);
   } else {
     buf = `shaderPack=${pack}`;
   }
-  fs.writeFileSync(optionsShaders, buf, { encoding: "utf-8" });
-};
+  await writeTextFile(optionsShaders, buf);
+}
 
 /**
- * Add shaderpacks.
+ * Add shaderpacks by moving them into the instance's shaderpacks folder.
  *
- * @param {FileList} files The files to add.
+ * @param {{name: string, path: string}[]} files The files to add.
  * @param {string} instanceDir The path to the server instance directory.
  */
-exports.addShaderpacks = function (files, instanceDir) {
-  const p = path.join(instanceDir, SHADER_DIR);
+export async function addShaderpacks(files, instanceDir) {
+  const p = pathJoin(instanceDir, SHADER_DIR);
+  await validateDir(p);
 
-  exports.validateDir(p);
-
-  for (let f of files) {
+  for (const f of files) {
     if (SHADER_REGEX.exec(f.name) != null) {
-      fs.moveSync(f.path, path.join(p, f.name));
+      await rename(f.path, pathJoin(p, f.name));
     }
   }
-};
+}

@@ -13,6 +13,8 @@
     "fs:allow-read-text-file",
     "fs:allow-mkdir",
     "fs:allow-rename",
+    "fs:allow-read-dir",
+    "fs:allow-remove",
     {
       "identifier": "fs:scope",
       "allow": ["$APPDATA", "$APPDATA/**"]
