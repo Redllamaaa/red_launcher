@@ -1218,10 +1218,7 @@ function bindShaderpackButton() {
 
   registerDropZone(spBtn, async (paths) => {
     if (CACHE_SETTINGS_INSTANCE_DIR == null) return;
-    await DropinModUtil.addShaderpacks(
-      e.dataTransfer.files,
-      CACHE_SETTINGS_INSTANCE_DIR,
-    );
+    await DropinModUtil.addShaderpacks(paths, CACHE_SETTINGS_INSTANCE_DIR);
     await saveShaderpackSettings();
     await resolveShaderpacksForUI();
   });
