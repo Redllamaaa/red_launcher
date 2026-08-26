@@ -43,6 +43,10 @@ function pathJoin(...parts) {
   return parts.join("/").replace(/\/+/g, "/");
 }
 
+function fileNameFromPath(p) {
+  return p.replace(/\\/g, "/").split("/").pop();
+}
+
 /**
  * Validate that the given directory exists. If not, it is created.
  *
@@ -104,16 +108,18 @@ export async function scanForDropinMods(modsDir, version) {
 /**
  * Add drop-in mods by moving them into the mods directory.
  *
- * @param {{name: string, path: string}[]} files The files to add
- * (as returned by the drag/drop or dialog plugin — needs `name` + `path`).
+ * @param {string[]} paths Absolute filesystem paths — as returned by either
+ * the webview's onDragDropEvent (event.payload.paths) or plugin-dialog's
+ * open({ multiple: true }).
  * @param {string} modsDir The path to the mods directory.
  */
-export async function addDropinMods(files, modsDir) {
+export async function addDropinMods(paths, modsDir) {
   await validateDir(modsDir);
 
-  for (const f of files) {
-    if (MOD_REGEX.exec(f.name) != null) {
-      await rename(f.path, pathJoin(modsDir, f.name));
+  for (const p of paths) {
+    const name = fileNameFromPath(p);
+    if (MOD_REGEX.exec(name) != null) {
+      await rename(p, pathJoin(modsDir, name));
     }
   }
 }
@@ -238,16 +244,17 @@ export async function setEnabledShaderpack(instanceDir, pack) {
 /**
  * Add shaderpacks by moving them into the instance's shaderpacks folder.
  *
- * @param {{name: string, path: string}[]} files The files to add.
+ * @param {string[]} paths Absolute filesystem paths.
  * @param {string} instanceDir The path to the server instance directory.
  */
-export async function addShaderpacks(files, instanceDir) {
+export async function addShaderpacks(paths, instanceDir) {
   const p = pathJoin(instanceDir, SHADER_DIR);
   await validateDir(p);
 
-  for (const f of files) {
-    if (SHADER_REGEX.exec(f.name) != null) {
-      await rename(f.path, pathJoin(p, f.name));
+  for (const filePath of paths) {
+    const name = fileNameFromPath(filePath);
+    if (SHADER_REGEX.exec(name) != null) {
+      await rename(filePath, pathJoin(p, name));
     }
   }
 }

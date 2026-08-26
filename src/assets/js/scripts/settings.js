@@ -1,9 +1,10 @@
 import { ready } from "./bootstrap.js";
 
 import { open } from "@tauri-apps/plugin-dialog";
-import { open as openPath } from "@tauri-apps/plugin-shell";
+import { openPath } from "@tauri-apps/plugin-opener";
 import { fetch } from "@tauri-apps/plugin-http";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { getVersion } from "@tauri-apps/api/app";
 import { platform } from "@tauri-apps/plugin-os";
 import Lang from "../langloader.js";
@@ -51,6 +52,85 @@ await ready();
 const settingsState = {
   invalid: new Set(),
 };
+
+/**
+ * Tauri v2 webviews don't populate a real filesystem path on native HTML5
+ * drag-and-drop File objects (sandboxing) — dataTransfer.files[i].path is
+ * always undefined. Real paths only come through the webview-level
+ * onDragDropEvent API, which reports the cursor position rather than a
+ * target element, so we hit-test that position against whichever zones
+ * are currently registered. Elements register via registerDropZone
+ * instead of native ondrop; since bindDropinModFileSystemButton/
+ * bindShaderpackButton re-run on every settings prepare, this is keyed
+ * by element (Map) so re-binding just overwrites the handler rather
+ * than accumulating listeners.
+ *
+ * Requires "dragDropEnabled": false on the window in tauri.conf.json —
+ * otherwise the native and webview-level drag systems both fire.
+ */
+const dropZones = new Map();
+let dropDragActiveElement = null;
+
+function registerDropZone(element, onDrop) {
+  dropZones.set(element, onDrop);
+}
+
+function pointInRect(x, y, rect) {
+  return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+}
+
+function clearActiveDropZone() {
+  if (dropDragActiveElement != null) {
+    dropDragActiveElement.removeAttribute("drag");
+    dropDragActiveElement = null;
+  }
+}
+
+async function handleWebviewDragDropEvent(event) {
+  const { type } = event.payload;
+
+  if (type === "leave" || type === "cancel") {
+    clearActiveDropZone();
+    return;
+  }
+
+  // event.payload.position is reported in physical pixels; DOM rects are
+  // logical (CSS) pixels — divide out devicePixelRatio before hit-testing.
+  const scale = window.devicePixelRatio || 1;
+  const x = event.payload.position.x / scale;
+  const y = event.payload.position.y / scale;
+
+  let hovered = null;
+  for (const element of dropZones.keys()) {
+    if (pointInRect(x, y, element.getBoundingClientRect())) {
+      hovered = element;
+      break;
+    }
+  }
+
+  if (type === "over") {
+    if (hovered !== dropDragActiveElement) {
+      clearActiveDropZone();
+      if (hovered != null) {
+        hovered.setAttribute("drag", "");
+        dropDragActiveElement = hovered;
+      }
+    }
+    return;
+  }
+
+  if (type === "drop") {
+    clearActiveDropZone();
+    if (hovered != null) {
+      await dropZones.get(hovered)(event.payload.paths);
+    }
+  }
+}
+
+// Registered once — settings.js is only evaluated once per app lifetime,
+// so there's no risk of duplicate listeners the way there would be if
+// this ran inside a function called on every tab prepare.
+getCurrentWebview().onDragDropEvent(handleWebviewDragDropEvent);
 
 function bindSettingsSelect() {
   for (let ele of document.getElementsByClassName("settingsSelectContainer")) {
@@ -1002,28 +1082,11 @@ function bindDropinModFileSystemButton() {
     await DropinModUtil.validateDir(CACHE_SETTINGS_MODS_DIR);
     await openPath(CACHE_SETTINGS_MODS_DIR);
   };
-  fsBtn.ondragenter = (e) => {
-    e.dataTransfer.dropEffect = "move";
-    fsBtn.setAttribute("drag", "");
-    e.preventDefault();
-  };
-  fsBtn.ondragover = (e) => {
-    e.preventDefault();
-  };
-  fsBtn.ondragleave = (e) => {
-    fsBtn.removeAttribute("drag");
-  };
 
-  fsBtn.ondrop = async (e) => {
-    fsBtn.removeAttribute("drag");
-    e.preventDefault();
-
-    await DropinModUtil.addDropinMods(
-      e.dataTransfer.files,
-      CACHE_SETTINGS_MODS_DIR,
-    );
+  registerDropZone(fsBtn, async (paths) => {
+    await DropinModUtil.addDropinMods(paths, CACHE_SETTINGS_MODS_DIR);
     await reloadDropinMods();
-  };
+  });
 }
 
 /**
@@ -1152,22 +1215,8 @@ function bindShaderpackButton() {
     await DropinModUtil.validateDir(p);
     await openPath(p);
   };
-  spBtn.ondragenter = (e) => {
-    e.dataTransfer.dropEffect = "move";
-    spBtn.setAttribute("drag", "");
-    e.preventDefault();
-  };
-  spBtn.ondragover = (e) => {
-    e.preventDefault();
-  };
-  spBtn.ondragleave = (e) => {
-    spBtn.removeAttribute("drag");
-  };
 
-  spBtn.ondrop = async (e) => {
-    spBtn.removeAttribute("drag");
-    e.preventDefault();
-
+  registerDropZone(spBtn, async (paths) => {
     if (CACHE_SETTINGS_INSTANCE_DIR == null) return;
     await DropinModUtil.addShaderpacks(
       e.dataTransfer.files,
@@ -1175,7 +1224,7 @@ function bindShaderpackButton() {
     );
     await saveShaderpackSettings();
     await resolveShaderpacksForUI();
-  };
+  });
 }
 
 // Server status bar functions.
