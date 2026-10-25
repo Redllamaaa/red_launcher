@@ -806,8 +806,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  source-map-js@1.2.1:
-    resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
+  source-map-js@1.2.2:
+    resolution: {integrity: sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw==}
     engines: {node: '>=0.10.0'}
 
   stack-trace@0.0.10:
@@ -1427,7 +1427,7 @@ snapshots:
     dependencies:
       nanoid: 3.3.18
       picocolors: 1.1.1
-      source-map-js: 1.2.1
+      source-map-js: 1.2.2
 
   prettier@3.9.7: {}
 
@@ -1479,7 +1479,7 @@ snapshots:
 
   semver@7.8.5: {}
 
-  source-map-js@1.2.1: {}
+  source-map-js@1.2.2: {}
 
   stack-trace@0.0.10: {}
 
